@@ -264,6 +264,7 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CDevices", "CDevice@ get(const uint16 &in)"           , asMETHODPR(ha::homed::CDevices, get    , (const unsigned short &), ha::homed::CDevice*            ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CDevices", "uint16 size()"                            , asMETHODPR(ha::homed::CDevices, size   , ()                      , unsigned short                 ), asCALL_THISCALL));
 
+  // CHomed
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevices@ devices(const EDeviceType &in)"    , asMETHODPR(ha::homed::CHomed, devices   , (const ha::homed::EDeviceType &), ha::homed::CDevices*    ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const EDeviceType &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const ha::homed::EDeviceType &, const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
