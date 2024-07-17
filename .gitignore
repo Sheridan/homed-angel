@@ -1,0 +1,16 @@
+.build
+.vscode
+trash
+*.log
+z_expose.json
+z_status.json
+homed-angel.json
+
+angelscript/**
+
+!angelscript/sdk/add_on/scriptstdstring
+!angelscript/sdk/add_on/scriptstdstring/**/*
+!angelscript/sdk/add_on/scriptarray
+!angelscript/sdk/add_on/scriptarray/**/*
+!angelscript/sdk/add_on/scriptbuilder
+!angelscript/sdk/add_on/scriptbuilder/**/*

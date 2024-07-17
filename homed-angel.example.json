@@ -1,0 +1,15 @@
+{
+  "mqtt":
+  {
+    "server": "host.domain.local",
+    "port": 1883,
+    "user": "login",
+    "password": "pw",
+    "homed_root_topic": "homed"
+  },
+  "scripting":
+  {
+    "location": "/var/lib/homed-angel/scripts",
+    "values_history_count": 16
+  }
+}
