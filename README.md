@@ -198,8 +198,8 @@ uint16 size()
 ## CHomed
 ### Методы
 ```as
-CDevices@ devices(const EDeviceType &type)  `
-CDevice@ device(const string &name)         `
+CDevices@ devices(const EDeviceType &type)
+CDevice@ device(const string &name)
 CDevice@ device(const EDeviceType &type, const string &name)
 CEndpoint@ endpoint(const EDeviceType &type, const string &deviceName, const string &endpointName)
 CProperty@ property(const EDeviceType &type, const string &deviceName, const string &propertyName)
