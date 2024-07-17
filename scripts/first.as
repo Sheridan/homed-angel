@@ -1,4 +1,4 @@
-#include "includes/include.has"
+#include "includes/include.as"
 
 void listProperties(CProperties @ps)
 {

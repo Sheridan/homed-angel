@@ -33,6 +33,8 @@ private:
     void initializeWatchers();
     void scanDirectory(const std::filesystem::path& path);
 
+    bool containsInitializeFunction(const std::filesystem::path& filepath);
+
     std::filesystem::path m_directory;
     int m_inotify_fd;
     std::unordered_map<int, std::string> m_wd_to_directory;

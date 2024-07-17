@@ -1,7 +1,9 @@
 #include "scripting/fs/cfilewatcher.h"
-#include "st.h"
-
+#include <regex>
 #include <thread>
+#include <iostream>
+#include <fstream>
+#include "st.h"
 
 namespace ha
 {
@@ -71,10 +73,34 @@ void CFileWatcher::scanDirectory(const std::filesystem::path& path)
     }
     else if (entry.path().extension() == ".as")
     {
-      HA_ST.angel().manager()->attachScript(entry);
-      // foundFiles.push_back(entry.path());
+      if(containsInitializeFunction(entry))
+      {
+        HA_ST.angel().manager()->attachScript(entry);
+      }
     }
   }
+}
+
+bool CFileWatcher::containsInitializeFunction(const std::filesystem::path &filepath)
+{
+  std::ifstream file(filepath);
+  if (!file.is_open())
+  {
+    std::cerr << "Unable to open file: " << filepath << std::endl;
+    return false;
+  }
+
+  std::string line;
+  std::regex re(R"(\s*void\s+initialize\s*\(\s*\)\s*\{?)");
+
+  while (std::getline(file, line))
+  {
+    if (std::regex_search(line, re))
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 void CFileWatcher::watch()
@@ -139,9 +165,11 @@ void CFileWatcher::processEvent(const std::string &directory, const inotify_even
     if (std::filesystem::is_regular_file(file_path) && file_path.ends_with(".as"))
     {
       std::filesystem::path file = file_path;
-      HA_ST.angel().manager()->attachScript(file); // !!!
-      // HA_LOG_NFO("File: " << file_path << " mask " << event->mask << " name " << event->name << " cookie " << event->cookie << " wd " << event->wd);
       HA_LOG_NFO("Script file changed: " << file.parent_path().string() << "/" << file.stem().string() << file.extension().string());
+      if(containsInitializeFunction(file))
+      {
+        HA_ST.angel().manager()->attachScript(file);
+      }
     }
 
     // Handle new directory creation

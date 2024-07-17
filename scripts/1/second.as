@@ -1,4 +1,4 @@
-#include "../includes/include.has"
+#include "../includes/include.as"
 // int a = 0;
 
 void doLog(CProperty @property, string caption)
