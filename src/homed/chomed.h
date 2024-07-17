@@ -26,9 +26,14 @@ public:
   // #endif // DEBUG
   CDevices *devices(const EDeviceType &type);
   CDevices *devices(const ha::mqtt::EService &type);
-  CDevice  *device(const std::string &name);
-  void unsubscribeScript(const std::string &scriptName);
 
+  CDevice   *device  (                         const std::string &deviceName);
+  CDevice   *device  (const EDeviceType &type, const std::string &deviceName);
+  CEndpoint *endpoint(const EDeviceType &type, const std::string &deviceName, const std::string &endpointName);
+  CProperty *property(const EDeviceType &type, const std::string &deviceName                                 , const std::string &propertyName);
+  CProperty *property(const EDeviceType &type, const std::string &deviceName, const std::string &endpointName, const std::string &propertyName);
+
+  void unsubscribeScript(const std::string &scriptName);
   void publishValue(CDevice *device, CEndpoint *endpoint, CProperty *property, const CValue &value);
 
 private:

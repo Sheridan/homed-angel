@@ -87,7 +87,7 @@ void CColor::fromHexString(const std::string &hexString)
   fromInt(color);
 }
 
-const Json::Value &CColor::toJson() const
+Json::Value CColor::toJson() const
 {
   Json::Value jsonArray(Json::arrayValue);
   jsonArray.append(static_cast<int>(components[0]));

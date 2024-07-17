@@ -32,7 +32,7 @@ public:
     int toInt() const;
     void fromInt(int color);
     void fromHexString(const std::string& hexString);
-    const Json::Value &toJson() const;
+    Json::Value toJson() const;
     friend std::ostream& operator<<(std::ostream& os, const CColor& color);
 
 private:

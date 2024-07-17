@@ -266,6 +266,10 @@ void CScriptEnvironment::registerModel()
 
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevices@ devices(const EDeviceType &in)"    , asMETHODPR(ha::homed::CHomed, devices   , (const ha::homed::EDeviceType &), ha::homed::CDevices*    ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const EDeviceType &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const ha::homed::EDeviceType &, const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CEndpoint@ endpoint(const EDeviceType &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, endpoint    , (const ha::homed::EDeviceType &, const std::string &, const std::string &), ha::homed::CEndpoint*                ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, property    , (const ha::homed::EDeviceType &, const std::string &, const std::string &), ha::homed::CProperty*                ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, property    , (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &), ha::homed::CProperty*                ), asCALL_THISCALL));
 
   HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed homed", &HA_ST.homed()));
 }

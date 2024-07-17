@@ -48,8 +48,8 @@ public:
 
   void subscribe(const std::string &scriptName, const std::string &methodName, const bool &changedOnly);
 
-  CDevice *device() { return m_parentDevice; };
-  CEndpoint *endpoint() { return m_parentEndpoint; };
+  CDevice   *device  () { return m_parentDevice  ; }
+  CEndpoint *endpoint() { return m_parentEndpoint; }
 
   void set(const std::string &value);
   void set(const int         &value);

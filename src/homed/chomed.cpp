@@ -46,11 +46,37 @@ CDevices *CHomed::devices(const ha::mqtt::EService &type)
   return devices(serviceType2DeviceType(type));
 }
 
-CDevice *CHomed::device(const std::string &name)
+CDevice *CHomed::device(const EDeviceType &type, const std::string &deviceName)
 {
-  CDevice *device = devices(EDeviceType::dtZigbee)->get(name);
-  if (device) { return device; }
-  return devices(EDeviceType::dtCustom)->get(name);
+  return devices(type)->get(deviceName);
+}
+
+CDevice *CHomed::device(const std::string &deviceName)
+{
+  CDevice *d = device(EDeviceType::dtZigbee, deviceName);
+  if (d) { return d; }
+  return device(EDeviceType::dtCustom, deviceName);
+}
+
+CEndpoint *CHomed::endpoint(const EDeviceType &type, const std::string &deviceName, const std::string &endpointName)
+{
+  CDevice *d = device(type, deviceName);
+  if (d) { return d->endpoints()->get(endpointName); }
+  return nullptr;
+}
+
+CProperty *CHomed::property(const EDeviceType &type, const std::string &deviceName, const std::string &propertyName)
+{
+  CDevice *d = device(type, deviceName);
+  if (d) { return d->properties()->get(propertyName); }
+  return nullptr;
+}
+
+CProperty *CHomed::property(const EDeviceType &type, const std::string &deviceName, const std::string &endpointName, const std::string &propertyName)
+{
+  CEndpoint *e = endpoint(type, deviceName, endpointName);
+  if(e) { return e->properties()->get(propertyName); }
+  return nullptr;
 }
 
 EDeviceType CHomed::serviceType2DeviceType(const ha::mqtt::EService &m_serviceType)
