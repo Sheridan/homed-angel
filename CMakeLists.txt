@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(homed_angel)
+project(homed-angel)
 
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -106,11 +106,11 @@ set(HA_SOURCES
 
 include_directories(src angelscript)
 
-add_executable(homed_angel
+add_executable(homed-angel
     ${HA_HEADERS}
     ${HA_SOURCES}
 )
-target_link_libraries(homed_angel
+target_link_libraries(homed-angel
     PahoMqttCpp::paho-mqttpp3
     jsoncpp
     ${ANGELSCRIPT_LIBRARY}
@@ -119,7 +119,7 @@ target_link_libraries(homed_angel
 
   install(TARGETS homed-angel DESTINATION /usr/bin)
 
-set(CPACK_PACKAGE_NAME "homed_angel")
+set(CPACK_PACKAGE_NAME "homed-angel")
 set(CPACK_PACKAGE_VERSION "0.8.0")
 set(CPACK_PACKAGE_CONTACT "Gorlov Maxim <sheridan@babylo-five.ru>")
 set(CPACK_PACKAGE_DESCRIPTION "HomeD Exporter is a tool to export HOMEd Zigbee data metrics.")
