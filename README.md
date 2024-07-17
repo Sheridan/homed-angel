@@ -16,9 +16,8 @@
 
 # Доступные сущности
 ## CLogger
-
+### Методы
 ```as
-class CLogger
 void dbg(const string &msg)
 void nfo(const string &msg)
 void wrn(const string &msg)
@@ -66,6 +65,7 @@ string asHexString() const
 Один из типов `CValue`
 
 ## CValue
+### Методы
 ```as
 const string asString() const
 const int asInt() const
@@ -82,6 +82,7 @@ const uint &timestamp() const
 Значение хранилища `CStorage`, в котором хранится история значений `CProperty`
 
 ## CStorage
+### Методы
 ```as
 uint16 count() const
 bool empty() const
@@ -95,6 +96,7 @@ CProperty @property()
 Хранилище истории значений `CProperty`
 
 ## CProperty
+### Методы
 ```as
 const string &name() const
 const bool &readonly() const
@@ -119,6 +121,7 @@ void set(const CValue &value)
 Класс для доступа к свойствам устройств, доступных в HOMEd
 
 ## CProperties
+### Методы
 ```as
 const bool empty() const
 CStrings list()
@@ -132,6 +135,7 @@ CEndpoint @endpoint()
 Список экземпляров `CProperty`
 
 ## CEndpoint
+### Методы
 ```as
 const string &name() const
 CProperties@ properties()
@@ -140,6 +144,7 @@ CDevice @device()
 Конечная точка устройсва, содержит списки свойств `CProperties`
 
 ## CEndpoints
+### Методы
 ```as
 const bool empty() const
 CStrings list()
@@ -152,6 +157,7 @@ CDevice @device()
 Список экземпляров `CEndpoint`
 
 ## CDevice
+### Методы
 ```as
 const string &name() const
 const EDeviceType &type() const
@@ -170,6 +176,7 @@ CEndpoints@ endpoints()
 Экземпляр устройства HOMEd, содержит как списки свойств `CProperties`, так и списки конечных точек `CEndpoints`
 
 ## CDevices
+### Методы
 ```as
 const bool empty() const
 const EDeviceType &type() const
@@ -182,6 +189,7 @@ uint16 size()
 Список экземпляров `CDevice`
 
 ## CHomed
+### Методы
 ```as
 CDevices@ devices(const EDeviceType &type)  `
 CDevice@ device(const string &name)         `
