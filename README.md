@@ -206,3 +206,12 @@ CProperty@ property(const EDeviceType &type, const string &deviceName, const str
 CProperty@ property(const EDeviceType &type, const string &deviceName, const string &endpointName, const string &propertyName)
 ```
 Оправной класс для работы с устройствами HOMEd. Экземпляр класса изначально доступен через глобальную переменную `homed`
+
+# Сборка
+Пока сервис неопакечен, его можно собрать только из исходников.
+
+Нужно установить зависимости, склонировать репозиторий и запустить `make release`. Исполняемый файл `homed-angel` будет находиться в каталоге `.build`
+## Зависимости
+* PahoMqttCpp
+* AngelScript
+* jsoncpp
