@@ -9,16 +9,17 @@
 #include "homed/chomed.h"
 #include "st.h"
 
+#include "scripting/script/cscriptenvironmenthelpers.cpp"
 namespace ha
 {
 namespace scripting
 {
 
 CScriptEnvironment::CScriptEnvironment(const std::filesystem::path &file)
-  : m_file(file),
-    m_name(extractName(file)),
-    m_builder(nullptr),
-    m_context(nullptr)
+  : m_builder(nullptr),
+    m_context(nullptr),
+    m_file(file),
+    m_name(extractName(file))
     // m_module(nullptr)
 {
   m_logger = new ha::scripting::helpers::CLogger(m_name);
@@ -28,12 +29,13 @@ CScriptEnvironment::CScriptEnvironment(const std::filesystem::path &file)
 
 CScriptEnvironment::~CScriptEnvironment()
 {
+  m_context->Release();
+  delete m_builder;
+  delete m_logger;
   if (m_engine)
   {
     m_engine->ShutDownAndRelease();
   }
-  delete m_builder;
-  delete m_logger;
 }
 
 std::string CScriptEnvironment::content()
@@ -118,29 +120,26 @@ void CScriptEnvironment::registerLogger()
 
 }
 
-// For AngelScript
-void CreateCColorDefault  (ha::homed::CColor* self) { new(self) ha::homed::CColor(); }
-void CreateCColorThreeArgs(ha::homed::CColor* self, unsigned char r, unsigned char g, unsigned char b) { new(self) ha::homed::CColor(r, g, b); }
-void CreateCColorInt      (ha::homed::CColor* self, const int &color) { new(self) ha::homed::CColor(color); }
-void CreateCColorString   (ha::homed::CColor* self, const std::string &color) { new(self) ha::homed::CColor(color); }
-void CreateCColorCopy     (ha::homed::CColor* self, const ha::homed::CColor &other) { new(self) ha::homed::CColor(other); }
-void CColorDestructor     (ha::homed::CColor* self) { self->~CColor(); };
+
 
 void CScriptEnvironment::registerModel()
 {
   // types
   HA_ACCERT_CALL(m_engine->RegisterEnum     ("EDeviceType"));
   HA_ACCERT_CALL(m_engine->RegisterEnum     ("EPropertyValueType"));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CColor", sizeof(ha::homed::CColor), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CValue", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CStorage", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CProperty", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CProperties", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CEndpoint", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CEndpoints", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevice", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevices", 0, asOBJ_REF | asOBJ_NOCOUNT));
-  HA_ACCERT_CALL(m_engine->RegisterObjectType("CHomed", 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CColor"          , sizeof(ha::homed::CColor), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CValue"          , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CStorage"        , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CProperty"       , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CProperties"     , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CEndpoint"       , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CEndpoints"      , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevice"         , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevices"        , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CHomed"          , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerContinuous", sizeof(ha::datetime::CTimerContinuous), asOBJ_REF | asOBJ_GC));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerOneshot"   , sizeof(ha::datetime::CTimerOneshot   ), asOBJ_REF | asOBJ_GC));
+  // HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerManager"   , 0, asOBJ_REF | asOBJ_NOCOUNT));
 
   // EDeviceType
   HA_ACCERT_CALL(m_engine->RegisterEnumValue("EDeviceType", "dtZigbee" , ha::homed::EDeviceType::dtZigbee ));
@@ -159,14 +158,15 @@ void CScriptEnvironment::registerModel()
   // CColor
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f()"                   , asFUNCTION(CreateCColorDefault)  , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8)", asFUNCTION(CreateCColorThreeArgs), asCALL_CDECL_OBJFIRST));
-  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const int&in)"       , asFUNCTION(CreateCColorInt)      , asCALL_CDECL_OBJFIRST));
-  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const string&in)"    , asFUNCTION(CreateCColorString)   , asCALL_CDECL_OBJFIRST));
-  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const CColor&in)"    , asFUNCTION(CreateCColorCopy)     , asCALL_CDECL_OBJFIRST));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const int &in)"       , asFUNCTION(CreateCColorInt)      , asCALL_CDECL_OBJFIRST));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const string &in)"    , asFUNCTION(CreateCColorString)   , asCALL_CDECL_OBJFIRST));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const CColor &in)"    , asFUNCTION(CreateCColorCopy)     , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_DESTRUCT , "void f()"                   , asFUNCTION(CColorDestructor)     , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CColor", "uint8 R() const"                  , asMETHODPR(ha::homed::CColor, R           , () const, unsigned char        ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CColor", "uint8 G() const"                  , asMETHODPR(ha::homed::CColor, G           , () const, unsigned char        ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CColor", "uint8 B() const"                  , asMETHODPR(ha::homed::CColor, B           , () const, unsigned char        ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CColor", "string asHexString() const"       , asMETHODPR(ha::homed::CColor, asHexString , () const, std::string          ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CColor", "int asInt() const"                , asMETHODPR(ha::homed::CColor, asInt       , () const, int                  ), asCALL_THISCALL));
 
   // CValue
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CValue", "const string asString() const"      , asMETHODPR(ha::homed::CValue, asString     , () const, const std::string                  ), asCALL_THISCALL));
@@ -192,7 +192,7 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "CValues list() const"              , asMETHODPR(ha::homed::CStorage, list         , () const                 , ha::homed::CValues      ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "const string type() const"         , asMETHODPR(ha::homed::CStorage, type         , () const                 , const std::string       ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "const CValue &last() const"        , asMETHODPR(ha::homed::CStorage, last         , () const                 , const ha::homed::CValue&), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "const CValue &at(uint) const"        , asMETHODPR(ha::homed::CStorage, at         , (const size_t &) const   , const ha::homed::CValue&), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "const CValue &at(uint) const"      , asMETHODPR(ha::homed::CStorage, at           , (const size_t &) const   , const ha::homed::CValue&), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CStorage", "CProperty @property()"             , asMETHODPR(ha::homed::CStorage, property     , ()                       , ha::homed::CProperty*   ), asCALL_THISCALL));
 
   // CProperty
@@ -265,14 +265,49 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CDevices", "uint16 size()"                            , asMETHODPR(ha::homed::CDevices, size   , ()                      , unsigned short                 ), asCALL_THISCALL));
 
   // CHomed
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevices@ devices(const EDeviceType &in)"    , asMETHODPR(ha::homed::CHomed, devices   , (const ha::homed::EDeviceType &), ha::homed::CDevices*    ), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const EDeviceType &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, device    , (const ha::homed::EDeviceType &, const std::string &), ha::homed::CDevice*                ), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CEndpoint@ endpoint(const EDeviceType &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, endpoint    , (const ha::homed::EDeviceType &, const std::string &, const std::string &), ha::homed::CEndpoint*                ), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, property    , (const ha::homed::EDeviceType &, const std::string &, const std::string &), ha::homed::CProperty*                ), asCALL_THISCALL));
-  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in, const string &in)"           , asMETHODPR(ha::homed::CHomed, property    , (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &), ha::homed::CProperty*                ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevices@ devices(const EDeviceType &in)"                                                         , asMETHODPR(ha::homed::CHomed, devices   , (const ha::homed::EDeviceType &)                                                               , ha::homed::CDevices*    ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const string &in)"                                                                , asMETHODPR(ha::homed::CHomed, device    , (const std::string &)                                                                          , ha::homed::CDevice*     ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CDevice@ device(const EDeviceType &in, const string &in)"                                         , asMETHODPR(ha::homed::CHomed, device    , (const ha::homed::EDeviceType &, const std::string &)                                          , ha::homed::CDevice*     ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CEndpoint@ endpoint(const EDeviceType &in, const string &in, const string &in)"                   , asMETHODPR(ha::homed::CHomed, endpoint  , (const ha::homed::EDeviceType &, const std::string &, const std::string &)                     , ha::homed::CEndpoint*   ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in)"                   , asMETHODPR(ha::homed::CHomed, property  , (const ha::homed::EDeviceType &, const std::string &, const std::string &)                     , ha::homed::CProperty*   ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in, const string &in)" , asMETHODPR(ha::homed::CHomed, property  , (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &), ha::homed::CProperty*   ), asCALL_THISCALL));
 
   HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed homed", &HA_ST.homed()));
+
+  // CTimerContinuous
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_FACTORY, "CTimerContinuous@ f(const string &in, const string &in, const int64 &in)", asFUNCTION(CreateCTimerContinuous), asCALL_CDECL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_ADDREF , "void f()", asMETHOD(ha::datetime::CTimerContinuous, addRef ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_RELEASE, "void f()", asMETHOD(ha::datetime::CTimerContinuous, release), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_GETREFCOUNT, "int f()"       , asMETHOD(ha::datetime::CTimerContinuous, getRefCount), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_SETGCFLAG  , "void f()"      , asMETHOD(ha::datetime::CTimerContinuous, setGCFlag)  , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_GETGCFLAG  , "bool f()"      , asMETHOD(ha::datetime::CTimerContinuous, getGCFlag)  , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_ENUMREFS   , "void f(int&in)", asMETHOD(ha::datetime::CTimerContinuous, enumRefs)   , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_RELEASEREFS, "void f(int&in)", asMETHOD(ha::datetime::CTimerContinuous, releaseRefs), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "CTimerContinuous &opAssign(const CTimerContinuous &in)", asMETHODPR(ha::datetime::CTimerContinuous, operator=, (const ha::datetime::CTimerContinuous&), ha::datetime::CTimerContinuous&), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "void start()" , asMETHODPR(ha::datetime::CTimerContinuous, start, (), void ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "void stop()"  , asMETHODPR(ha::datetime::CTimerContinuous, stop , (), void ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "void reset()" , asMETHODPR(ha::datetime::CTimerContinuous, reset, (), void ), asCALL_THISCALL));
+
+  // CTimerOneshot
+  // HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_CONSTRUCT, "void f(const string &in, const string &in, const int64 &in)", asFUNCTION(CTimerOneshotConstructor)  , asCALL_CDECL_OBJFIRST));
+  // HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_DESTRUCT , "void f()", asFUNCTION(CTimerOneshotDestructor)  , asCALL_CDECL_OBJFIRST));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_FACTORY, "CTimerOneshot@ f(const string &in, const string &in, const int64 &in)", asFUNCTION(CreateCTimerOneshot), asCALL_CDECL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_ADDREF , "void f()", asMETHOD(ha::datetime::CTimerOneshot, addRef ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_RELEASE, "void f()", asMETHOD(ha::datetime::CTimerOneshot, release), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_GETREFCOUNT, "int f()"       , asMETHOD(ha::datetime::CTimerOneshot, getRefCount), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_SETGCFLAG  , "void f()"      , asMETHOD(ha::datetime::CTimerOneshot, setGCFlag)  , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_GETGCFLAG  , "bool f()"      , asMETHOD(ha::datetime::CTimerOneshot, getGCFlag)  , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_ENUMREFS   , "void f(int&in)", asMETHOD(ha::datetime::CTimerOneshot, enumRefs)   , asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_RELEASEREFS, "void f(int&in)", asMETHOD(ha::datetime::CTimerOneshot, releaseRefs), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "CTimerOneshot &opAssign(const CTimerOneshot &in)", asMETHODPR(ha::datetime::CTimerOneshot, operator=, (const ha::datetime::CTimerOneshot&), ha::datetime::CTimerOneshot&), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void start()" , asMETHODPR(ha::datetime::CTimerOneshot, start, (), void ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void stop()"  , asMETHODPR(ha::datetime::CTimerOneshot, stop , (), void ), asCALL_THISCALL));
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void reset()" , asMETHODPR(ha::datetime::CTimerOneshot, reset, (), void ), asCALL_THISCALL));
+  // CTimerManager
+  // HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerManager", "CTimerContinuous@ continuos(const string &in, const string &in, const int64 &in)", asMETHODPR(ha::datetime::CTimerManager, continuos, (const std::string&, const std::string&, const int64_t&), ha::datetime::CTimerContinuous* ), asCALL_THISCALL));
+  // HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerManager", "CTimerOneshot@ oneshoot(const string &in, const string &in, const int64 &in)"    , asMETHODPR(ha::datetime::CTimerManager, oneshoot , (const std::string&, const std::string&, const int64_t&), ha::datetime::CTimerOneshot* ), asCALL_THISCALL));
+
+  // HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CTimerManager timers", &HA_ST.timers()));
 }
 
 }

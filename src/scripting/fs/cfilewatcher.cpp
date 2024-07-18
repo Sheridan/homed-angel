@@ -159,7 +159,6 @@ void CFileWatcher::processEvent(const std::string &directory, const inotify_even
 {
   std::string file_path = directory + "/" + event->name;
 
-  // Handle file creation or modification
   if (event->mask & (IN_CREATE | IN_MODIFY))
   {
     if (std::filesystem::is_regular_file(file_path) && file_path.ends_with(".as"))
@@ -172,14 +171,12 @@ void CFileWatcher::processEvent(const std::string &directory, const inotify_even
       }
     }
 
-    // Handle new directory creation
     if (std::filesystem::is_directory(file_path))
     {
       addWatch(file_path);
     }
   }
 
-  // Handle directory deletion
   if (event->mask & IN_DELETE && std::filesystem::is_directory(file_path))
   {
     for (const auto& [wd, dir] : m_wd_to_directory)

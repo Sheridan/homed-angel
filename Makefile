@@ -23,4 +23,5 @@ run_debug: debug
 	reset && rm -f debug.log && ${BUILD_DIR}/debug/homed-angel -c ./homed-angel.json -s ${PWD}/scripts --verbose
 
 run_release: release
-	reset && rm -f release.log && ${BUILD_DIR}/release/homed-angel -c ./homed-angel.json -s ${PWD}/scripts --verbose | tee debug.log
+	#reset && rm -f release.log && ${BUILD_DIR}/release/homed-angel -c ./homed-angel.json -s ${PWD}/scripts --verbose | tee debug.log
+	reset && rm -f release.log && ${BUILD_DIR}/release/homed-angel -c ./homed-angel.json -s ${PWD}/scripts --verbose

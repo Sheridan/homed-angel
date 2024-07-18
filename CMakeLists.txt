@@ -20,8 +20,11 @@ option(CMAKE_BUILD_TYPE "Build type" Release)
 message("Configuring as " ${CMAKE_BUILD_TYPE})
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
   set(CMAKE_VERBOSE_MAKEFILE ON)
+  # set(SANITIZE_FLAG_DEBUG "-fsanitize=thread")
+  # set(SANITIZE_FLAG_DEBUG "-fsanitize=address,leak,undefined")
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG")
-  set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} ${SANITIZE_FLAG_DEBUG}")
+  set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${SANITIZE_FLAG_DEBUG}")
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 
@@ -64,6 +67,10 @@ set(HA_HEADERS
   src/utils/datetime.h
   src/utils/string.h
   src/homed/value/cobserver.h
+  src/datetime/timers/ctimer.h
+  src/datetime/timers/ctimercontinuos.h
+  src/datetime/timers/ctimeroneshoot.h
+  src/scripting/script/cscriptobject.h
   )
 
 set(HA_SOURCES
@@ -102,6 +109,10 @@ set(HA_SOURCES
   src/utils/datetime.cpp
   src/utils/string.cpp
   src/homed/value/cobserver.cpp
+  src/datetime/timers/ctimer.cpp
+  src/datetime/timers/ctimercontinuos.cpp
+  src/datetime/timers/ctimeroneshoot.cpp
+  src/scripting/script/cscriptobject.cpp
   )
 
 include_directories(src angelscript)

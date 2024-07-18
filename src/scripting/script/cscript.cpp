@@ -16,6 +16,7 @@ CScript::CScript(const std::filesystem::path &file)
 CScript::~CScript()
 {
   HA_ST.homed().unsubscribeScript(name());
+  // HA_ST.timers().unsubscribeScript(name());
   if (m_thread.joinable())
   {
     HA_LOG_NFO("Releasing thread " << m_thread.get_id() << " for " << file().string());
@@ -58,7 +59,12 @@ void CScript::run()
     initialize();
     while (m_running)
     {
-      while(!m_propertyUpdates.empty())
+      if(!m_timerShoots.empty())
+      {
+        callTimerShoot(m_timerShoots.front());
+        m_timerShoots.pop();
+      }
+      if(!m_propertyUpdates.empty())
       {
         callPropertyChanged(m_propertyUpdates.front());
         m_propertyUpdates.pop();
@@ -71,6 +77,11 @@ void CScript::run()
 void CScript::queuePropertyChanged(const std::string &method, ha::homed::CProperty *property)
 {
   m_propertyUpdates.push(SPropertyUpdate(method, property));
+}
+
+void CScript::queueTimerShoot(const std::string &method)
+{
+  m_timerShoots.push(STimerShoot(method));
 }
 
 void CScript::callPropertyChanged(const SPropertyUpdate &propertyUpdate)
@@ -92,6 +103,11 @@ void CScript::callPropertyChanged(const SPropertyUpdate &propertyUpdate)
   {
     HA_LOG_ERR("Calling method '" << method << "': can not get function");
   }
+}
+
+void CScript::callTimerShoot(const STimerShoot &timerShoot)
+{
+  callMethod("void " + timerShoot.method + "()");
 }
 
 }

@@ -105,13 +105,3 @@ private:
 
 }
 }
-
-// #define HA_CONTAINER(_name) \
-//   public: \
-//     bool              exists##_name(const std::string &name) { return CContainer<C##_name>::exists(name); }; \
-//     C##_name*            add##_name(const std::string &name) { return CContainer<C##_name>::add   (name); }; \
-//     C##_name*         ensure##_name(const std::string &name) { return CContainer<C##_name>::ensure(name); }; \
-//     C##_name*            get##_name(const std::string &name) { return CContainer<C##_name>::get   (name); }; \
-//     void              remove##_name(const std::string &name) {        CContainer<C##_name>::remove(name); }; \
-//     ha::utils::CStrings list##_name(                       ) { return CContainer<C##_name>::list  (    ); }; \
-//     bool               empty##_name(                       ) { return CContainer<C##_name>::empty (    ); };

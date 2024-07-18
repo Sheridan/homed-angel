@@ -28,7 +28,7 @@ const int CValue::asInt() const
   if(isInt())    { return                  std::get<int        >(m_value);                  }
   if(isDouble()) { return static_cast<int>(std::get<double     >(m_value));                 }
   if(isBool())   { return static_cast<int>(std::get<bool       >(m_value));                 }
-  if(isColor())  { return                  std::get<CColor     >(m_value).toInt();          }
+  if(isColor())  { return                  std::get<CColor     >(m_value).asInt();          }
   return 0;
 }
 
@@ -38,7 +38,7 @@ const double CValue::asDouble() const
   if(isInt())    { return static_cast<double>(std::get<int        >(m_value));              }
   if(isDouble()) { return                     std::get<double     >(m_value);               }
   if(isBool())   { return static_cast<double>(std::get<bool       >(m_value));              }
-  if(isColor())  { return static_cast<double>(std::get<CColor     >(m_value).toInt());      }
+  if(isColor())  { return static_cast<double>(std::get<CColor     >(m_value).asInt());      }
   return 0;
 }
 
@@ -48,7 +48,7 @@ const bool CValue::asBool() const
   if(isInt())    { return static_cast<bool>(std::get<int        >(m_value));                }
   if(isDouble()) { return static_cast<bool>(std::get<double     >(m_value));                }
   if(isBool())   { return                   std::get<bool       >(m_value);                 }
-  if(isColor())  { return static_cast<bool>(std::get<CColor     >(m_value).toInt());        }
+  if(isColor())  { return static_cast<bool>(std::get<CColor     >(m_value).asInt());        }
   return false;
 }
 

@@ -9,7 +9,7 @@ namespace ha
 namespace configuration
 {
 
-CConfiguration:: CConfiguration() {}
+CConfiguration:: CConfiguration() : m_scriptingLocation("") {}
 CConfiguration::~CConfiguration() {}
 
 void CConfiguration::load(const std::string &filename)
@@ -29,12 +29,15 @@ void CConfiguration::load(const std::string &filename)
   }
 }
 
-std::string CConfiguration::scriptingLocation()
+const std::string &CConfiguration::scriptingLocation()
 {
-  std::string location = HA_ST.cmdLine().option<std::string>("scripts");
-  if(location.empty()) { location = scriptingLocationOption(); }
-  if(location.empty()) { location = "/var/lib/homed-angel/scripts"; }
-  return location;
+  if(m_scriptingLocation.empty())
+  {
+    m_scriptingLocation = HA_ST.cmdLine().option<std::string>("scripts");
+    if(m_scriptingLocation.empty()) { m_scriptingLocation = scriptingLocationOption(); }
+    if(m_scriptingLocation.empty()) { m_scriptingLocation = "/var/lib/homed-angel/scripts"; }
+  }
+  return m_scriptingLocation;
 }
 
 }

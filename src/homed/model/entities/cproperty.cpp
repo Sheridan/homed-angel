@@ -2,7 +2,6 @@
 #include "homed/model/entities/cdevice.h"
 #include "homed/model/entities/cendpoint.h"
 #include "st.h"
-#include "cproperty.h"
 
 
 namespace ha
@@ -39,7 +38,7 @@ void CProperty::set(const bool        &value) { set(CValue(value)); }
 void CProperty::set(const CColor      &value) { set(CValue(value)); }
 void CProperty::set(const CValue      &value)
 {
-  HA_LOG_NFO("New value: " << value.asString());
+  // HA_LOG_NFO("New value: " << value.asString());
   if(readonly())
   {
     HA_LOG_WRN("Property " << name() << " is readonly");
