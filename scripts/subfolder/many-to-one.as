@@ -1,5 +1,5 @@
 #include "../includes/include.as"
-// int a = 0;
+bool do_it = false;
 
 void doLog(CProperty @property, string caption)
 {
@@ -32,21 +32,22 @@ void changedOnly(CProperty @property)
 
 void initialize()
 {
-  return;
-  homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "allEvents"  , false);
-  homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "allEvents"  , false);
+  if(do_it)
+  {
+    homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "allEvents"  , false);
+    homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "allEvents"  , false);
 
-  homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "lastSeen"   ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "Temperature_HallOutDoor"     , "temperature").subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "HumanDetector_BedStairs"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "HumanDetector_BedStairs"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "HumanDetector_BathRoom"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "HumanDetector_BathRoom"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "DoorSensor_Hall"             , "contact"    ).subscribe(script_name, "changedOnly", true);
-  homed.property(dtZigbee, "HumanDetector_Kitchen"       , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-
+    homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "lastSeen"   ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "Temperature_HallOutDoor"     , "temperature").subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BedStairs"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BedStairs"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BathRoom"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BathRoom"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "DoorSensor_Hall"             , "contact"    ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_Kitchen"       , "occupancy"  ).subscribe(script_name, "changedOnly", true);
+  }
   test_include();
   for( int n = 0; n <= 4; n++ )
   {

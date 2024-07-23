@@ -43,6 +43,7 @@ private:
   void registerBase();
   void registerLogger();
   void registerModel();
+  void registerVariables();
 };
 
 #define HA_ACCERT_CALL(_what) { int r = _what; assert(r >= 0); }

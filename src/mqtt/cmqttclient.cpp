@@ -1,7 +1,6 @@
 #include "mqtt/cmqttclient.h"
 #include <iostream>
 #include "st.h"
-#include "cmqttclient.h"
 
 namespace ha
 {
@@ -80,7 +79,7 @@ void СMqttClient::publishWorker()
     std::unique_lock<std::mutex> lock(m_publishMutex);
     bool qEmpty = m_publishMessages.empty();
     lock.unlock();
-    if(qEmpty) { HA_ST.sleep(50); }
+    if(qEmpty) { HA_ST.sleep(HA_DEFAULT_SLEEP_MS/2); }
     else
     {
       std::unique_lock<std::mutex> lock(m_publishMutex);

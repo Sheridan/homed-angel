@@ -1,6 +1,5 @@
 #include "scripting/script/cscript.h"
 #include "st.h"
-#include "cscript.h"
 
 namespace ha
 {
@@ -25,11 +24,6 @@ CScript::~CScript()
   }
 }
 
-void CScript::initialize()
-{
-  callMethod("void initialize()");
-}
-
 void CScript::callMethod(const std::string &method)
 {
   asIScriptFunction *function = m_builder->GetModule()->GetFunctionByDecl(method.c_str());
@@ -40,13 +34,11 @@ void CScript::callMethod(const std::string &method)
     {
       HA_LOG_ERR("Calling method '" << method << "' from " << name() << " failed");
     }
-    // m_context->Release();
   }
   else
   {
     HA_LOG_ERR("Can not found method '" << method << "' in " << name());
   }
-  // function->Release();
 }
 
 void CScript::run()
@@ -56,7 +48,7 @@ void CScript::run()
   registerEntities();
   if(build())
   {
-    initialize();
+    callMethod("void initialize()");
     while (m_running)
     {
       if(!m_timerShoots.empty())
@@ -71,6 +63,7 @@ void CScript::run()
       }
       HA_ST.sleep();
     }
+    callMethod("void deinitialize()");
   }
 }
 
@@ -79,7 +72,7 @@ void CScript::queuePropertyChanged(const std::string &method, ha::homed::CProper
   m_propertyUpdates.push(SPropertyUpdate(method, property));
 }
 
-void CScript::queueTimerShoot(const std::string &method)
+void CScript::queueSimpleFunctionCall(const std::string &method)
 {
   m_timerShoots.push(STimerShoot(method));
 }

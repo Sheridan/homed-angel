@@ -8,8 +8,7 @@ namespace homed
 {
 
 CHomed::CHomed()
-{
-}
+{}
 
 CHomed::~CHomed()
 {

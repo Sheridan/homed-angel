@@ -34,14 +34,13 @@ public:
 
   void run();
   void queuePropertyChanged(const std::string &method, ha::homed::CProperty *property);
-  void queueTimerShoot(const std::string &method);
+  void queueSimpleFunctionCall(const std::string &method);
 
 private:
   bool m_running;
   std::thread m_thread;
   std::queue<SPropertyUpdate> m_propertyUpdates;
   std::queue<STimerShoot> m_timerShoots;
-  void initialize();
   void callMethod(const std::string &method);
   void callPropertyChanged(const SPropertyUpdate &propertyUpdate);
   void callTimerShoot(const STimerShoot &timerShoot);

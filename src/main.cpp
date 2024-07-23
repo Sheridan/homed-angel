@@ -46,6 +46,7 @@ int main(int argc, char* argv[])
 
   if(running)
   {
+    HA_ST.astro().start();
     HA_ST.angel().start();
   }
 

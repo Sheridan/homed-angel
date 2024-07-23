@@ -13,10 +13,8 @@ public:
   explicit CTimerOneshot(const std::string &scriptName, const std::string &functionName, const std::chrono::milliseconds &interval);
   virtual ~CTimerOneshot();
 
-  CTimerOneshot &operator=(const CTimerOneshot &other);
-
-protected:
-  void run() override;
+private:
+  bool triggered() final;
 };
 
 }

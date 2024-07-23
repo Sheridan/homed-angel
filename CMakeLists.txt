@@ -12,6 +12,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(PahoMqttCpp REQUIRED)
 find_package(AngelScript REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(Nova REQUIRED)
 pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 # pkg_check_modules(ANGELSCRIPT REQUIRED angelscript)
 
@@ -71,6 +72,11 @@ set(HA_HEADERS
   src/datetime/timers/ctimercontinuos.h
   src/datetime/timers/ctimeroneshoot.h
   src/scripting/script/cscriptobject.h
+  src/datetime/astronomical/csuntracker.h
+  src/datetime/astronomical/ctracker.h
+  src/datetime/astronomical/castronomical.h
+  src/datetime/entities/cdatetime.h
+  src/datetime/entities/ctimeinterval.h
   )
 
 set(HA_SOURCES
@@ -113,6 +119,11 @@ set(HA_SOURCES
   src/datetime/timers/ctimercontinuos.cpp
   src/datetime/timers/ctimeroneshoot.cpp
   src/scripting/script/cscriptobject.cpp
+  src/datetime/astronomical/csuntracker.cpp
+  src/datetime/astronomical/ctracker.cpp
+  src/datetime/astronomical/castronomical.cpp
+  src/datetime/entities/cdatetime.cpp
+  src/datetime/entities/ctimeinterval.cpp
   )
 
 include_directories(src angelscript)
@@ -125,6 +136,7 @@ target_link_libraries(homed-angel
     PahoMqttCpp::paho-mqttpp3
     jsoncpp
     ${ANGELSCRIPT_LIBRARY}
+    ${NOVA_LIBRARIES}
     # ${Boost_LIBRARIES}
   )
 

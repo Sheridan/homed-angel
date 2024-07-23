@@ -20,9 +20,15 @@ public:
   void stop ();
   void reset();
 
-protected:
-  virtual void run() = 0;
+  const std::string &scriptName() const { return m_scriptName; }
+  const std::string &functionName() const { return m_functionName; }
 
+  CTimer &operator=(const CTimer &other);
+
+protected:
+  virtual bool triggered() = 0;
+
+private:
   std::string m_scriptName;
   std::string m_functionName;
   std::chrono::milliseconds m_interval;
@@ -31,6 +37,9 @@ protected:
   std::thread m_thread;
   std::mutex m_mutex;
   std::condition_variable m_cv;
+
+  void run();
+  void finishThread();
 };
 
 }

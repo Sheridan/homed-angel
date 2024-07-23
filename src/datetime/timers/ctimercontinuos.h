@@ -13,9 +13,8 @@ public:
   explicit CTimerContinuous(const std::string &scriptName, const std::string &functionName, const std::chrono::milliseconds &interval);
   virtual ~CTimerContinuous();
 
-  CTimerContinuous &operator=(const CTimerContinuous &other);
-protected:
-  void run() override;
+private:
+  bool triggered() final;
 };
 
 }

@@ -6,6 +6,7 @@
 #include "sdk/add_on/scriptarray/scriptarray.h"
 #include "sdk/tests/test_feature/source/stdvector.h"
 
+#include "datetime/astronomical/csuntracker.h"
 #include "homed/chomed.h"
 #include "st.h"
 
@@ -77,6 +78,7 @@ void CScriptEnvironment::registerEntities()
   registerBase();
   registerLogger();
   registerModel();
+  registerVariables();
 }
 
 bool CScriptEnvironment::build()
@@ -100,7 +102,6 @@ void CScriptEnvironment::registerBase()
   RegisterStdString(m_engine);
   RegisterStdStringUtils(m_engine);
   RegisterVector<std::string>("CStrings", "string", m_engine);
-  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("string script_name", &m_name));
 }
 
 void CScriptEnvironment::registerLogger()
@@ -115,18 +116,14 @@ void CScriptEnvironment::registerLogger()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CLogger", "void wrn(const string &in)", asMETHOD(ha::scripting::helpers::CLogger, wrn), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CLogger", "void err(const string &in)", asMETHOD(ha::scripting::helpers::CLogger, err), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CLogger", "void cry(const string &in)", asMETHOD(ha::scripting::helpers::CLogger, cry), asCALL_THISCALL));
-
-  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger @logger", &m_logger));
-
 }
-
-
 
 void CScriptEnvironment::registerModel()
 {
   // types
-  HA_ACCERT_CALL(m_engine->RegisterEnum     ("EDeviceType"));
-  HA_ACCERT_CALL(m_engine->RegisterEnum     ("EPropertyValueType"));
+  HA_ACCERT_CALL(m_engine->RegisterEnum("EDeviceType"));
+  HA_ACCERT_CALL(m_engine->RegisterEnum("EPropertyValueType"));
+  HA_ACCERT_CALL(m_engine->RegisterEnum("ESunTrackerEvent"));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CColor"          , sizeof(ha::homed::CColor), asOBJ_VALUE | asOBJ_APP_CLASS_CDAK));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CValue"          , 0, asOBJ_REF | asOBJ_NOCOUNT));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CStorage"        , 0, asOBJ_REF | asOBJ_NOCOUNT));
@@ -137,6 +134,8 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevice"         , 0, asOBJ_REF | asOBJ_NOCOUNT));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CDevices"        , 0, asOBJ_REF | asOBJ_NOCOUNT));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CHomed"          , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CSunTracker"     , 0, asOBJ_REF | asOBJ_NOCOUNT));
+  HA_ACCERT_CALL(m_engine->RegisterObjectType("CAstronomical"   , 0, asOBJ_REF | asOBJ_NOCOUNT));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerContinuous", sizeof(ha::datetime::CTimerContinuous), asOBJ_REF | asOBJ_GC));
   HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerOneshot"   , sizeof(ha::datetime::CTimerOneshot   ), asOBJ_REF | asOBJ_GC));
   // HA_ACCERT_CALL(m_engine->RegisterObjectType("CTimerManager"   , 0, asOBJ_REF | asOBJ_NOCOUNT));
@@ -155,9 +154,37 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterEnumValue("EPropertyValueType", "pvtColor"   , ha::homed::EPropertyValueType::pvtColor   ));
   HA_ACCERT_CALL(m_engine->RegisterEnumValue("EPropertyValueType", "pvtUnknown" , ha::homed::EPropertyValueType::pvtUnknown ));
 
+  // ESunTrackerEvent
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steNadir"                           ,ha::datetime::ESunTrackerEvent::steNadir                           ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningBlueHourStart"            ,ha::datetime::ESunTrackerEvent::steMorningBlueHourStart            ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningAstronomicalTwilightStart",ha::datetime::ESunTrackerEvent::steMorningAstronomicalTwilightStart));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningAstronomicalTwilightEnd"  ,ha::datetime::ESunTrackerEvent::steMorningAstronomicalTwilightEnd  ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningNauticalTwilightStart"    ,ha::datetime::ESunTrackerEvent::steMorningNauticalTwilightStart    ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningNauticalTwilightEnd"      ,ha::datetime::ESunTrackerEvent::steMorningNauticalTwilightEnd      ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningCivilTwilightStart"       ,ha::datetime::ESunTrackerEvent::steMorningCivilTwilightStart       ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningCivilTwilightEnd"         ,ha::datetime::ESunTrackerEvent::steMorningCivilTwilightEnd         ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningBlueHourEnd"              ,ha::datetime::ESunTrackerEvent::steMorningBlueHourEnd              ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningGoldenHourStart"          ,ha::datetime::ESunTrackerEvent::steMorningGoldenHourStart          ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningSunriseStart"             ,ha::datetime::ESunTrackerEvent::steMorningSunriseStart             ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningSunriseEnd"               ,ha::datetime::ESunTrackerEvent::steMorningSunriseEnd               ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steMorningGoldenHourEnd"            ,ha::datetime::ESunTrackerEvent::steMorningGoldenHourEnd            ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steZenith"                          ,ha::datetime::ESunTrackerEvent::steZenith                          ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningGoldenHourStart"          ,ha::datetime::ESunTrackerEvent::steEveningGoldenHourStart          ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningGoldenHourEnd"            ,ha::datetime::ESunTrackerEvent::steEveningGoldenHourEnd            ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningBlueHourStart"            ,ha::datetime::ESunTrackerEvent::steEveningBlueHourStart            ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningSunsetStart"              ,ha::datetime::ESunTrackerEvent::steEveningSunsetStart              ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningSunsetEnd"                ,ha::datetime::ESunTrackerEvent::steEveningSunsetEnd                ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningBlueHourEnd"              ,ha::datetime::ESunTrackerEvent::steEveningBlueHourEnd              ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningCivilTwilightStart"       ,ha::datetime::ESunTrackerEvent::steEveningCivilTwilightStart       ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningCivilTwilightEnd"         ,ha::datetime::ESunTrackerEvent::steEveningCivilTwilightEnd         ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningNauticalTwilightStart"    ,ha::datetime::ESunTrackerEvent::steEveningNauticalTwilightStart    ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningNauticalTwilightEnd"      ,ha::datetime::ESunTrackerEvent::steEveningNauticalTwilightEnd      ));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningAstronomicalTwilightStart",ha::datetime::ESunTrackerEvent::steEveningAstronomicalTwilightStart));
+  HA_ACCERT_CALL(m_engine->RegisterEnumValue("ESunTrackerEvent",  "steEveningAstronomicalTwilightEnd"  ,ha::datetime::ESunTrackerEvent::steEveningAstronomicalTwilightEnd  ));
+
   // CColor
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f()"                   , asFUNCTION(CreateCColorDefault)  , asCALL_CDECL_OBJFIRST));
-  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8)", asFUNCTION(CreateCColorThreeArgs), asCALL_CDECL_OBJFIRST));
+  HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(uint8, uint8, uint8)", asFUNCTION(CreateCColorRGB), asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const int &in)"       , asFUNCTION(CreateCColorInt)      , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const string &in)"    , asFUNCTION(CreateCColorString)   , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CColor", asBEHAVE_CONSTRUCT, "void f(const CColor &in)"    , asFUNCTION(CreateCColorCopy)     , asCALL_CDECL_OBJFIRST));
@@ -272,8 +299,6 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in)"                   , asMETHODPR(ha::homed::CHomed, property  , (const ha::homed::EDeviceType &, const std::string &, const std::string &)                     , ha::homed::CProperty*   ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CHomed", "CProperty@ property(const EDeviceType &in, const string &in, const string &in, const string &in)" , asMETHODPR(ha::homed::CHomed, property  , (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &), ha::homed::CProperty*   ), asCALL_THISCALL));
 
-  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed homed", &HA_ST.homed()));
-
   // CTimerContinuous
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_FACTORY, "CTimerContinuous@ f(const string &in, const string &in, const int64 &in)", asFUNCTION(CreateCTimerContinuous), asCALL_CDECL));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerContinuous", asBEHAVE_ADDREF , "void f()", asMETHOD(ha::datetime::CTimerContinuous, addRef ), asCALL_THISCALL));
@@ -289,8 +314,6 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "void reset()" , asMETHODPR(ha::datetime::CTimerContinuous, reset, (), void ), asCALL_THISCALL));
 
   // CTimerOneshot
-  // HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_CONSTRUCT, "void f(const string &in, const string &in, const int64 &in)", asFUNCTION(CTimerOneshotConstructor)  , asCALL_CDECL_OBJFIRST));
-  // HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_DESTRUCT , "void f()", asFUNCTION(CTimerOneshotDestructor)  , asCALL_CDECL_OBJFIRST));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_FACTORY, "CTimerOneshot@ f(const string &in, const string &in, const int64 &in)", asFUNCTION(CreateCTimerOneshot), asCALL_CDECL));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_ADDREF , "void f()", asMETHOD(ha::datetime::CTimerOneshot, addRef ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectBehaviour("CTimerOneshot", asBEHAVE_RELEASE, "void f()", asMETHOD(ha::datetime::CTimerOneshot, release), asCALL_THISCALL));
@@ -303,11 +326,21 @@ void CScriptEnvironment::registerModel()
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void start()" , asMETHODPR(ha::datetime::CTimerOneshot, start, (), void ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void stop()"  , asMETHODPR(ha::datetime::CTimerOneshot, stop , (), void ), asCALL_THISCALL));
   HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "void reset()" , asMETHODPR(ha::datetime::CTimerOneshot, reset, (), void ), asCALL_THISCALL));
-  // CTimerManager
-  // HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerManager", "CTimerContinuous@ continuos(const string &in, const string &in, const int64 &in)", asMETHODPR(ha::datetime::CTimerManager, continuos, (const std::string&, const std::string&, const int64_t&), ha::datetime::CTimerContinuous* ), asCALL_THISCALL));
-  // HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerManager", "CTimerOneshot@ oneshoot(const string &in, const string &in, const int64 &in)"    , asMETHODPR(ha::datetime::CTimerManager, oneshoot , (const std::string&, const std::string&, const int64_t&), ha::datetime::CTimerOneshot* ), asCALL_THISCALL));
 
-  // HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CTimerManager timers", &HA_ST.timers()));
+  // CSunTracker
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CSunTracker", "void subscribe(const ESunTrackerEvent &in, const string &in, const string &in)"  , asMETHODPR(ha::datetime::CSunTracker, subscribe , (const ha::datetime::ESunTrackerEvent&, const std::string&, const std::string&) , void), asCALL_THISCALL));
+
+  // CAstronomical
+  HA_ACCERT_CALL(m_engine->RegisterObjectMethod("CAstronomical", "CSunTracker@ sun()" , asMETHODPR(ha::datetime::CAstronomical, sun, (), ha::datetime::CSunTracker *), asCALL_THISCALL));
+
+}
+
+void CScriptEnvironment::registerVariables()
+{
+  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("string script_name", &m_name));
+  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger @logger", &m_logger));
+  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed homed", &HA_ST.homed()));
+  HA_ACCERT_CALL(m_engine->RegisterGlobalProperty("CAstronomical astro", &HA_ST.astro()));
 }
 
 }

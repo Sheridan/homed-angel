@@ -1,10 +1,16 @@
 
 
-CTimerContinuous @timer = CTimerContinuous(script_name, "onTimer", 5000);
-
-void onTimer()
+CTimerContinuous @timer_continuous = CTimerContinuous(script_name, "onTimerContinuous", 8000);
+CTimerOneshot    @timer_oneshoot   = CTimerOneshot   (script_name, "onTimerOneshoot"  , 4000);
+void onTimerContinuous()
 {
-  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("toggle");
+  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("on");
+  timer_oneshoot.start();
+}
+
+void onTimerOneshoot()
+{
+  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("off");
 }
 
 void onButton(CProperty @property)
@@ -12,12 +18,19 @@ void onButton(CProperty @property)
   logger.nfo(property.last().asString());
   if(property.last().asString() == "singleClick")
   {
-    timer.reset();
+    timer_continuous.reset();
   }
 }
 
 void initialize()
 {
+  logger.nfo("init");
   homed.property(dtZigbee, "Button_One", "action").subscribe(script_name, "onButton", false);
-  timer.start();
+  timer_continuous.start();
+}
+
+void deinitialize()
+{
+  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("off");
+  logger.nfo("deinit");
 }
