@@ -21,3 +21,22 @@
   #define RE_LOG_LINE(_caption)
   #define HA_MUTEX_STATUS(_mutex)
 #endif // HA_DEBUG
+
+#ifdef HA_INCOMING_DEBUG
+  #define HA_LOG_DBG_INCOMING(_what) HA_LOG_DBG(_what)
+#else // HA_INCOMING_DEBUG
+  #define HA_LOG_DBG_INCOMING(_what)
+#endif // HA_INCOMING_DEBUG
+
+#ifdef HA_MQTT_DEBUG
+  #define HA_LOG_DBG_MQTT(_what) HA_LOG_DBG(_what)
+#else // HA_MQTT_DEBUG
+  #define HA_LOG_DBG_MQTT(_what)
+#endif // HA_MQTT_DEBUG
+
+// #define HA_SCRIPT_DEBUG
+#ifdef HA_SCRIPT_DEBUG
+  #define HA_LOG_DBG_SCRIPT(_what) HA_LOG_DBG(_what)
+#else // HA_MQTT_DEBUG
+  #define HA_LOG_DBG_SCRIPT(_what)
+#endif // HA_MQTT_DEBUG

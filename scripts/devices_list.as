@@ -1,4 +1,5 @@
 #include "includes/include.as"
+bool do_it = false;
 
 void listProperties(CProperties @ps)
 {
@@ -50,9 +51,13 @@ void listDevices(EDeviceType dt)
 
 void initialize()
 {
-  logger.nfo("-------- Zigbee devices --------");
-  listDevices(dtZigbee);
-  logger.nfo("-------- Custom devices --------");
-  listDevices(dtCustom);
-  test_include();
+  if(do_it)
+  {
+    logger.nfo(script_name + " init");
+    logger.nfo("-------- Zigbee devices --------");
+    listDevices(dtZigbee);
+    logger.nfo("-------- Custom devices --------");
+    listDevices(dtCustom);
+    test_include();
+  }
 }

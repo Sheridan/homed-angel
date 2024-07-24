@@ -7,18 +7,21 @@ namespace datetime
 {
 
 CDateTime::CDateTime()
+  : ha::scripting::CScriptObject(2)
 {
   auto now = std::chrono::system_clock::now();
   m_time = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
 }
 
 CDateTime::CDateTime(std::time_t timestamp)
+  : ha::scripting::CScriptObject()
 {
   m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(
   std::chrono::milliseconds(timestamp * 1000));
 }
 
 CDateTime::CDateTime(const std::chrono::steady_clock::time_point &steadyTimePoint)
+  : ha::scripting::CScriptObject()
 {
   auto duration = steadyTimePoint.time_since_epoch();
   auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
@@ -26,6 +29,7 @@ CDateTime::CDateTime(const std::chrono::steady_clock::time_point &steadyTimePoin
 }
 
 CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
+  : ha::scripting::CScriptObject()
 {
   std::tm tm = {};
   tm.tm_year = year - 1900;

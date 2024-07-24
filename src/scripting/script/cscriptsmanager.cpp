@@ -52,7 +52,7 @@ CScript *CScriptsManager::script(const std::filesystem::path &file)
   {
     if(script->file() == file) { return script; }
   }
-  HA_LOG_DBG("Script manager can not found " << file.string());
+  HA_LOG_DBG_SCRIPT("Script manager can not found " << file.string());
   return nullptr;
 }
 
@@ -62,7 +62,7 @@ CScript *CScriptsManager::script(const std::string &name)
   {
     if(script->name() == name) { return script; }
   }
-  HA_LOG_DBG("Script manager can not found " << name);
+  HA_LOG_DBG_SCRIPT("Script manager can not found " << name);
   return nullptr;
 }
 

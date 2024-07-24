@@ -15,7 +15,7 @@ CTimerOneshot::~CTimerOneshot()
 
 bool CTimerOneshot::triggered()
 {
-  HA_ST.angel().manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
+  HA_ST->angel()->manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
   HA_LOG_VERBOSE("Oneshot timer [" << scriptName() << ":" << functionName() << "] triggered");
   return true;
 }

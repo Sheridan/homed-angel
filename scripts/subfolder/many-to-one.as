@@ -1,5 +1,5 @@
 #include "../includes/include.as"
-bool do_it = false;
+bool do_it = true;
 
 void doLog(CProperty @property, string caption)
 {
@@ -25,6 +25,7 @@ void toggle(CProperty @status, CProperty @color)
 }
 void changedOnly(CProperty @property)
 {
+  logger.wrn(property.last().timestamp().asString("%Y.%m.%d %H:%M:%S"));
   doLog(property, "changed");
   toggle(homed.property(dtZigbee, "Informer_One", "1", "status"), homed.property(dtZigbee, "Informer_One", "1", "color"));
   toggle(homed.property(dtZigbee, "LedRGB_Showcase", "status"), homed.property(dtZigbee, "LedRGB_Showcase", "color"));
@@ -34,6 +35,7 @@ void initialize()
 {
   if(do_it)
   {
+    logger.nfo(script_name + " init");
     homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "allEvents"  , false);
     homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "allEvents"  , false);
 

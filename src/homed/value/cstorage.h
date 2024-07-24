@@ -56,7 +56,7 @@ private:
 template <typename T>
 inline void CStorage::setValue(const T &value)
 {
-  HA_LOG_DBG("Incoming value " << value);
+  HA_LOG_DBG_INCOMING("Incoming value " << value);
   std::unique_lock lock(m_mutex);
   m_history.emplace_front(CValue(value));
   if (m_history.size() > m_historySize) { m_history.pop_back(); }

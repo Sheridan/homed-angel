@@ -10,7 +10,7 @@ namespace mqtt
 {
 
 CTopic::CTopic(const std::string &topic)
-  : m_root(HA_ST.config().mqttHomedTopic()),
+  : m_root(HA_ST->config()->mqttHomedTopic()),
     m_topic(""),
     m_service(""),
     m_device(""),

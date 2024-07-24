@@ -1,6 +1,7 @@
 #pragma once
 #include <jsoncpp/json/json.h>
 #include "homed/value/ccolor.h"
+#include "datetime/entities/cdatetime.h"
 #include <variant>
 #include <string>
 #include <chrono>
@@ -12,7 +13,7 @@ namespace homed
 {
 
 using TValue = std::variant<std::string, int, double, bool, CColor>;
-using TTimestamp = std::chrono::system_clock::time_point;
+// using TTimestamp = std::chrono::system_clock::time_point;
 
 class CValue
 {
@@ -33,7 +34,7 @@ public:
   bool isColor () const { return std::holds_alternative<CColor     >(m_value); }
 
   const TValue     &value    () const { return m_value    ; }
-  const TTimestamp &timestamp() const { return m_timestamp; }
+  const ha::datetime::CDateTime &timestamp() const { return m_timestamp; }
 
   bool operator==(const CValue& other) const;
   bool operator!=(const CValue& other) const;
@@ -44,7 +45,7 @@ public:
 
 private:
   TValue m_value;
-  TTimestamp m_timestamp;
+  ha::datetime::CDateTime m_timestamp;
 
 
 };

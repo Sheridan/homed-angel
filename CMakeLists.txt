@@ -64,7 +64,6 @@ set(HA_HEADERS
   src/scripting/script/cscriptsmanager.h
   src/st.h
   src/tools/singletone/csingletone.h
-  src/tools/singletone/singletone.h
   src/utils/datetime.h
   src/utils/string.h
   src/homed/value/cobserver.h

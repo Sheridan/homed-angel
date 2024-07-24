@@ -55,7 +55,7 @@ void СMqttClient::subscribe()
 {
   try
   {
-    std::string topic = HA_ST.config().mqttHomedTopic() + "/#";
+    std::string topic = HA_ST->config()->mqttHomedTopic() + "/#";
     m_client->subscribe(topic, 1)->wait();
     HA_LOG_NFO("Subscribed to topic '" << topic << "'.");
   }
@@ -79,7 +79,7 @@ void СMqttClient::publishWorker()
     std::unique_lock<std::mutex> lock(m_publishMutex);
     bool qEmpty = m_publishMessages.empty();
     lock.unlock();
-    if(qEmpty) { HA_ST.sleep(HA_DEFAULT_SLEEP_MS/2); }
+    if(qEmpty) { HA_ST->sleep(HA_DEFAULT_SLEEP_MS/2); }
     else
     {
       std::unique_lock<std::mutex> lock(m_publishMutex);
@@ -88,7 +88,7 @@ void СMqttClient::publishWorker()
       lock.unlock();
       try
       {
-        HA_LOG_DBG("Publishing '" << content << "'" << " to topic " << topic);
+        HA_LOG_DBG_MQTT("Publishing '" << content << "'" << " to topic " << topic);
         auto msg = ::mqtt::make_message(topic, content);
         msg->set_qos(1);
         m_client->publish(msg)->wait();
@@ -97,7 +97,7 @@ void СMqttClient::publishWorker()
       {
         HA_LOG_ERR("Error sending message: " << e.what());
       }
-      HA_ST.sleep(m_publishInterval);
+      HA_ST->sleep(m_publishInterval);
     }
   }
 }

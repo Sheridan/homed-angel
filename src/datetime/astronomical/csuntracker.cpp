@@ -7,6 +7,7 @@
 #include <chrono>
 #include <ctime>
 #include "st.h"
+#include "csuntracker.h"
 
 #define HA_SUN_ANGULAR_SIZE     0.5
 #define HA_HORIZON_ZERO         0.0
@@ -23,16 +24,23 @@ namespace datetime
 CSunTracker::CSunTracker()
   : CTracker()
 {
+  update();
   #ifdef HA_DEBUG
-  printEvents();
+  // printEvents();
   #endif
 }
 
 CSunTracker::~CSunTracker()
-{}
+{
+  for(auto &pair : m_eventsTime)
+  {
+    delete pair.second;
+  }
+  m_eventsTime.clear();
+}
 
 #ifdef HA_DEBUG
-#define HA_PRINT_DATE(_type) HA_LOG_NFO(calcTime(ESunTrackerEvent::ste##_type).asString("%Y.%m.%d %H:%M:%S") << " | " << #_type);
+#define HA_PRINT_DATE(_type) HA_LOG_NFO(getEventTime(ESunTrackerEvent::ste##_type)->asString("%Y.%m.%d %H:%M:%S") << " | " << #_type);
 void CSunTracker::printEvents()
 {
 
@@ -68,49 +76,129 @@ void CSunTracker::printEvents()
 
 void CSunTracker::update()
 {
-  if(!calcTimes(julian(), HA_HORIZON_ZERO).circumpolar)
+  if(!circumpolar())
   {
-    checkEvent(ESunTrackerEvent::steNadir                           );
-    checkEvent(ESunTrackerEvent::steMorningBlueHourStart            );
-    checkEvent(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
-    checkEvent(ESunTrackerEvent::steMorningAstronomicalTwilightEnd  );
-    checkEvent(ESunTrackerEvent::steMorningNauticalTwilightStart    );
-    checkEvent(ESunTrackerEvent::steMorningNauticalTwilightEnd      );
-    checkEvent(ESunTrackerEvent::steMorningCivilTwilightStart       );
-    checkEvent(ESunTrackerEvent::steMorningCivilTwilightEnd         );
-    checkEvent(ESunTrackerEvent::steMorningBlueHourEnd              );
-    checkEvent(ESunTrackerEvent::steMorningGoldenHourStart          );
-    checkEvent(ESunTrackerEvent::steMorningSunriseStart             );
-    checkEvent(ESunTrackerEvent::steMorningSunriseEnd               );
-    checkEvent(ESunTrackerEvent::steMorningGoldenHourEnd            );
-    checkEvent(ESunTrackerEvent::steZenith                          );
-    checkEvent(ESunTrackerEvent::steEveningGoldenHourStart          );
-    checkEvent(ESunTrackerEvent::steEveningGoldenHourEnd            );
-    checkEvent(ESunTrackerEvent::steEveningBlueHourStart            );
-    checkEvent(ESunTrackerEvent::steEveningSunsetStart              );
-    checkEvent(ESunTrackerEvent::steEveningSunsetEnd                );
-    checkEvent(ESunTrackerEvent::steEveningBlueHourEnd              );
-    checkEvent(ESunTrackerEvent::steEveningCivilTwilightStart       );
-    checkEvent(ESunTrackerEvent::steEveningCivilTwilightEnd         );
-    checkEvent(ESunTrackerEvent::steEveningNauticalTwilightStart    );
-    checkEvent(ESunTrackerEvent::steEveningNauticalTwilightEnd      );
-    checkEvent(ESunTrackerEvent::steEveningAstronomicalTwilightStart);
-    checkEvent(ESunTrackerEvent::steEveningAstronomicalTwilightEnd  );
+    update(ESunTrackerEvent::steNadir                           );
+    update(ESunTrackerEvent::steMorningBlueHourStart            );
+    update(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
+    update(ESunTrackerEvent::steMorningAstronomicalTwilightEnd  );
+    update(ESunTrackerEvent::steMorningNauticalTwilightStart    );
+    update(ESunTrackerEvent::steMorningNauticalTwilightEnd      );
+    update(ESunTrackerEvent::steMorningCivilTwilightStart       );
+    update(ESunTrackerEvent::steMorningCivilTwilightEnd         );
+    update(ESunTrackerEvent::steMorningBlueHourEnd              );
+    update(ESunTrackerEvent::steMorningGoldenHourStart          );
+    update(ESunTrackerEvent::steMorningSunriseStart             );
+    update(ESunTrackerEvent::steMorningSunriseEnd               );
+    update(ESunTrackerEvent::steMorningGoldenHourEnd            );
+    update(ESunTrackerEvent::steZenith                          );
+    update(ESunTrackerEvent::steEveningGoldenHourStart          );
+    update(ESunTrackerEvent::steEveningGoldenHourEnd            );
+    update(ESunTrackerEvent::steEveningBlueHourStart            );
+    update(ESunTrackerEvent::steEveningSunsetStart              );
+    update(ESunTrackerEvent::steEveningSunsetEnd                );
+    update(ESunTrackerEvent::steEveningBlueHourEnd              );
+    update(ESunTrackerEvent::steEveningCivilTwilightStart       );
+    update(ESunTrackerEvent::steEveningCivilTwilightEnd         );
+    update(ESunTrackerEvent::steEveningNauticalTwilightStart    );
+    update(ESunTrackerEvent::steEveningNauticalTwilightEnd      );
+    update(ESunTrackerEvent::steEveningAstronomicalTwilightStart);
+    update(ESunTrackerEvent::steEveningAstronomicalTwilightEnd  );
   }
 }
 
-void CSunTracker::checkEvent(const ESunTrackerEvent &event)
+void CSunTracker::check()
 {
-  if(thisTimeIsEvent(calcTime(event)))
+  if(!circumpolar())
   {
-    for(const SSunTrackerItem &item : m_events)
+    check(ESunTrackerEvent::steNadir                           );
+    check(ESunTrackerEvent::steMorningBlueHourStart            );
+    check(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
+    check(ESunTrackerEvent::steMorningAstronomicalTwilightEnd  );
+    check(ESunTrackerEvent::steMorningNauticalTwilightStart    );
+    check(ESunTrackerEvent::steMorningNauticalTwilightEnd      );
+    check(ESunTrackerEvent::steMorningCivilTwilightStart       );
+    check(ESunTrackerEvent::steMorningCivilTwilightEnd         );
+    check(ESunTrackerEvent::steMorningBlueHourEnd              );
+    check(ESunTrackerEvent::steMorningGoldenHourStart          );
+    check(ESunTrackerEvent::steMorningSunriseStart             );
+    check(ESunTrackerEvent::steMorningSunriseEnd               );
+    check(ESunTrackerEvent::steMorningGoldenHourEnd            );
+    check(ESunTrackerEvent::steZenith                          );
+    check(ESunTrackerEvent::steEveningGoldenHourStart          );
+    check(ESunTrackerEvent::steEveningGoldenHourEnd            );
+    check(ESunTrackerEvent::steEveningBlueHourStart            );
+    check(ESunTrackerEvent::steEveningSunsetStart              );
+    check(ESunTrackerEvent::steEveningSunsetEnd                );
+    check(ESunTrackerEvent::steEveningBlueHourEnd              );
+    check(ESunTrackerEvent::steEveningCivilTwilightStart       );
+    check(ESunTrackerEvent::steEveningCivilTwilightEnd         );
+    check(ESunTrackerEvent::steEveningNauticalTwilightStart    );
+    check(ESunTrackerEvent::steEveningNauticalTwilightEnd      );
+    check(ESunTrackerEvent::steEveningAstronomicalTwilightStart);
+    check(ESunTrackerEvent::steEveningAstronomicalTwilightEnd  );
+  }
+}
+
+void CSunTracker::check(const ESunTrackerEvent &event)
+{
+  if(m_eventsTime.contains(event))
+  {
+    if(thisTimeIsEvent(m_eventsTime[event]))
     {
-      if(item.event == event)
+      for(const SSunTrackerItem &item : m_events)
       {
-        HA_ST.angel().manager()->script(item.scriptName)->queueSimpleFunctionCall(item.functionName);
+        if(item.event == event)
+        {
+          HA_ST->angel()->manager()->script(item.scriptName)->queueSimpleFunctionCall(item.functionName);
+        }
       }
     }
   }
+}
+
+void CSunTracker::update(const ESunTrackerEvent &event)
+{
+  if(m_eventsTime.contains(event))
+  {
+    delete m_eventsTime[event];
+  }
+  m_eventsTime[event] = new CDateTime(zonedateToChrono(calcEventTime(event)));
+}
+
+ln_zonedate CSunTracker::calcEventTime(ESunTrackerEvent event)
+{
+  double jd = julian();
+  switch (event)
+  {
+    case ESunTrackerEvent::steNadir                           : { return calcTimes(jd, HA_HORIZON_ZERO                              ).nadir ; }; break;
+    case ESunTrackerEvent::steMorningBlueHourStart            :
+    case ESunTrackerEvent::steMorningAstronomicalTwilightStart: { return calcTimes(jd, HA_HORIZON_ASTRONOMICAL                      ).rise  ; }; break;
+    case ESunTrackerEvent::steMorningAstronomicalTwilightEnd  :
+    case ESunTrackerEvent::steMorningNauticalTwilightStart    : { return calcTimes(jd, HA_HORIZON_NAUTIC                            ).rise  ; }; break;
+    case ESunTrackerEvent::steMorningNauticalTwilightEnd      :
+    case ESunTrackerEvent::steMorningCivilTwilightStart       : { return calcTimes(jd, HA_HORIZON_CIVIL                             ).rise  ; }; break;
+    case ESunTrackerEvent::steMorningCivilTwilightEnd         :
+    case ESunTrackerEvent::steMorningBlueHourEnd              :
+    case ESunTrackerEvent::steMorningGoldenHourStart          :
+    case ESunTrackerEvent::steMorningSunriseStart             : { return calcTimes(jd, HA_HORIZON_STANDART                          ).rise  ; }; break;
+    case ESunTrackerEvent::steMorningSunriseEnd               : { return calcTimes(jd, HA_HORIZON_STANDART + HA_SUN_ANGULAR_SIZE    ).rise  ; }; break;
+    case ESunTrackerEvent::steMorningGoldenHourEnd            : { return calcTimes(jd, -LN_SOLAR_CIVIL_HORIZON                      ).rise  ; }; break;
+    case ESunTrackerEvent::steZenith                          : { return calcTimes(jd, HA_HORIZON_ZERO                              ).zenith; }; break;
+    case ESunTrackerEvent::steEveningGoldenHourStart          : { return calcTimes(jd, -LN_SOLAR_CIVIL_HORIZON                      ).set   ; }; break;
+    case ESunTrackerEvent::steEveningGoldenHourEnd            :
+    case ESunTrackerEvent::steEveningBlueHourStart            :
+    case ESunTrackerEvent::steEveningSunsetStart              : { return calcTimes(jd, HA_HORIZON_STANDART                          ).set   ; }; break;
+    case ESunTrackerEvent::steEveningCivilTwilightStart       :
+    case ESunTrackerEvent::steEveningSunsetEnd                : { return calcTimes(jd, HA_HORIZON_STANDART + HA_SUN_ANGULAR_SIZE    ).set   ; }; break;
+    case ESunTrackerEvent::steEveningBlueHourEnd              :
+    case ESunTrackerEvent::steEveningCivilTwilightEnd         : { return calcTimes(jd, HA_HORIZON_CIVIL                             ).set   ; }; break;
+    case ESunTrackerEvent::steEveningNauticalTwilightStart    :
+    case ESunTrackerEvent::steEveningAstronomicalTwilightStart:
+    case ESunTrackerEvent::steEveningNauticalTwilightEnd      : { return calcTimes(jd, HA_HORIZON_NAUTIC                            ).set   ; }; break;
+    case ESunTrackerEvent::steEveningAstronomicalTwilightEnd  : { return calcTimes(jd, HA_HORIZON_ASTRONOMICAL                      ).set   ; }; break;
+  }
+  return ln_zonedate();
 }
 
 void CSunTracker::subscribe(const ESunTrackerEvent &event, const std::string &scriptName, const std::string &functionName)
@@ -120,11 +208,13 @@ void CSunTracker::subscribe(const ESunTrackerEvent &event, const std::string &sc
 
 SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
 {
+  RE_LOG_LINE("Times");
+  HA_LOG_DBG(m_observer.lat << ":" << m_observer.lng);
   SSunTrackerTime result;
   ln_rst_time rst;
   if (ln_get_solar_rst_horizon(jd, &m_observer, horizon, &rst) != 0)
   {
-    HA_LOG_NFO("Sun is circumpolar");
+    HA_LOG_DBG("Sun is circumpolar");
     result.circumpolar = true;
   }
   else
@@ -138,39 +228,18 @@ SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
   return result;
 }
 
-CDateTime CSunTracker::calcTime(const ESunTrackerEvent &event)
+CDateTime *CSunTracker::getEventTime(ESunTrackerEvent event)
 {
-  double jd = julian();
-  switch (event)
+  if(m_eventsTime.contains(event))
   {
-    case ESunTrackerEvent::steNadir                           : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_ZERO                              ).nadir )); }; break;
-    case ESunTrackerEvent::steMorningBlueHourStart            :
-    case ESunTrackerEvent::steMorningAstronomicalTwilightStart: { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_ASTRONOMICAL                      ).rise  )); }; break;
-    case ESunTrackerEvent::steMorningAstronomicalTwilightEnd  :
-    case ESunTrackerEvent::steMorningNauticalTwilightStart    : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_NAUTIC                            ).rise  )); }; break;
-    case ESunTrackerEvent::steMorningNauticalTwilightEnd      :
-    case ESunTrackerEvent::steMorningCivilTwilightStart       : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_CIVIL                             ).rise  )); }; break;
-    case ESunTrackerEvent::steMorningCivilTwilightEnd         :
-    case ESunTrackerEvent::steMorningBlueHourEnd              :
-    case ESunTrackerEvent::steMorningGoldenHourStart          :
-    case ESunTrackerEvent::steMorningSunriseStart             : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_STANDART                          ).rise  )); }; break;
-    case ESunTrackerEvent::steMorningSunriseEnd               : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_STANDART + HA_SUN_ANGULAR_SIZE    ).rise  )); }; break;
-    case ESunTrackerEvent::steMorningGoldenHourEnd            : { return CDateTime(zonedateToChrono(calcTimes(jd, -LN_SOLAR_CIVIL_HORIZON                      ).rise  )); }; break;
-    case ESunTrackerEvent::steZenith                          : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_ZERO                              ).zenith)); }; break;
-    case ESunTrackerEvent::steEveningGoldenHourStart          : { return CDateTime(zonedateToChrono(calcTimes(jd, -LN_SOLAR_CIVIL_HORIZON                      ).set   )); }; break;
-    case ESunTrackerEvent::steEveningGoldenHourEnd            :
-    case ESunTrackerEvent::steEveningBlueHourStart            :
-    case ESunTrackerEvent::steEveningSunsetStart              : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_STANDART                          ).set   )); }; break;
-    case ESunTrackerEvent::steEveningCivilTwilightStart       :
-    case ESunTrackerEvent::steEveningSunsetEnd                : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_STANDART + HA_SUN_ANGULAR_SIZE    ).set   )); }; break;
-    case ESunTrackerEvent::steEveningBlueHourEnd              :
-    case ESunTrackerEvent::steEveningCivilTwilightEnd         : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_CIVIL                             ).set   )); }; break;
-    case ESunTrackerEvent::steEveningNauticalTwilightStart    :
-    case ESunTrackerEvent::steEveningAstronomicalTwilightStart:
-    case ESunTrackerEvent::steEveningNauticalTwilightEnd      : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_NAUTIC                            ).set   )); }; break;
-    case ESunTrackerEvent::steEveningAstronomicalTwilightEnd  : { return CDateTime(zonedateToChrono(calcTimes(jd, HA_HORIZON_ASTRONOMICAL                      ).set  ));  }; break;
+    return m_eventsTime[event];
   }
-  return CDateTime();
+  return nullptr;
+}
+
+bool CSunTracker::circumpolar()
+{
+  return calcTimes(julian(), HA_HORIZON_ZERO).circumpolar;
 }
 
 }

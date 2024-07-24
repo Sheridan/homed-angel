@@ -9,7 +9,7 @@ namespace scripting
 class CScriptObject
 {
 public:
-  explicit CScriptObject();
+  explicit CScriptObject(unsigned int rc = 1);
   virtual ~CScriptObject();
 
   void addRef();

@@ -11,19 +11,21 @@ namespace datetime
 class CAstronomical
 {
 public:
-  CAstronomical();
-  ~CAstronomical();
+  explicit CAstronomical();
+  virtual ~CAstronomical();
 
-  CSunTracker *sun() { return m_sunTracker; };
+  CSunTracker *sun();
   void start();
   void stop();
 
 private:
-  std::thread m_thread;
+  std::thread m_updateThread;
+  std::thread m_checkThread;
   std::atomic<bool> m_running;
   CSunTracker *m_sunTracker;
 
-  void run();
+  void runUpdate();
+  void runCheck();
 };
 
 

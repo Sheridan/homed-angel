@@ -44,7 +44,7 @@ void CProperty::set(const CValue      &value)
     HA_LOG_WRN("Property " << name() << " is readonly");
     return;
   }
-  HA_ST.homed().publishValue(device(), endpoint(), this, value);
+  HA_ST->homed()->publishValue(device(), endpoint(), this, value);
 }
 
 

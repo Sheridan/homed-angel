@@ -1,17 +1,21 @@
 #include "scripting/script/cscriptobject.h"
-
+#include "st.h"
 namespace ha
 {
 namespace scripting
 {
 
-CScriptObject::CScriptObject()
-  : m_refCount(1),
+CScriptObject::CScriptObject(unsigned int rc)
+  : m_refCount(rc),
     m_gcFlag(false)
-{}
+{
+  HA_LOG_DBG_SCRIPT("CScriptObject construct");
+}
 
 CScriptObject::~CScriptObject()
-{}
+{
+  HA_LOG_DBG_SCRIPT("CScriptObject destruct");
+}
 
 void CScriptObject::addRef()
 {

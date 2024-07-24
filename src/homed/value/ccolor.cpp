@@ -11,19 +11,20 @@ namespace ha
 namespace homed
 {
 
-CColor::CColor()  : components{0, 0, 0} {}
-CColor::CColor(unsigned char r, unsigned char g, unsigned char b) : components{r, g, b} {}
+CColor::CColor()  : ha::scripting::CScriptObject(), components{0, 0, 0} {}
+CColor::CColor(unsigned char r, unsigned char g, unsigned char b) : ha::scripting::CScriptObject(), components{r, g, b} {}
 CColor::CColor(const int &color) { fromInt(color); }
-CColor::CColor(const CColor &other) : components{other.components[0], other.components[1], other.components[2]} {}
+CColor::CColor(const CColor &other) : ha::scripting::CScriptObject(), components{other.components[0], other.components[1], other.components[2]} {}
 CColor::CColor(const Json::Value &item)
-: components
+: ha::scripting::CScriptObject(),
+  components
   {
     static_cast<unsigned char>(item[0].asInt()),
     static_cast<unsigned char>(item[1].asInt()),
     static_cast<unsigned char>(item[2].asInt())
   } {}
 
-CColor::CColor(const std::string &color)
+CColor::CColor(const std::string &color) : ha::scripting::CScriptObject()
 {
        if(color[0] == '#'  ) { fromHexString(color); }
   else if(color == "random") { fromRandom()        ; }

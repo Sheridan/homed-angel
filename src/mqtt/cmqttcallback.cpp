@@ -33,7 +33,6 @@ void CMqttCallback::message_arrived(::mqtt::const_message_ptr msg)
       {
         for(const Json::Value &device : payload->value()["devices"])
         {
-          // HA_LOG_DBG();
           CTopic *statusTopic = new CTopic(topic, device["name"].asString());
           sendUpdate(statusTopic, device);
           delete statusTopic;
@@ -43,7 +42,7 @@ void CMqttCallback::message_arrived(::mqtt::const_message_ptr msg)
       {
         for(const std::string &endpointKey : payload->value().getMemberNames())
         {
-          HA_LOG_DBG("Expose key: " << endpointKey);
+          HA_LOG_DBG_INCOMING("Expose key: " << endpointKey);
           if(ha::utils::is_digit(endpointKey))
           {
             CTopic *exposeTopic = new CTopic(topic, topic->device(), endpointKey);
@@ -79,8 +78,8 @@ void CMqttCallback::sendUpdate(CTopic *topic, const Json::Value &payload)
     case EService::sZigbee:
     case EService::sCustom:
     {
-      HA_LOG_DBG("Incoming data from topic " << topic->topic());
-      HA_ST.homed().update(topic, payload);
+      HA_LOG_DBG_INCOMING("Incoming data from topic " << topic->topic());
+      HA_ST->homed()->update(topic, payload);
     } break;
   }
 }

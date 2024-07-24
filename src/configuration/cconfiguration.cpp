@@ -35,7 +35,7 @@ const std::string &CConfiguration::scriptingLocation()
 {
   if(m_scriptingLocation.empty())
   {
-    m_scriptingLocation = HA_ST.cmdLine().option<std::string>("scripts");
+    m_scriptingLocation = HA_ST->cmdLine()->option<std::string>("scripts");
     if(m_scriptingLocation.empty()) { m_scriptingLocation = scriptingLocationOption(); }
   }
   return m_scriptingLocation;

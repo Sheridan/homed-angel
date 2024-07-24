@@ -22,7 +22,7 @@ CEndpoint::~CEndpoint()
 
 void CEndpoint::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
-  HA_LOG_DBG("Updating " << (topic->deviceEndpoint().empty() ? "device" : "endpoint") << " " << topic->device() << (topic->deviceEndpoint().empty() ? "" : ":" + topic->deviceEndpoint()) << " (" << topic->service() <<  ":" << topic->topic() << ")");
+  HA_LOG_DBG_INCOMING("Updating " << (topic->deviceEndpoint().empty() ? "device" : "endpoint") << " " << topic->device() << (topic->deviceEndpoint().empty() ? "" : ":" + topic->deviceEndpoint()) << " (" << topic->service() <<  ":" << topic->topic() << ")");
   switch(topic->topicType())
   {
     case ha::mqtt::ETopic::tStatus: updateStatus(topic, payload); break;
@@ -35,7 +35,7 @@ void CEndpoint::update(const ha::mqtt::CTopic *topic, const Json::Value &payload
 #define HA_SET_OBJECT_PROPERTY(_name, _as) if (payload.isMember(#_name)) { device->_name(payload[#_name]._as()); }
 void CEndpoint::updateStatus(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
-  HA_LOG_DBG("Updating status: " << topic->device());
+  HA_LOG_DBG_INCOMING("Updating status: " << topic->device());
   CProperty *property = properties()->ensure("linkQuality");
   property->readonly(true);
   property->valueType(EPropertyValueType::pvtInt);
@@ -47,7 +47,7 @@ void CEndpoint::updateStatus(const ha::mqtt::CTopic *topic, const Json::Value &p
   property->valueType(EPropertyValueType::pvtEnum);
   property->enumerate({"online", "offline"});
 
-  CDevice *device = HA_ST.homed().devices(topic->serviceType())->ensure(topic->device());
+  CDevice *device = HA_ST->homed()->devices(topic->serviceType())->ensure(topic->device());
   HA_SET_OBJECT_PROPERTY(firmware         , asString);
   HA_SET_OBJECT_PROPERTY(manufacturerName , asString);
   HA_SET_OBJECT_PROPERTY(modelName        , asString);
@@ -61,7 +61,7 @@ void CEndpoint::updateStatus(const ha::mqtt::CTopic *topic, const Json::Value &p
 
 void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
-  HA_LOG_DBG(payload.toStyledString());
+  HA_LOG_DBG_INCOMING(payload.toStyledString());
   // HA_LOG_DBG("Items: " << ["items"].toStyledString());
 
   for(const Json::Value &item : payload["items"])
@@ -209,7 +209,7 @@ void CEndpoint::updateProperty(const std::string &name, const Json::Value &item)
 {
   if(properties()->exists(name))
   {
-    HA_LOG_DBG("Updating property " << name);
+    HA_LOG_DBG_INCOMING("Updating property " << name);
     CProperty *property = properties()->get(name);
     switch(property->valueType())
     {

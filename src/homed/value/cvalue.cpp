@@ -7,7 +7,7 @@ namespace homed
 
 CValue::CValue(const TValue &value)
   : m_value(value),
-    m_timestamp(std::chrono::system_clock::now())
+    m_timestamp()
 {}
 
 CValue::~CValue() {}

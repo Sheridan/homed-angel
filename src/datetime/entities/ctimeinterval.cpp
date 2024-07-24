@@ -7,7 +7,8 @@ namespace ha
 namespace datetime
 {
 CTimeInterval::CTimeInterval(double seconds)
-  : m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
+  : ha::scripting::CScriptObject(),
+    m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
 {}
 
 CTimeInterval::~CTimeInterval() {}
@@ -29,9 +30,12 @@ bool CTimeInterval::operator!=(const CTimeInterval &other) const { return m_dura
 
 #define HA_APPEND_INTERVAL_PART(_name,_secunds) \
   { \
-    int part = total_milliseconds / _secunds; \
-    total_milliseconds %= _secunds;\
-    if(part > 0) { oss << part << _name << " "; } \
+    if(_secunds != 0) \
+    { \
+      int part = total_milliseconds / _secunds; \
+      total_milliseconds %= _secunds;\
+      if(part > 0) { oss << part << _name << " "; } \
+    } \
   }
 
 std::string CTimeInterval::asString() const

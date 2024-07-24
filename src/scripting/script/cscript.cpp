@@ -14,8 +14,8 @@ CScript::CScript(const std::filesystem::path &file)
 
 CScript::~CScript()
 {
-  HA_ST.homed().unsubscribeScript(name());
-  // HA_ST.timers().unsubscribeScript(name());
+  HA_ST->homed()->unsubscribeScript(name());
+  // HA_ST->timers().unsubscribeScript(name());
   if (m_thread.joinable())
   {
     HA_LOG_NFO("Releasing thread " << m_thread.get_id() << " for " << file().string());
@@ -61,7 +61,7 @@ void CScript::run()
         callPropertyChanged(m_propertyUpdates.front());
         m_propertyUpdates.pop();
       }
-      HA_ST.sleep();
+      HA_ST->sleep();
     }
     callMethod("void deinitialize()");
   }
@@ -80,7 +80,7 @@ void CScript::queueSimpleFunctionCall(const std::string &method)
 void CScript::callPropertyChanged(const SPropertyUpdate &propertyUpdate)
 {
   std::string method = "void " + propertyUpdate.method + "(CProperty @property)";
-  HA_LOG_DBG("Calling method '" << method << "' from " << name());
+  HA_LOG_DBG_SCRIPT("Calling method '" << method << "' from " << name());
   asIScriptFunction *function = m_builder->GetModule()->GetFunctionByDecl(method.c_str());
   if(function)
   {

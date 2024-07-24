@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <array>
+#include <map>
 #include "datetime/astronomical/ctracker.h"
 
 namespace ha
@@ -64,14 +64,20 @@ public:
   virtual ~CSunTracker();
 
   void update();
+  void check();
+
   void subscribe(const ESunTrackerEvent &event, const std::string &scriptName, const std::string &functionName);
+  CDateTime *getEventTime(ESunTrackerEvent event);
+  bool circumpolar();
 
 private:
   std::vector<SSunTrackerItem> m_events;
+  std::map<ESunTrackerEvent, CDateTime *> m_eventsTime;
 
   SSunTrackerTime calcTimes(const double &jd, const double &horizon);
-  CDateTime calcTime(const ESunTrackerEvent &event);
-  void checkEvent(const ESunTrackerEvent &event);
+  void check(const ESunTrackerEvent &event);
+  void update(const ESunTrackerEvent &event);
+  ln_zonedate calcEventTime(ESunTrackerEvent event);
 
   #ifdef HA_DEBUG
   void printEvents();

@@ -7,10 +7,10 @@
 namespace ha
 {
 
-CSingleTone &CSingleTone::instance()
+CSingleTone *CSingleTone::instance()
 {
   static ha::CSingleTone instance;
-  return instance;
+  return &instance;
 }
 
 void CSingleTone::destruct()
@@ -22,8 +22,5 @@ void CSingleTone::sleep(const unsigned int &seconds)
 {
   std::this_thread::sleep_for(std::chrono::milliseconds(seconds));
 }
-
-CSingleTone::CSingleTone() {}
-CSingleTone::~CSingleTone() {}
 
 }

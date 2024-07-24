@@ -9,4 +9,4 @@
 
 #include "log.h"
 
-#define HA_LOG_VERBOSE(_what) if(HA_ST.cmdLine().option<bool>("verbose")) { HA_LOG_COUT(verbose,_what) }
+#define HA_LOG_VERBOSE(_what) if(HA_ST->cmdLine()->option<bool>("verbose")) { HA_LOG_COUT(verbose,_what) }

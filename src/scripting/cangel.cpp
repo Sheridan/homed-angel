@@ -9,7 +9,7 @@ namespace scripting
 CAngel::CAngel()
 {
   m_manager = new CScriptsManager();
-  m_fileWatcher = new ha::scripting::fs::CFileWatcher(HA_ST.config().scriptingLocation());
+  m_fileWatcher = new ha::scripting::fs::CFileWatcher(HA_ST->config()->scriptingLocation());
 }
 
 CAngel::~CAngel()

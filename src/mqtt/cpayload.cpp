@@ -26,7 +26,7 @@ bool CPayload::validate(const std::string& payload)
 
 bool CPayload::parse(const std::string& payload)
 {
-  // HA_LOG_DBG(payload);
+  HA_LOG_DBG_MQTT(payload);
   if(!validate(payload)) { return false; }
   JSONCPP_STRING err;
   if (!m_reader->parse(payload.c_str(), payload.c_str() + payload.length(), &m_root, &err))
@@ -34,7 +34,7 @@ bool CPayload::parse(const std::string& payload)
     HA_LOG_WRN("MQTT payload parse error: " << err);
     return false;
   }
-  // HA_LOG_DBG(m_root.toStyledString());
+  HA_LOG_DBG_MQTT(m_root.toStyledString());
   return true;
 }
 
@@ -53,7 +53,7 @@ void CPayload::replaceKey(const std::string &key, const std::string &replacement
 #ifdef HA_DEBUG
 void CPayload::dump()
 {
-  HA_LOG_DBG(m_root);
+  HA_LOG_DBG_MQTT(m_root);
 }
 #endif
 

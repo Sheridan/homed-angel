@@ -75,7 +75,7 @@ void CFileWatcher::scanDirectory(const std::filesystem::path& path)
     {
       if(containsInitializeFunction(entry))
       {
-        HA_ST.angel().manager()->attachScript(entry);
+        HA_ST->angel()->manager()->attachScript(entry);
       }
     }
   }
@@ -116,7 +116,7 @@ void CFileWatcher::watch()
   m_running = true;
   while (m_running)
   {
-    HA_ST.sleep();
+    HA_ST->sleep();
 
     int length = read(m_inotify_fd, buffer, buf_len);
     if (length < 0 && errno != EAGAIN)
@@ -167,7 +167,7 @@ void CFileWatcher::processEvent(const std::string &directory, const inotify_even
       HA_LOG_NFO("Script file changed: " << file.parent_path().string() << "/" << file.stem().string() << file.extension().string());
       if(containsInitializeFunction(file))
       {
-        HA_ST.angel().manager()->attachScript(file);
+        HA_ST->angel()->manager()->attachScript(file);
       }
     }
 

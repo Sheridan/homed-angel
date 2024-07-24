@@ -3,13 +3,15 @@
 #include <string>
 #include <vector>
 #include <jsoncpp/json/json.h>
+#include "scripting/script/cscriptobject.h"
 
 namespace ha
 {
 namespace homed
 {
 
-class CColor {
+class CColor : public ha::scripting::CScriptObject
+{
 public:
     CColor();
     CColor(unsigned char r, unsigned char g, unsigned char b);

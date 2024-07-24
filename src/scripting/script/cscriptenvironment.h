@@ -42,6 +42,7 @@ private:
 
   void registerBase();
   void registerLogger();
+  void registerEnumerations();
   void registerModel();
   void registerVariables();
 };

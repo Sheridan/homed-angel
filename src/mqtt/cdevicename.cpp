@@ -11,7 +11,7 @@ namespace mqtt
 CDeviceName::CDeviceName(const std::string &topic, const std::string &path)
   : m_name(""), m_endpoint("")
 {
-  extractNameParts(eraseRoot(topic, HA_ST.config().mqttHomedTopic() + path));
+  extractNameParts(eraseRoot(topic, HA_ST->config()->mqttHomedTopic() + path));
 }
 
 std::string CDeviceName::eraseRoot(std::string topic, const std::string &root)

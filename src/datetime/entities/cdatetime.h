@@ -2,13 +2,14 @@
 #include <chrono>
 #include <string>
 #include "datetime/entities/ctimeinterval.h"
+#include "scripting/script/cscriptobject.h"
 
 namespace ha
 {
 namespace datetime
 {
 
-class CDateTime
+class CDateTime : public ha::scripting::CScriptObject
 {
 public:
   explicit CDateTime();

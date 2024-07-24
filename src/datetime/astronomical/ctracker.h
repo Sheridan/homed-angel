@@ -25,7 +25,7 @@ protected:
   double julian();
 
   std::chrono::steady_clock::time_point zonedateToChrono(const ln_zonedate& zonedate);
-  bool thisTimeIsEvent(const CDateTime &dt);
+  bool thisTimeIsEvent(CDateTime *dt);
 
 };
 

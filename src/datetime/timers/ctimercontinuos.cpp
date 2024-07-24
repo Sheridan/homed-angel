@@ -15,7 +15,7 @@ CTimerContinuous::~CTimerContinuous()
 
 bool CTimerContinuous::triggered()
 {
-  HA_ST.angel().manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
+  HA_ST->angel()->manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
   HA_LOG_VERBOSE("Continuous timer [" << scriptName() << ":" << functionName() << "] triggered.");
   return false;
 }

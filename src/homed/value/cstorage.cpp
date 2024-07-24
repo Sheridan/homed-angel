@@ -10,7 +10,7 @@ namespace homed
 {
 
 CStorage::CStorage(CProperty *pProperty)
-  : m_historySize(HA_ST.config().historyCount()),
+  : m_historySize(HA_ST->config()->historyCount()),
     m_parentProperty(pProperty)
 {}
 
