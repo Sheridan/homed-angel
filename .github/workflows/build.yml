@@ -12,6 +12,7 @@ jobs:
         arch:
         - amd64
         - arm64
+        - mips64
 
     steps:
       - name: Checkout code
