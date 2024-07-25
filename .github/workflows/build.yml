@@ -39,6 +39,7 @@ jobs:
                                 libjsoncpp-dev \
                                 angelscript-dev \
                                 dpkg-dev \
+                                libnova-dev \
                                 debhelper
               mkdir .build
               make release
