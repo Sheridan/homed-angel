@@ -14,5 +14,6 @@ angelscript/**
 !angelscript/sdk/add_on/scriptarray/**/*
 !angelscript/sdk/add_on/scriptbuilder
 !angelscript/sdk/add_on/scriptbuilder/**/*
+!angelscript/sdk/tests/test_feature/source/stdvector.h
 
 src/version.h
