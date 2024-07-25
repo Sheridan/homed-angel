@@ -4,13 +4,13 @@ CTimerContinuous @timer_continuous = CTimerContinuous(script_name, "onTimerConti
 CTimerOneshot    @timer_oneshoot   = CTimerOneshot   (script_name, "onTimerOneshoot"  , 4000);
 void onTimerContinuous()
 {
-  // homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("on");
+  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("on");
   timer_oneshoot.start();
 }
 
 void onTimerOneshoot()
 {
-  // homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("off");
+  homed.property(dtZigbee, "LightRelay_Lobby", "1", "status").set("off");
 }
 
 void onButton(CProperty @property)

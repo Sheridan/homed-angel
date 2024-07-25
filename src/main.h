@@ -2,7 +2,7 @@
 #include <atomic>
 #include <string_view>
 
-static const std::string_view version = "0.1.0";
+#include "version.h"
 
 std::atomic<bool> running{true};
 

@@ -5,8 +5,8 @@ namespace ha
 namespace scripting
 {
 
-CScriptObject::CScriptObject(unsigned int rc)
-  : m_refCount(rc),
+CScriptObject::CScriptObject()
+  : m_refCount(1),
     m_gcFlag(false)
 {
   HA_LOG_DBG_SCRIPT("CScriptObject construct");
@@ -28,9 +28,9 @@ void CScriptObject::release()
 }
 
 int  CScriptObject::getRefCount() { return m_refCount; }
-void CScriptObject::setGCFlag() { m_gcFlag = true; }
-bool CScriptObject::getGCFlag() { return m_gcFlag; }
-void CScriptObject::enumRefs(asIScriptEngine *engine) {}
+void CScriptObject::setGCFlag  () { m_gcFlag = true;   }
+bool CScriptObject::getGCFlag  () { return m_gcFlag;   }
+void CScriptObject::enumRefs   (asIScriptEngine *engine) {}
 void CScriptObject::releaseRefs(asIScriptEngine *engine) {}
 
 }

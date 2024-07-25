@@ -7,7 +7,7 @@ namespace datetime
 {
 
 CDateTime::CDateTime()
-  : ha::scripting::CScriptObject(2)
+  : ha::scripting::CScriptObject()
 {
   auto now = std::chrono::system_clock::now();
   m_time = std::chrono::time_point_cast<std::chrono::milliseconds>(now);

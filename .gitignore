@@ -14,3 +14,5 @@ angelscript/**
 !angelscript/sdk/add_on/scriptarray/**/*
 !angelscript/sdk/add_on/scriptbuilder
 !angelscript/sdk/add_on/scriptbuilder/**/*
+
+src/version.h

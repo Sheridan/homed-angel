@@ -1,0 +1,16 @@
+[Unit]
+Description=HOMEd+AngelScript automatisation scripting
+After=network.target
+
+[Service]
+Type=simple
+User=homed
+ExecStart=/usr/bin/homed-angel
+StandardOutput=journal
+StandardError=journal
+RemainAfterExit=no
+RestartSec=8s
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,20 +1,17 @@
 cmake_minimum_required(VERSION 3.12)
 project(homed-angel)
 
-# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# find_package(Boost 1.74 REQUIRED COMPONENTS system)
 find_package(PahoMqttCpp REQUIRED)
 find_package(AngelScript REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Nova REQUIRED)
 pkg_check_modules(JSONCPP REQUIRED jsoncpp)
-# pkg_check_modules(ANGELSCRIPT REQUIRED angelscript)
 
 option(CMAKE_BUILD_TYPE "Build type" Release)
 
@@ -28,6 +25,15 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   set(CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} ${SANITIZE_FLAG_DEBUG}")
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
+
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" PACKAGE_VERSION)
+string(STRIP "${PACKAGE_VERSION}" PACKAGE_VERSION)
+
+configure_file(
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
+  "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h"
+  @ONLY
+)
 
 set(HA_HEADERS
   angelscript/sdk/add_on/scriptarray/scriptarray.h
@@ -139,13 +145,28 @@ target_link_libraries(homed-angel
     # ${Boost_LIBRARIES}
   )
 
-  install(TARGETS homed-angel DESTINATION /usr/bin)
+install(TARGETS homed-angel
+  DESTINATION /usr/bin)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/deploy/homed-angel.service
+  DESTINATION /usr/share/homed-angel)
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/homed-angel.example.json
+  DESTINATION /usr/share/homed-angel)
+  install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/scripts/devices_list.as
+  DESTINATION /var/lib/homed-angel/scripts)
+
+message("Arch is " ${CMAKE_SYSTEM_PROCESSOR})
 
 set(CPACK_PACKAGE_NAME "homed-angel")
-set(CPACK_PACKAGE_VERSION "0.1.0")
-set(CPACK_PACKAGE_CONTACT "Gorlov Maxim <sheridan@babylo-five.ru>")
+set(CPACK_PACKAGE_VERSION "${PACKAGE_VERSION}")
+set(CPACK_PACKAGE_CONTACT "Gorlov Maxim <sheridan@babylon-five.ru>")
 set(CPACK_PACKAGE_DESCRIPTION "HOMEd+AngelScript automatisation scripting.")
 set(CPACK_PACKAGE_MAINTAINER "Gorlov Maxim <sheridan@babylon-five.ru>")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpaho-mqttpp3, libjsoncpp1")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpaho-mqttpp3, libjsoncpp25, libangelscript2.35.1")
+set(CPACK_DEBIAN_PACKAGE_USER "homed")
+set(CPACK_DEBIAN_PACKAGE_GROUP "homed")
+set(CPACK_DEBIAN_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${CMAKE_SYSTEM_PROCESSOR}.deb")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/deploy/debian/control.extra")
+set(CPACK_DEBIAN_PACKAGE_POST_INSTALL "${CMAKE_CURRENT_SOURCE_DIR}/deploy/debian//post_install.sh")
+
 
 include(CPack)

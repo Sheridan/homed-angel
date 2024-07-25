@@ -9,16 +9,15 @@ namespace scripting
 class CScriptObject
 {
 public:
-  explicit CScriptObject(unsigned int rc = 1);
+  explicit CScriptObject();
   virtual ~CScriptObject();
 
-  void addRef();
-  void release();
-
+  void addRef     ();
+  void release    ();
   int  getRefCount();
-  void setGCFlag();
-  bool getGCFlag();
-  void enumRefs(asIScriptEngine *engine);
+  void setGCFlag  ();
+  bool getGCFlag  ();
+  void enumRefs   (asIScriptEngine *engine);
   void releaseRefs(asIScriptEngine *engine);
 
 private:

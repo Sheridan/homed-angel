@@ -1,5 +1,4 @@
-#include "includes/include.as"
-bool do_it = false;
+bool do_it = true;
 
 void listProperties(CProperties @ps)
 {
@@ -58,6 +57,5 @@ void initialize()
     listDevices(dtZigbee);
     logger.nfo("-------- Custom devices --------");
     listDevices(dtCustom);
-    test_include();
   }
 }

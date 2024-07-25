@@ -1,3 +1,5 @@
+![build](https://github.com/Sheridan/homed-angel/actions/workflows/build.yml/badge.svg)
+
 # homed-angel
 Этот проект предназначен для описания автоматизации умного дома на скриптовом языке [AngelScript](https://www.angelcode.com/angelscript/sdk/docs/manual/index.html), бакенд - [HOMEd](https://wiki.homed.dev/page/HOMEd)
 
