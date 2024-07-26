@@ -228,7 +228,7 @@ SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
   return result;
 }
 
-CDateTime *CSunTracker::getEventTime(ESunTrackerEvent event)
+CDateTime *CSunTracker::getEventTime(const ha::datetime::ESunTrackerEvent &event)
 {
   if(m_eventsTime.contains(event))
   {

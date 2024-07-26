@@ -29,7 +29,7 @@ void CScript::callMethod(const std::string &method)
   asIScriptFunction *function = m_builder->GetModule()->GetFunctionByDecl(method.c_str());
   if(function)
   {
-    HA_ACCERT_CALL(m_context->Prepare(function));
+    HA_AS_ACCERT_CALL(m_context->Prepare(function));
     if(m_context->Execute() != asEXECUTION_FINISHED)
     {
       HA_LOG_ERR("Calling method '" << method << "' from " << name() << " failed");
@@ -84,7 +84,7 @@ void CScript::callPropertyChanged(const SPropertyUpdate &propertyUpdate)
   asIScriptFunction *function = m_builder->GetModule()->GetFunctionByDecl(method.c_str());
   if(function)
   {
-    HA_ACCERT_CALL(m_context->Prepare(function));
+    HA_AS_ACCERT_CALL(m_context->Prepare(function));
     m_context->SetArgObject(0, propertyUpdate.property);
     if(m_context->Execute() != asEXECUTION_FINISHED)
     {

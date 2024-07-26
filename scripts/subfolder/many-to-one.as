@@ -15,7 +15,9 @@ void toggle(CProperty @status, CProperty @color)
 {
   if(status.last().asString() == "off")
   {
-    color.set(CColor("random"));
+    CColor clr("random");
+    logger.nfo("color: " + clr.asHexString());
+    color.set(clr);
     status.set("on");
   }
   else

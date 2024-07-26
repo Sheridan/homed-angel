@@ -47,7 +47,7 @@ private:
   void registerVariables();
 };
 
-#define HA_ACCERT_CALL(_what) { int r = _what; assert(r >= 0); }
+#define HA_AS_ACCERT_CALL(_what) { int r = _what; assert(r >= 0); }
 #define HA_LOG_SCRIPT(_priority,_what) std::cout << "[" << file().string() << "] ["<< _priority << "] " << _what << std::endl;
 
 }

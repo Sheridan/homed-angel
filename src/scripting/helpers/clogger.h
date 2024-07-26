@@ -28,10 +28,10 @@ public:
   explicit CLogger(const std::string &name);
   virtual ~CLogger();
 
-  HA_SLOG_METHOD(dbg, lpDebug);
-  HA_SLOG_METHOD(nfo, lpInfo);
-  HA_SLOG_METHOD(wrn, lpWarning);
-  HA_SLOG_METHOD(err, lpError);
+  HA_SLOG_METHOD(dbg, lpDebug   );
+  HA_SLOG_METHOD(nfo, lpInfo    );
+  HA_SLOG_METHOD(wrn, lpWarning );
+  HA_SLOG_METHOD(err, lpError   );
   HA_SLOG_METHOD(cry, lpCritical);
 
 private:

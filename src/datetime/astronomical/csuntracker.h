@@ -67,7 +67,7 @@ public:
   void check();
 
   void subscribe(const ESunTrackerEvent &event, const std::string &scriptName, const std::string &functionName);
-  CDateTime *getEventTime(ESunTrackerEvent event);
+  CDateTime *getEventTime(const ha::datetime::ESunTrackerEvent &event);
   bool circumpolar();
 
 private:
