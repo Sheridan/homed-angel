@@ -233,15 +233,25 @@ ha::utils::CStrings CEndpoint::findChangedProperties(const Json::Value &payload)
     if(!property) { continue; }
     allNames.push_back(name);
     const Json::Value &item = payload[name];
+    // if(property->storage()->empty() || property->last() != item) { updatedNames.push_back(name); }
     // HA_LOG_DBG("Searching property " << name);
-    switch(property->valueType())
+    // CValue val = property->last();
+    // HA_LOG_DBG("property val " << val.asString());
+    if(property->storage()->empty())
     {
-      case EPropertyValueType::pvtEnum  :
-      case EPropertyValueType::pvtString: if(property->storage()->empty() || property->last().asString() != item.asString()) { updatedNames.push_back(name); } break;
-      case EPropertyValueType::pvtBool  : if(property->storage()->empty() || property->last().asBool  () != item.asBool  ()) { updatedNames.push_back(name); } break;
-      case EPropertyValueType::pvtDouble: if(property->storage()->empty() || property->last().asDouble() != item.asDouble()) { updatedNames.push_back(name); } break;
-      case EPropertyValueType::pvtInt   : if(property->storage()->empty() || property->last().asInt   () != item.asInt   ()) { updatedNames.push_back(name); } break;
-      case EPropertyValueType::pvtColor : if(property->storage()->empty() || property->last().asColor () != CColor(item   )) { updatedNames.push_back(name); } break;
+      updatedNames.push_back(name);
+    }
+    else
+    {
+      switch(property->valueType())
+      {
+        case EPropertyValueType::pvtEnum  :
+        case EPropertyValueType::pvtString: if(property->last().asString() != item.asString()) { updatedNames.push_back(name); } break;
+        case EPropertyValueType::pvtBool  : if(property->last().asBool  () != item.asBool  ()) { updatedNames.push_back(name); } break;
+        case EPropertyValueType::pvtDouble: if(property->last().asDouble() != item.asDouble()) { updatedNames.push_back(name); } break;
+        case EPropertyValueType::pvtInt   : if(property->last().asInt   () != item.asInt   ()) { updatedNames.push_back(name); } break;
+        case EPropertyValueType::pvtColor : if(property->last().asColor () != CColor(item   )) { updatedNames.push_back(name); } break;
+      }
     }
   }
   return updatedNames.empty() ? allNames : updatedNames;

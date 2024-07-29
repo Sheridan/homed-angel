@@ -208,8 +208,8 @@ void CSunTracker::subscribe(const ESunTrackerEvent &event, const std::string &sc
 
 SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
 {
-  RE_LOG_LINE("Times");
-  HA_LOG_DBG(m_observer.lat << ":" << m_observer.lng);
+  // RE_LOG_LINE("Times");
+  // HA_LOG_DBG(m_observer.lat << ":" << m_observer.lng);
   SSunTrackerTime result;
   ln_rst_time rst;
   if (ln_get_solar_rst_horizon(jd, &m_observer, horizon, &rst) != 0)

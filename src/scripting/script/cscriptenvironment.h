@@ -5,6 +5,7 @@
 #include <angelscript.h>
 
 #include "scripting/helpers/clogger.h"
+#include "scripting/helpers/cconverter.h"
 #include "sdk/add_on/scriptbuilder/scriptbuilder.h"
 
 namespace ha
@@ -33,6 +34,7 @@ private:
   std::filesystem::path m_file;
   std::string m_name;
   ha::scripting::helpers::CLogger *m_logger;
+  ha::scripting::helpers::CConverter m_converter;
 
   std::string content();
   std::string extractName(const std::filesystem::path& file);

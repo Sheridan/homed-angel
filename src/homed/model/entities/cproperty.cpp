@@ -25,17 +25,16 @@ const CValue     &CProperty::last   () const { return m_storage->last(); }
 const std::string CProperty::type   () const { return m_storage->type(); }
 CValues           CProperty::history()       { return m_storage->list(); }
 
-
 void CProperty::subscribe(const std::string &scriptName, const std::string &methodName, const bool &changedOnly)
 {
   storage()->addObserver(scriptName, methodName, changedOnly);
 }
 
-void CProperty::set(const std::string &value) { set(CValue(value)); }
-void CProperty::set(const int         &value) { set(CValue(value)); }
-void CProperty::set(const double      &value) { set(CValue(value)); }
-void CProperty::set(const bool        &value) { set(CValue(value)); }
-void CProperty::set(const CColor      &value) { set(CValue(value)); }
+void CProperty::set(const std::string &value) { set(CValue(value, storage())); }
+void CProperty::set(const int         &value) { set(CValue(value, storage())); }
+void CProperty::set(const double      &value) { set(CValue(value, storage())); }
+void CProperty::set(const bool        &value) { set(CValue(value, storage())); }
+void CProperty::set(const CColor      &value) { set(CValue(value, storage())); }
 void CProperty::set(const CValue      &value)
 {
   // HA_LOG_NFO("New value: " << value.asString());

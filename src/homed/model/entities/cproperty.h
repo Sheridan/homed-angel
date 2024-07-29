@@ -41,7 +41,7 @@ public:
   explicit CProperty(const std::string &name, CDevice *pDevice, CEndpoint *pEndpoint);
   virtual ~CProperty();
 
-  const CValue &last() const;
+  const CValue     &last() const;
   const std::string type() const;
   CValues history();
   CStorage *storage();
@@ -62,6 +62,8 @@ private:
   CStorage *m_storage;
   CDevice *m_parentDevice;
   CEndpoint *m_parentEndpoint;
+
+
 };
 
 

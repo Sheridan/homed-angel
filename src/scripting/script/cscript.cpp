@@ -58,8 +58,8 @@ void CScript::run()
       }
       if(!m_propertyUpdates.empty())
       {
-        callPropertyChanged(m_propertyUpdates.front());
-        m_propertyUpdates.pop();
+          callPropertyChanged(m_propertyUpdates.front());
+          m_propertyUpdates.pop();
       }
       HA_ST->sleep();
     }
@@ -77,7 +77,7 @@ void CScript::queueSimpleFunctionCall(const std::string &method)
   m_timerShoots.push(STimerShoot(method));
 }
 
-void CScript::callPropertyChanged(const SPropertyUpdate &propertyUpdate)
+void CScript::callPropertyChanged(SPropertyUpdate &propertyUpdate)
 {
   std::string method = "void " + propertyUpdate.method + "(CProperty @property)";
   HA_LOG_DBG_SCRIPT("Calling method '" << method << "' from " << name());

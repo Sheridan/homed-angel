@@ -6,6 +6,7 @@
 #include <deque>
 #include <mutex>
 #include <shared_mutex>
+// #include <memory>
 
 namespace ha
 {
@@ -47,6 +48,7 @@ private:
   std::deque<CValue> m_history;
   std::vector<CObserver> m_observers;
   CProperty *m_parentProperty;
+  CValue *m_emptyValue;
 
   void callObservers();
 
@@ -56,9 +58,9 @@ private:
 template <typename T>
 inline void CStorage::setValue(const T &value)
 {
-  HA_LOG_DBG_INCOMING("Incoming value " << value);
+  HA_LOG_DBG_INCOMING(property()->device()->name() << ":" << property()->name() << " incoming value " << value);
   std::unique_lock lock(m_mutex);
-  m_history.emplace_front(CValue(value));
+  m_history.emplace_front(value, this);
   if (m_history.size() > m_historySize) { m_history.pop_back(); }
   lock.unlock();
   callObservers();

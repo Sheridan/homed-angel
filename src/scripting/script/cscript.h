@@ -42,7 +42,7 @@ private:
   std::queue<SPropertyUpdate> m_propertyUpdates;
   std::queue<STimerShoot> m_timerShoots;
   void callMethod(const std::string &method);
-  void callPropertyChanged(const SPropertyUpdate &propertyUpdate);
+  void callPropertyChanged(SPropertyUpdate &propertyUpdate);
   void callTimerShoot(const STimerShoot &timerShoot);
 
 };

@@ -47,7 +47,7 @@ std::string CScriptEnvironment::content()
                        (std::istreambuf_iterator<char>()    ) );
 }
 
-std::string CScriptEnvironment::extractName(const std::filesystem::path& file)
+std::string CScriptEnvironment::extractName(const std::filesystem::path & file)
 {
   std::filesystem::path relative_path = std::filesystem::relative(file, HA_ST->config()->scriptingLocation());
   relative_path = relative_path.parent_path() / relative_path.stem();
@@ -67,7 +67,7 @@ std::string CScriptEnvironment::extractName(const std::filesystem::path& file)
 
 void CScriptEnvironment::messageCallback(const asSMessageInfo *msg)
 {
-                                     const char* type = "err";
+                                     const char * type = "err";
        if (msg->type == asMSGTYPE_WARNING)     { type = "wrn"; }
   else if (msg->type == asMSGTYPE_INFORMATION) { type = "inf"; }
   HA_LOG_SCRIPT(type, msg->section << " (" << msg->row << ", " << msg->col << ") : " << msg->message);
@@ -109,11 +109,11 @@ void CScriptEnvironment::registerBase()
 void CScriptEnvironment::registerLogger()
 {
   HA_AS_CLASS_MANAGED(ha::scripting::helpers, CLogger);
-  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, dbg, void, (const std::string &), "void", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, nfo, void, (const std::string &), "void", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, wrn, void, (const std::string &), "void", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, err, void, (const std::string &), "void", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, cry, void, (const std::string &), "void", "(const string &in)",      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, dbg, void, (const std::string &in),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, nfo, void, (const std::string &in),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, wrn, void, (const std::string &in),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, err, void, (const std::string &in),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, cry, void, (const std::string &in),      );
 }
 
 void CScriptEnvironment::registerEnumerations()
@@ -186,169 +186,173 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_MANAGED(ha::datetime, CAstronomical);
 
   // CColor
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, "()"                   , (                                           ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, "(uint8, uint8, uint8)", (unsigned char, unsigned char, unsigned char));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, "(const int &in)"      , (const int &                                ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, "(const string &in)"   , (const std::string &                        ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, "(const CColor &in)"   , (const ha::homed::CColor &                  ));
-  HA_AS_CLASS_METHOD(ha::homed, CColor, R          , unsigned char, (), "uint8" , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CColor, G          , unsigned char, (), "uint8" , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CColor, B          , unsigned char, (), "uint8" , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CColor, asHexString, std::string  , (), "string", "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CColor, asInt      , int          , (), "int"   , "()", const);
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (                                           ));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (unsigned char, unsigned char, unsigned char));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const int &                                ));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const std::string &                        ));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const ha::homed::CColor &                  ));
+  HA_AS_CLASS_METHOD(ha::homed, CColor, R          , unsigned char, (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CColor, G          , unsigned char, (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CColor, B          , unsigned char, (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CColor, asHexString, std::string  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CColor, asInt      , int          , (), const);
 
   // CValue
-  HA_AS_CLASS_METHOD(ha::homed, CValue, asString , const std::string             , (), "const string"    , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, asInt    , const int                     , (), "const int"       , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, asDouble , const double                  , (), "const double"    , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, asBool   , const bool                    , (), "const bool"      , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, asColor  , const ha::homed::CColor       , (), "const CColor @"  , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, isString , bool                          , (), "bool"            , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, isInt    , bool                          , (), "bool"            , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, isDouble , bool                          , (), "bool"            , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, isBool   , bool                          , (), "bool"            , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, isColor  , bool                          , (), "bool"            , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CValue, timestamp, const ha::datetime::CDateTime&, (), "const CDateTime&", "()", const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, asString , const std::string &            , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, asInt    , const int &                    , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, asDouble , const double &                 , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, asBool   , const bool &                   , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, asColor  , const ha::homed::CColor &      , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, isString , bool                           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, isInt    , bool                           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, isDouble , bool                           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, isBool   , bool                           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, isColor  , bool                           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, timestamp, const ha::datetime::CDateTime &, (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CValue, storage  , ha::homed::CStorage *          , (), const);
 
   RegisterVector<std::string>("CValues", "CValue", m_engine);
 
   // CStorage
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, count   , size_t                  , (              ), "uint16"     , "()"    , const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, empty   , bool                    , (              ), "bool"       , "()"    , const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, clear   , void                    , (              ), "void"       , "()"    ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, list    , ha::homed::CValues      , (              ), "CValues"    , "()"    , const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, type    , const std::string       , (              ), "string"     , "()"    , const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, last    , const ha::homed::CValue&, (              ), "CValue &"   , "()"    , const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, at      , const ha::homed::CValue&, (const size_t &), "CValue &"   , "(uint)", const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty*   , (              ), "CProperty @", "()"    ,      );
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, count   , size_t                   , (              ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, empty   , bool                     , (              ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, clear   , void                     , (              ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, list    , ha::homed::CValues       , (              ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, type    , const std::string        , (              ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, last    , const ha::homed::CValue &, (              ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, at      , const ha::homed::CValue &, (const size_t &), const);
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty *   , (              ),      );
 
   // CProperty
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, name     , const std::string&                  , (                                                   ), "const string &"            , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly , const bool&                         , (                                                   ), "const bool &"              , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType, const ha::homed::EPropertyValueType&, (                                                   ), "const EPropertyValueType &", "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate, const ha::utils::CStrings&          , (                                                   ), "const CStrings &"          , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, min      , const double&                       , (                                                   ), "const double &"            , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, max      , const double&                       , (                                                   ), "const double &"            , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, step     , const double&                       , (                                                   ), "const double &"            , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage  , ha::homed::CStorage*                , (                                                   ), "CStorage @"                , "()"                                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, last     , const ha::homed::CValue&            , (                                                   ), "const CValue &"            , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, type     , const std::string                   , (                                                   ), "const string"              , "()"                                                  , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, device   , ha::homed::CDevice*                 , (                                                   ), "CDevice @"                 , "()"                                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint , ha::homed::CEndpoint*               , (                                                   ), "CEndpoint @"               , "()"                                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe, void                                , (const std::string&, const std::string&, const bool&), "void"                      , "(const string &in, const string &in, const bool &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const std::string&                                 ), "void"                      , "(const string &in)"                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const int&                                         ), "void"                      , "(const int &in)"                                     ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const double&                                      ), "void"                      , "(const double &in)"                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const bool&                                        ), "void"                      , "(const bool &in)"                                    ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const ha::homed::CColor&                           ), "void"                      , "(const CColor &in)"                                  ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const ha::homed::CValue&                           ), "void"                      , "(const CValue &in)"                                  ,      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, name     , const std::string &                  , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly , const bool &                         , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType, const ha::homed::EPropertyValueType &, (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate, const ha::utils::CStrings &          , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, min      , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, max      , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, step     , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage  , ha::homed::CStorage *                , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, last     , const ha::homed::CValue &            , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, type     , const std::string                    , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, device   , ha::homed::CDevice *                 , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint , ha::homed::CEndpoint *               , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe, void                                 , (const std::string &, const std::string &, const bool &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const std::string &                                   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const int &                                           ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const double &                                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const bool &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const ha::homed::CColor &                             ),      );
+  // HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const ha::homed::CValue &                             ),      );
 
   // CProperties
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, empty   , const bool           , (                      ), "const bool" , "()"                , const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, list    , ha::utils::CStrings  , (                      ), "CStrings"   , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, exists  , bool                 , (const std::string &   ), "bool"       , "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, get     , ha::homed::CProperty*, (const std::string &   ), "CProperty @", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, get     , ha::homed::CProperty*, (const unsigned short &), "CProperty @", "(const uint16 &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, size    , unsigned short       , (                      ), "uint16"     , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, device  , ha::homed::CDevice*  , (                      ), "CDevice @"  , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperties, endpoint, ha::homed::CEndpoint*, (                      ), "CEndpoint @", "()"                ,      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, empty   , const bool            , (                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, list    , ha::utils::CStrings   , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, exists  , bool                  , (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, get     , ha::homed::CProperty *, (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, get     , ha::homed::CProperty *, (const unsigned short &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, size    , unsigned short        , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, device  , ha::homed::CDevice *  , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperties, endpoint, ha::homed::CEndpoint *, (                      ),      );
 
   // CEndpoint
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, name      , const std::string&     , (), "const string &", "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, properties, ha::homed::CProperties*, (), "CProperties @" , "()",      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, device    , ha::homed::CDevice*    , (), "CDevice @"     , "()",      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, name      , const std::string &     , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, properties, ha::homed::CProperties *, (),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, device    , ha::homed::CDevice *    , (),      );
 
   // CEndpoints
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, empty   , const bool           , (                      ), "const bool" , "()"                , const);
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, list    , ha::utils::CStrings  , (                      ), "CStrings"   , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, exists  , bool                 , (const std::string &   ), "bool"       , "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, get     , ha::homed::CEndpoint*, (const std::string &   ), "CEndpoint @", "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, get     , ha::homed::CEndpoint*, (const unsigned short &), "CEndpoint @", "(const uint16 &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, size    , unsigned short       , (                      ), "uint16"     , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, device  , ha::homed::CDevice*  , (                      ), "CDevice @"  , "()"                ,      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, empty   , const bool            , (                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, list    , ha::utils::CStrings   , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, exists  , bool                  , (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, get     , ha::homed::CEndpoint *, (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, get     , ha::homed::CEndpoint *, (const unsigned short &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, size    , unsigned short        , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoints, device  , ha::homed::CDevice *  , (                      ),      );
 
   // CDevice
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, name             , const std::string&           , (), "const string &"        , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, type             , const ha::homed::EDeviceType&, (), "const EDeviceType &"   , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, firmware         , const std::string&           , (), "const string &"        , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, manufacturerName , const std::string&           , (), "const string &"        , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, modelName        , const std::string&           , (), "const string &"        , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, description      , const std::string&           , (), "const string &"        , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, interviewFinished, const bool&                  , (), "const bool &"          , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, supported        , const bool&                  , (), "const bool &"          , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, active           , const bool&                  , (), "const bool &"          , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, cloud            , const bool&                  , (), "const bool &"          , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, discovery        , const bool&                  , (), "const bool &"          , "()", const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, properties       , ha::homed::CProperties*      , (), "CProperties @"         , "()",      );
-  HA_AS_CLASS_METHOD(ha::homed, CDevice, endpoints        , ha::homed::CEndpoints*       , (), "CEndpoints @"          , "()",      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, name             , const std::string &           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, type             , const ha::homed::EDeviceType &, (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, firmware         , const std::string &           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, manufacturerName , const std::string &           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, modelName        , const std::string &           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, description      , const std::string &           , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, interviewFinished, const bool &                  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, supported        , const bool &                  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, active           , const bool &                  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, cloud            , const bool &                  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, discovery        , const bool &                  , (), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, properties       , ha::homed::CProperties *      , (),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, endpoints        , ha::homed::CEndpoints *       , (),      );
 
   // CDevices
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, empty   , const bool                   , (                      ), "const bool"         , "()"                , const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, type    , const ha::homed::EDeviceType&, (                      ), "const EDeviceType &", "()"                , const);
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, list    , ha::utils::CStrings          , (                      ), "CStrings"           , "()"                ,      );
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, exists  , bool                         , (const std::string &   ), "bool"               , "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, get     , ha::homed::CDevice*          , (const std::string &   ), "CDevice @"          , "(const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, get     , ha::homed::CDevice*          , (const unsigned short &), "CDevice @"          , "(const uint16 &in)",      );
-  HA_AS_CLASS_METHOD(ha::homed, CDevices, size    , unsigned short               , (                      ), "uint16"             , "()"                ,      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, empty   , const bool                    , (                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, type    , const ha::homed::EDeviceType &, (                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, list    , ha::utils::CStrings           , (                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, exists  , bool                          , (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, get     , ha::homed::CDevice *          , (const std::string &   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, get     , ha::homed::CDevice *          , (const unsigned short &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevices, size    , unsigned short                , (                      ),      );
 
   // CHomed
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, devices , ha::homed::CDevices* , (const ha::homed::EDeviceType &                                                               ), "CDevices @" , "(const EDeviceType &in)                                                      ",      );
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, device  , ha::homed::CDevice*  , (const std::string &                                                                          ), "CDevice @"  , "(const string &in)                                                           ",      );
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, device  , ha::homed::CDevice*  , (const ha::homed::EDeviceType &, const std::string &                                          ), "CDevice @"  , "(const EDeviceType &in, const string &in)                                    ",      );
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, endpoint, ha::homed::CEndpoint*, (const ha::homed::EDeviceType &, const std::string &, const std::string &                     ), "CEndpoint @", "(const EDeviceType &in, const string &in, const string &in)                  ",      );
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, property, ha::homed::CProperty*, (const ha::homed::EDeviceType &, const std::string &, const std::string &                     ), "CProperty @", "(const EDeviceType &in, const string &in, const string &in)                  ",      );
-  HA_AS_CLASS_METHOD(ha::homed, CHomed, property, ha::homed::CProperty*, (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &), "CProperty @", "(const EDeviceType &in, const string &in, const string &in, const string &in)",      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, devices , ha::homed::CDevices * , (const ha::homed::EDeviceType &                                                               ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, device  , ha::homed::CDevice *  , (const std::string &                                                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, device  , ha::homed::CDevice *  , (const ha::homed::EDeviceType &, const std::string &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, endpoint, ha::homed::CEndpoint *, (const ha::homed::EDeviceType &, const std::string &, const std::string &                     ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, property, ha::homed::CProperty *, (const ha::homed::EDeviceType &, const std::string &, const std::string &                     ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CHomed, property, ha::homed::CProperty *, (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &),      );
 
   // CTimerContinuous
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerContinuous, "(const string &in, const string &in, const int64 &in)", (const std::string &, const std::string &, const int64_t &));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerContinuous", "CTimerContinuous &opAssign(const CTimerContinuous &in)", asMETHODPR(ha::datetime::CTimerContinuous, operator=, (const ha::datetime::CTimerContinuous&), ha::datetime::CTimerContinuous&), asCALL_THISCALL));
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, start, void, (), "void", "()",      );
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, stop , void, (), "void", "()",      );
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, reset, void, (), "void", "()",      );
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerContinuous, (const std::string &, const std::string &, const int64_t &));
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, operator=, ha::datetime::CTimerContinuous &, (const ha::datetime::CTimerContinuous &),     );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, start, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, stop , void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, reset, void, (),      );
 
   // CTimerOneshot
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerOneshot, "(const string &in, const string &in, const int64 &in)", (const std::string &, const std::string &, const int64_t &));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimerOneshot", "CTimerOneshot &opAssign(const CTimerOneshot &in)", asMETHODPR(ha::datetime::CTimerOneshot, operator=, (const ha::datetime::CTimerOneshot&), ha::datetime::CTimerOneshot&), asCALL_THISCALL));
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, start, void, (), "void", "()",      );
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, stop , void, (), "void", "()",      );
-  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, reset, void, (), "void", "()",      );
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerOneshot, (const std::string &, const std::string &, const int64_t &));
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, operator=, ha::datetime::CTimerOneshot &, (const ha::datetime::CTimerOneshot &),     );
+  // HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, operator=, ha::datetime::CTimerOneshot &, (const ha::datetime::CTimerOneshot &), "void", "()",      );
+
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, start, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, stop , void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, reset, void, (),      );
 
   // CDateTime
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, "()"                                 , (                                 ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, "(int)"                              , (int64_t                          ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, "(int, int, int, int, int, int, int)", (int, int, int, int, int, int, int));
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asString       , std::string, (const std::string &), "string", "(const string &in)", const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asUnixTimestamp, std::time_t, (                   ), "int64" , "()"                , const);
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "CDateTime@ opAdd(const CTimeInterval &in) const", asMETHOD(ha::datetime::CDateTime, operator+), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "CDateTime@ opSub(const CTimeInterval &in) const", asMETHOD(ha::datetime::CDateTime, operator-), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opLess(const CDateTime &in) const"         , asMETHOD(ha::datetime::CDateTime, operator<), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opLessEqual(const CDateTime &in) const"    , asMETHOD(ha::datetime::CDateTime, operator<=), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opGreater(const CDateTime &in) const"      , asMETHOD(ha::datetime::CDateTime, operator>), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opGreaterEqual(const CDateTime &in) const" , asMETHOD(ha::datetime::CDateTime, operator>=), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opEquals(const CDateTime &in) const"       , asMETHOD(ha::datetime::CDateTime, operator==), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CDateTime", "bool opNotEquals(const CDateTime &in) const"    , asMETHOD(ha::datetime::CDateTime, operator!=), asCALL_THISCALL));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (int64_t                          ));
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (int, int, int, int, int, int, int));
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asString       , std::string, (const std::string &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asUnixTimestamp, std::time_t, (                   ), const);
+
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator+ , ha::datetime::CDateTime, (const ha::datetime::CTimeInterval &), const);
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator- , ha::datetime::CDateTime, (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator< , bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator<=, bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator> , bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator>=, bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator==, bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator!=, bool                   , (const ha::datetime::CDateTime &    ), const);
 
   // CTimeInterval
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimeInterval, "(double)", (double));
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, asString, std::string, (), "string", "()", const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, seconds , double     , (), "double", "()", const);
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimeInterval, (double));
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, asString, std::string, (), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, seconds , double     , (), const);
 
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "CTimeInterval@ opAdd(const CTimeInterval &in) const", asMETHOD(ha::datetime::CTimeInterval, operator+), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "CTimeInterval@ opSub(const CTimeInterval &in) const", asMETHOD(ha::datetime::CTimeInterval, operator-), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opLess(const CTimeInterval &in) const"        , asMETHOD(ha::datetime::CTimeInterval, operator<), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opLessEqual(const CTimeInterval &in) const"   , asMETHOD(ha::datetime::CTimeInterval, operator<=), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opGreater(const CTimeInterval &in) const"     , asMETHOD(ha::datetime::CTimeInterval, operator>), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opGreaterEqual(const CTimeInterval &in) const", asMETHOD(ha::datetime::CTimeInterval, operator>=), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opEquals(const CTimeInterval &in) const"      , asMETHOD(ha::datetime::CTimeInterval, operator==), asCALL_THISCALL));
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CTimeInterval", "bool opNotEquals(const CTimeInterval &in) const"   , asMETHOD(ha::datetime::CTimeInterval, operator!=), asCALL_THISCALL));
+  // HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator+ , ha::datetime::CTimeInterval, (const ha::datetime::CTimeInterval &), const);
+  // HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator- , ha::datetime::CTimeInterval, (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator< , bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator<=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator> , bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator>=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator==, bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator!=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
 
   // CSunTracker
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                     , (const ha::datetime::ESunTrackerEvent&, const std::string&, const std::string&), "void"       , "(const ESunTrackerEvent &in, const string &in, const string &in)",      );
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, getEventTime, ha::datetime::CDateTime *, (const ha::datetime::ESunTrackerEvent&                                        ), "CDateTime @", "(const ESunTrackerEvent &in)"                                    ,      );
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, circumpolar , bool                     , (                                                                             ), "bool"       , "()"                                                              ,      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                     , (const ha::datetime::ESunTrackerEvent &, const std::string &, const std::string &),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, getEventTime, ha::datetime::CDateTime *, (const ha::datetime::ESunTrackerEvent &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, circumpolar , bool                     , (                                                                                ),      );
 
   // CAstronomical
-  HA_AS_CLASS_METHOD(ha::datetime, CAstronomical, sun, ha::datetime::CSunTracker *, (), "CSunTracker @", "()",      );
+  HA_AS_CLASS_METHOD(ha::datetime, CAstronomical, sun, ha::datetime::CSunTracker *, (),      );
 }
 
 void CScriptEnvironment::registerVariables()

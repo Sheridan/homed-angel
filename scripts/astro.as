@@ -1,3 +1,4 @@
+bool do_it = true;
 
 CTimerContinuous @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);
 
@@ -38,7 +39,10 @@ void onTimer()
 
 void initialize()
 {
-  logger.nfo(script_name + " init");
-  onTimer();
-  timer_continuous.start();
+  if(do_it)
+  {
+    logger.nfo(script_name + " init");
+    onTimer();
+    timer_continuous.start();
+  }
 }

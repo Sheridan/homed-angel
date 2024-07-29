@@ -34,21 +34,20 @@ ha::datetime::CTimeInterval* CreateCTimeInterval(double seconds) { return new ha
 #define HA_AS_ENUM_VALUE(_namespace,_enumname,_enumvalue) HA_AS_ACCERT_CALL(m_engine->RegisterEnumValue(#_enumname, #_enumvalue, _namespace::_enumname::_enumvalue));
 
 // classes
-#define HA_AS_CLASS_FACTORY_CONSTRUCTOR(_namespace,_classname,_as_params,_params) \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_FACTORY, #_classname "@ f" _as_params , asFUNCTIONPR(Create##_classname, _params, _namespace::_classname *), asCALL_CDECL));
+#define HA_AS_CLASS_FACTORY_CONSTRUCTOR(_namespace,_classname,_params) \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_FACTORY, m_converter(#_classname "@ f" #_params).c_str(), asFUNCTIONPR(Create##_classname, _params, _namespace::_classname *), asCALL_CDECL));
 
 #define HA_CLASS_FACTORY_METHODS(_namespace,_classname) \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_ADDREF     , "void f()"      , asMETHOD(_namespace::_classname, addRef     ), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_RELEASE    , "void f()"      , asMETHOD(_namespace::_classname, release    ), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_GETREFCOUNT, "int f()"       , asMETHOD(_namespace::_classname, getRefCount), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_SETGCFLAG  , "void f()"      , asMETHOD(_namespace::_classname, setGCFlag  ), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_GETGCFLAG  , "bool f()"      , asMETHOD(_namespace::_classname, getGCFlag  ), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_ENUMREFS   , "void f(int&in)", asMETHOD(_namespace::_classname, enumRefs   ), asCALL_THISCALL)); \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_RELEASEREFS, "void f(int&in)", asMETHOD(_namespace::_classname, releaseRefs), asCALL_THISCALL));
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_ADDREF     , "void f()"       , asMETHOD(_namespace::_classname, addRef     ), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_RELEASE    , "void f()"       , asMETHOD(_namespace::_classname, release    ), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_GETREFCOUNT, "int  f()"       , asMETHOD(_namespace::_classname, getRefCount), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_SETGCFLAG  , "void f()"       , asMETHOD(_namespace::_classname, setGCFlag  ), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_GETGCFLAG  , "bool f()"       , asMETHOD(_namespace::_classname, getGCFlag  ), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_ENUMREFS   , "void f(int &in)", asMETHOD(_namespace::_classname, enumRefs   ), asCALL_THISCALL)); \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_RELEASEREFS, "void f(int &in)", asMETHOD(_namespace::_classname, releaseRefs), asCALL_THISCALL));
 
-// HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod("CProperties", "CProperty@ get(const uint16 &in)"         , asMETHODPR(ha::homed::CProperties, get      , (const unsigned short &), ha::homed::CProperty*         ), asCALL_THISCALL));
-#define HA_AS_CLASS_METHOD(_namespace,_classname,_methodname,_return,_params,_as_return,_as_params,_method_const) \
-  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod(#_classname, _as_return " " #_methodname _as_params " " #_method_const, asMETHODPR(_namespace::_classname, _methodname, _params _method_const, _return), asCALL_THISCALL));
+#define HA_AS_CLASS_METHOD(_namespace,_classname,_methodname,_return,_params,_method_const) \
+  HA_AS_ACCERT_CALL(m_engine->RegisterObjectMethod(#_classname, m_converter(#_return " " #_methodname #_params " " #_method_const).c_str(), asMETHODPR(_namespace::_classname, _methodname, _params _method_const, _return), asCALL_THISCALL));
 
 #define HA_AS_CLASS_MANAGED(_namespace,_classname) HA_AS_ACCERT_CALL(m_engine->RegisterObjectType(#_classname, sizeof(_namespace::_classname), asOBJ_REF | asOBJ_NOCOUNT));
 #define HA_AS_CLASS_STANDALONE(_namespace,_classname) \

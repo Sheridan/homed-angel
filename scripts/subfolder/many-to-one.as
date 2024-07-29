@@ -13,7 +13,11 @@ void allEvents(CProperty @property)
 
 void toggle(CProperty @status, CProperty @color)
 {
-  if(status.last().asString() == "off")
+  doLog(status, "status");
+  doLog(color, "color");
+  if (status.storage().empty()) { logger.err("status is empty!"); }
+  if (color.storage().empty()) { logger.err("color is empty!"); }
+  if (status.last().asString() == "off")
   {
     CColor clr("random");
     logger.nfo("color: " + clr.asHexString());
@@ -27,10 +31,11 @@ void toggle(CProperty @status, CProperty @color)
 }
 void changedOnly(CProperty @property)
 {
-  logger.wrn(property.last().timestamp().asString("%Y.%m.%d %H:%M:%S"));
+  if (property.storage().empty()) { logger.err("Storage is empty!"); return; }
+  // logger.wrn(property.last().timestamp().asString("%Y.%m.%d %H:%M:%S"));
   doLog(property, "changed");
   toggle(homed.property(dtZigbee, "Informer_One", "1", "status"), homed.property(dtZigbee, "Informer_One", "1", "color"));
-  toggle(homed.property(dtZigbee, "LedRGB_Showcase", "status"), homed.property(dtZigbee, "LedRGB_Showcase", "color"));
+  toggle(homed.property(dtZigbee, "LedRGB_Showcase"  , "status"), homed.property(dtZigbee, "LedRGB_Showcase"  , "color"));
 }
 
 void initialize()
@@ -46,9 +51,9 @@ void initialize()
     homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "lastSeen"   ).subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "Temperature_HallOutDoor"     , "temperature").subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "HumanDetector_BedStairs"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-    homed.property(dtZigbee, "HumanDetector_BedStairs"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
-    homed.property(dtZigbee, "HumanDetector_BathRoom"     , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-    homed.property(dtZigbee, "HumanDetector_BathRoom"     , "lastSeen"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BedStairs"     , "lastSeen"   ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BathRoom"      , "occupancy"  ).subscribe(script_name, "changedOnly", true);
+    homed.property(dtZigbee, "HumanDetector_BathRoom"      , "lastSeen"   ).subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "DoorSensor_Hall"             , "contact"    ).subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "HumanDetector_Kitchen"       , "occupancy"  ).subscribe(script_name, "changedOnly", true);
   }

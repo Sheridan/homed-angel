@@ -10,7 +10,7 @@ namespace mqtt
 СMqttClient::СMqttClient()
     : m_client(nullptr),
       m_connectionOptions(nullptr),
-      m_publishInterval(500)
+      m_publishInterval(HA_ST->config()->mqttPublishInterval())
 {}
 
 СMqttClient::~СMqttClient()
@@ -79,7 +79,7 @@ void СMqttClient::publishWorker()
     std::unique_lock<std::mutex> lock(m_publishMutex);
     bool qEmpty = m_publishMessages.empty();
     lock.unlock();
-    if(qEmpty) { HA_ST->sleep(HA_DEFAULT_SLEEP_MS/2); }
+    if(qEmpty) { HA_ST->sleep(HA_DEFAULT_SLEEP_MS/10); }
     else
     {
       std::unique_lock<std::mutex> lock(m_publishMutex);

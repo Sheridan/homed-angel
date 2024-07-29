@@ -41,11 +41,13 @@ public:
 
   void load(const std::string &filename);
 
-  HA_CONF_OPTION(mqttServer     , std::string, std::initializer_list<std::string>({ "mqtt"     , "server"               }), asString, "localhost");
-  HA_CONF_OPTION(mqttPort       , int        , std::initializer_list<std::string>({ "mqtt"     , "port"                 }), asInt   , 1833       );
-  HA_CONF_OPTION(mqttUser       , std::string, std::initializer_list<std::string>({ "mqtt"     , "user"                 }), asString, "exporter" );
-  HA_CONF_OPTION(mqttPassword   , std::string, std::initializer_list<std::string>({ "mqtt"     , "password"             }), asString, "exporter" );
-  HA_CONF_OPTION(mqttHomedTopic , std::string, std::initializer_list<std::string>({ "mqtt"     , "homed_root_topic"     }), asString, "homed"    );
+  HA_CONF_OPTION(mqttServer         , std::string, std::initializer_list<std::string>({ "mqtt"     , "server"               }), asString, "localhost");
+  HA_CONF_OPTION(mqttPort           , int        , std::initializer_list<std::string>({ "mqtt"     , "port"                 }), asInt   , 1833       );
+  HA_CONF_OPTION(mqttUser           , std::string, std::initializer_list<std::string>({ "mqtt"     , "user"                 }), asString, "exporter" );
+  HA_CONF_OPTION(mqttPassword       , std::string, std::initializer_list<std::string>({ "mqtt"     , "password"             }), asString, "exporter" );
+  HA_CONF_OPTION(mqttHomedTopic     , std::string, std::initializer_list<std::string>({ "mqtt"     , "homed_root_topic"     }), asString, "homed"    );
+  HA_CONF_OPTION(mqttPublishInterval, int        , std::initializer_list<std::string>({ "mqtt"     , "publish_interval_ms"  }), asInt   , 50         );
+
   HA_CONF_OPTION(historyCount   , int        , std::initializer_list<std::string>({ "scripting", "values_history_count" }), asInt   , 2          );
 
   HA_CONF_OPTION(latitude , double, std::initializer_list<std::string>({ "astro", "coordinates", "latitude" }), asDouble, 0);
