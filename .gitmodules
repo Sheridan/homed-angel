@@ -1,0 +1,3 @@
+[submodule "external/croncpp"]
+	path = external/croncpp
+	url = https://github.com/mariusbancila/croncpp.git

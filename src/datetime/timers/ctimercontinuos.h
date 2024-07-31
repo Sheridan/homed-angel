@@ -14,7 +14,8 @@ public:
   virtual ~CTimerContinuous();
 
 private:
-  bool triggered() final;
+  std::chrono::milliseconds triggered() final;
+  std::chrono::milliseconds m_interval;
 };
 
 }

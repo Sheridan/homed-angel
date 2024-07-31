@@ -57,3 +57,10 @@
 #else // HA_CVALUE_DEBUG
   #define HA_LOG_DBG_CVALUE(_what)
 #endif // HA_CVALUE_DEBUG
+
+// #define HA_TIMER_DEBUG
+#ifdef HA_TIMER_DEBUG
+  #define HA_LOG_DBG_TIMER(_what) HA_LOG_DBG(_what)
+#else // HA_TIMER_DEBUG
+  #define HA_LOG_DBG_TIMER(_what)
+#endif // HA_TIMER_DEBUG

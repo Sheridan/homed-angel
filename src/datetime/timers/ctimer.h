@@ -4,6 +4,8 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#include "datetime/entities/ctimeinterval.h"
+#include "datetime/entities/cdatetime.h"
 
 namespace ha
 {
@@ -13,7 +15,7 @@ namespace datetime
 class CTimer
 {
 public:
-  explicit CTimer(const std::string &scriptName, const std::string &functionName, const std::chrono::milliseconds &interval);
+  explicit CTimer(const std::string &scriptName, const std::string &functionName);
   virtual ~CTimer();
 
   void start();
@@ -22,11 +24,14 @@ public:
 
   const std::string &scriptName() const { return m_scriptName; }
   const std::string &functionName() const { return m_functionName; }
+  const CTimeInterval &timeInterval() const { return m_TInterval; }
+  const CDateTime     &nextTrigger() const { return m_nextTrigger; }
 
   CTimer &operator=(const CTimer &other);
 
 protected:
-  virtual bool triggered() = 0;
+  virtual std::chrono::milliseconds triggered() = 0;
+  void setInterval(const std::chrono::milliseconds &interval);
 
 private:
   std::string m_scriptName;
@@ -37,6 +42,9 @@ private:
   std::thread m_thread;
   std::mutex m_mutex;
   std::condition_variable m_cv;
+
+  CTimeInterval m_TInterval;
+  CDateTime     m_nextTrigger;
 
   void run();
   void finishThread();

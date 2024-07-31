@@ -1,5 +1,5 @@
 #include "../includes/include.as"
-bool do_it = true;
+bool do_it = false;
 
 void doLog(CProperty @property, string caption)
 {

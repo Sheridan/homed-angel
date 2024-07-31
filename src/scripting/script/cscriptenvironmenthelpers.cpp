@@ -1,6 +1,7 @@
 #include "homed/value/ccolor.h"
 #include "datetime/timers/ctimercontinuos.h"
 #include "datetime/timers/ctimeroneshoot.h"
+#include "datetime/timers/ctimercron.h"
 #include "st.h"
 
 namespace ha
@@ -20,6 +21,10 @@ ha::datetime::CTimerContinuous* CreateCTimerContinuous(const std::string &script
 
 // CTimerOneshot
 ha::datetime::CTimerOneshot* CreateCTimerOneshot(const std::string &scriptName, const std::string &functionName, const int64_t &interval) { return new ha::datetime::CTimerOneshot(scriptName, functionName, static_cast<std::chrono::milliseconds>(interval)); }
+
+// CTimerCron
+ha::datetime::CTimerCron* CreateCTimerCron(const std::string &scriptName, const std::string &functionName, const std::string& schedule) { return new ha::datetime::CTimerCron(scriptName, functionName, schedule); }
+
 
 // CDateTime
 ha::datetime::CDateTime* CreateCDateTime()                                                                                { return new ha::datetime::CDateTime(); }
@@ -53,5 +58,6 @@ ha::datetime::CTimeInterval* CreateCTimeInterval(double seconds) { return new ha
 #define HA_AS_CLASS_STANDALONE(_namespace,_classname) \
   HA_AS_ACCERT_CALL(m_engine->RegisterObjectType(#_classname, sizeof(_namespace::_classname), asOBJ_REF | asOBJ_GC)); \
   HA_CLASS_FACTORY_METHODS(_namespace,_classname)
+
 }
 }

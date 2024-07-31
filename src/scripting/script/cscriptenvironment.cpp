@@ -172,6 +172,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_STANDALONE(ha::datetime, CDateTime       );
   HA_AS_CLASS_STANDALONE(ha::datetime, CTimerContinuous);
   HA_AS_CLASS_STANDALONE(ha::datetime, CTimerOneshot   );
+  HA_AS_CLASS_STANDALONE(ha::datetime, CTimerCron      );
 
   HA_AS_CLASS_MANAGED(ha::homed   , CValue       );
   HA_AS_CLASS_MANAGED(ha::homed   , CStorage     );
@@ -306,15 +307,27 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, start, void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, stop , void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, reset, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, timeInterval, const ha::datetime::CTimeInterval&, (), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, nextTrigger, const ha::datetime::CDateTime&, (), const);
 
   // CTimerOneshot
   HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerOneshot, (const std::string &, const std::string &, const int64_t &));
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, operator=, ha::datetime::CTimerOneshot &, (const ha::datetime::CTimerOneshot &),     );
-  // HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, operator=, ha::datetime::CTimerOneshot &, (const ha::datetime::CTimerOneshot &), "void", "()",      );
-
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, start, void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, stop , void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, reset, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, timeInterval, const ha::datetime::CTimeInterval&, (), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, nextTrigger, const ha::datetime::CDateTime&, (), const);
+
+  // CTimerCron
+  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerCron, (const std::string &, const std::string &, const std::string &));
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, operator=, ha::datetime::CTimerCron &, (const ha::datetime::CTimerCron &),     );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, start, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, stop , void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, reset, void, (),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, timeInterval, const ha::datetime::CTimeInterval&, (), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, nextTrigger, const ha::datetime::CDateTime&, (), const);
+
 
   // CDateTime
   HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ));

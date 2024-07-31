@@ -11,6 +11,11 @@ CTimeInterval::CTimeInterval(double seconds)
     m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
 {}
 
+CTimeInterval::CTimeInterval(const std::chrono::milliseconds &seconds)
+  : ha::scripting::CScriptObject(),
+    m_duration(seconds * 1000)
+{}
+
 CTimeInterval::~CTimeInterval() {}
 
 double CTimeInterval::seconds() const

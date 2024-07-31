@@ -12,6 +12,7 @@ class CTimeInterval : public ha::scripting::CScriptObject
 {
 public:
   explicit CTimeInterval(double seconds);
+  explicit CTimeInterval(const std::chrono::milliseconds &seconds);
   virtual ~CTimeInterval();
 
   double seconds() const;

@@ -1,6 +1,6 @@
-bool do_it = true;
+bool do_it = false;
 
-CTimerContinuous @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);
+CTimerContinuous @timer_continuous;
 
 void printEventTime(ESunTrackerEvent event, string name)
 {
@@ -41,6 +41,7 @@ void initialize()
 {
   if(do_it)
   {
+    @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);
     logger.nfo(script_name + " init");
     onTimer();
     timer_continuous.start();

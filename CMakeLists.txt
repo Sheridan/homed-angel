@@ -35,9 +35,9 @@ configure_file(
 )
 
 set(HA_HEADERS
-  angelscript/sdk/add_on/scriptarray/scriptarray.h
-  angelscript/sdk/add_on/scriptbuilder/scriptbuilder.h
-  angelscript/sdk/add_on/scriptstdstring/scriptstdstring.h
+  external/angelscript/sdk/add_on/scriptarray/scriptarray.h
+  external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.h
+  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.h
   src/configuration/ccmdoptions.h
   src/configuration/cconfiguration.h
   src/datetime/astronomical/castronomical.h
@@ -81,13 +81,15 @@ set(HA_HEADERS
   src/tools/singletone/csingletone.h
   src/utils/datetime.h
   src/utils/string.h
+  src/datetime/timers/ctimercron.h
+  external/croncpp/include/croncpp.h
   )
 
 set(HA_SOURCES
-  angelscript/sdk/add_on/scriptarray/scriptarray.cpp
-  angelscript/sdk/add_on/scriptbuilder/scriptbuilder.cpp
-  angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
-  angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
+  external/angelscript/sdk/add_on/scriptarray/scriptarray.cpp
+  external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.cpp
+  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
+  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
   src/configuration/ccmdoptions.cpp
   src/configuration/cconfiguration.cpp
   src/datetime/astronomical/castronomical.cpp
@@ -128,9 +130,12 @@ set(HA_SOURCES
   src/tools/singletone/csingletone.cpp
   src/utils/datetime.cpp
   src/utils/string.cpp
+  src/datetime/timers/ctimercron.cpp
   )
 
-include_directories(src angelscript)
+include_directories(src
+                    external/angelscript
+                    external/croncpp/include)
 
 add_executable(homed-angel
     ${HA_HEADERS}

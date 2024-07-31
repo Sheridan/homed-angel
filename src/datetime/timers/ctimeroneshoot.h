@@ -14,7 +14,7 @@ public:
   virtual ~CTimerOneshot();
 
 private:
-  bool triggered() final;
+  std::chrono::milliseconds triggered() final;
 };
 
 }
