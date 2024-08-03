@@ -1,5 +1,6 @@
 #include "homed/value/cobserver.h"
 #include "homed/model/entities/cproperty.h"
+#include "scripting/script/callers/ccallersingle.h"
 #include "st.h"
 
 namespace ha
@@ -26,7 +27,7 @@ void CObserver::call()
   if(!m_changedOnly || m_parentProperty->storage()->valueChanged())
   {
     HA_LOG_VERBOSE("Calling observer for " << m_scriptName << "->" << m_methodName);
-    HA_ST->angel()->manager()->script(m_scriptName)->queuePropertyChanged(m_methodName, m_parentProperty);
+    HA_ST->angel()->manager()->script(m_scriptName)->propertyCaller()->append(m_methodName, m_parentProperty);
   }
 }
 }

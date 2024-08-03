@@ -50,7 +50,7 @@ CValues CStorage::list() const
   result.reserve(m_history.size());
   for (const auto &item : m_history)
   {
-      result.emplace_back(item);
+    result.emplace_back(item);
   }
   return result;
 }
@@ -91,7 +91,7 @@ const CValue &CStorage::last() const
   std::shared_lock lock(m_mutex);
   if(empty())
   {
-    HA_LOG_ERR("last() is empty!");
+    HA_LOG_WRN(property()->device()->name() << ":" << property()->name() << " last() is empty!");
     return *m_emptyValue;
   }
   return m_history.front();

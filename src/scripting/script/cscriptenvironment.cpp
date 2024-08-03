@@ -67,10 +67,18 @@ std::string CScriptEnvironment::extractName(const std::filesystem::path & file)
 
 void CScriptEnvironment::messageCallback(const asSMessageInfo *msg)
 {
-                                     const char * type = "err";
-       if (msg->type == asMSGTYPE_WARNING)     { type = "wrn"; }
-  else if (msg->type == asMSGTYPE_INFORMATION) { type = "inf"; }
-  HA_LOG_SCRIPT(type, msg->section << " (" << msg->row << ", " << msg->col << ") : " << msg->message);
+  HA_LOG_SCRIPT(msgTypeToStr(msg->type), msg->section << " (" << msg->row << ", " << msg->col << "): " << msg->message);
+}
+
+const char *CScriptEnvironment::msgTypeToStr(const asEMsgType &type)
+{
+  switch (type)
+  {
+    case asEMsgType::asMSGTYPE_ERROR      : return "err";
+    case asEMsgType::asMSGTYPE_WARNING    : return "wrn";
+    case asEMsgType::asMSGTYPE_INFORMATION: return "inf";
+  }
+  return "unk";
 }
 
 void CScriptEnvironment::registerEntities()
@@ -222,7 +230,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CStorage, type    , const std::string        , (              ), const);
   HA_AS_CLASS_METHOD(ha::homed, CStorage, last    , const ha::homed::CValue &, (              ), const);
   HA_AS_CLASS_METHOD(ha::homed, CStorage, at      , const ha::homed::CValue &, (const size_t &), const);
-  HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty *   , (              ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty *   , (              ), const);
 
   // CProperty
   HA_AS_CLASS_METHOD(ha::homed, CProperty, name     , const std::string &                  , (                                                      ), const);
@@ -360,7 +368,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator!=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
 
   // CSunTracker
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                     , (const ha::datetime::ESunTrackerEvent &, const std::string &, const std::string &),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                     , (const std::string &, const std::string &, const ha::datetime::ESunTrackerEvent &),      );
   HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, getEventTime, ha::datetime::CDateTime *, (const ha::datetime::ESunTrackerEvent &                                          ),      );
   HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, circumpolar , bool                     , (                                                                                ),      );
 

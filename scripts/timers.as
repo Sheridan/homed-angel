@@ -1,4 +1,4 @@
-bool do_it = true;
+bool do_it = false;
 
 CTimerContinuous @timer_continuous;
 CTimerOneshot    @timer_oneshoot  ;
@@ -60,7 +60,7 @@ void initialize()
 
 
     logger.nfo(script_name + " init");
-    homed.property(dtZigbee, "Button_One", "action").subscribe(script_name, "onButton", false);
+    homed.property(dtZigbee, "Button_20", "2", "action").subscribe(script_name, "onButton", false);
     timer_continuous.start();
     timer_cron.start();
     timer_wd_z.start();

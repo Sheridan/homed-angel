@@ -25,6 +25,7 @@ CSunTracker *CAstronomical::sun()
 
 void CAstronomical::start()
 {
+  m_running = true;
   m_updateThread = std::thread(&CAstronomical::runUpdate, this);
   m_checkThread  = std::thread(&CAstronomical::runCheck, this);
 }
@@ -40,8 +41,12 @@ void CAstronomical::runUpdate()
 {
   while (m_running)
   {
+    for (short i = 0; i < 60; i++)
+    {
+      HA_ST->sleep(1000);
+      if(!m_running) { return; }
+    }
     m_sunTracker->update();
-    HA_ST->sleep(60 * 1000);
   }
 }
 

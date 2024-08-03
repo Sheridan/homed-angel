@@ -8,6 +8,8 @@
 #include "scripting/helpers/cconverter.h"
 #include "sdk/add_on/scriptbuilder/scriptbuilder.h"
 
+#include "log.h"
+
 namespace ha
 {
 namespace scripting
@@ -19,7 +21,7 @@ public:
   explicit CScriptEnvironment(const std::filesystem::path &file);
   virtual ~CScriptEnvironment();
 
-  const std::string &name() const { return m_name; }
+  const std::string           &name() const { return m_name; }
   const std::filesystem::path &file() const { return m_file; }
 
 protected:
@@ -40,6 +42,7 @@ private:
   std::string extractName(const std::filesystem::path& file);
 
   void messageCallback(const asSMessageInfo* msg);
+  const char * msgTypeToStr(const asEMsgType &type);
 
 
   void registerBase();
@@ -50,7 +53,7 @@ private:
 };
 
 #define HA_AS_ACCERT_CALL(_what) { int r = _what; assert(r >= 0); }
-#define HA_LOG_SCRIPT(_priority,_what) std::cout << "[" << file().string() << "] ["<< _priority << "] " << _what << std::endl;
+#define HA_LOG_SCRIPT(_priority,_what) std::cout << "[" << file().string() << "] [" << _priority << "] " << _what << std::endl;
 
 }
 }

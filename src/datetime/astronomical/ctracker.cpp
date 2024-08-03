@@ -1,10 +1,5 @@
 #include "datetime/astronomical/ctracker.h"
-// #include <iostream>
-// #include <libnova/solar.h>
 #include <libnova/julian_day.h>
-// #include <libnova/rise_set.h>
-// #include <libnova/transform.h>
-// #include <chrono>
 #include <ctime>
 #include "st.h"
 

@@ -35,10 +35,11 @@ bool CTimeInterval::operator!=(const CTimeInterval &other) const { return m_dura
 
 #define HA_APPEND_INTERVAL_PART(_name,_secunds) \
   { \
-    if(_secunds != 0) \
+    int s = _secunds; \
+    if(s != 0) \
     { \
-      int part = total_milliseconds / _secunds; \
-      total_milliseconds %= _secunds;\
+      int part = total_milliseconds / s; \
+      total_milliseconds %= s;\
       if(part > 0) { oss << part << _name << " "; } \
     } \
   }
@@ -48,11 +49,11 @@ std::string CTimeInterval::asString() const
   auto total_milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(m_duration).count();
   std::ostringstream oss;
 
-  HA_APPEND_INTERVAL_PART("w", ( 7 * 24 * 60 * 60 * 1000));
-  HA_APPEND_INTERVAL_PART("d", (     24 * 60 * 60 * 1000));
-  HA_APPEND_INTERVAL_PART("h", (          60 * 60 * 1000));
-  HA_APPEND_INTERVAL_PART("m", (               60 * 1000));
-  HA_APPEND_INTERVAL_PART("s", (                    1000));
+  HA_APPEND_INTERVAL_PART("w", (7 * 24 * 60 * 60 * 1000));
+  HA_APPEND_INTERVAL_PART("d", (    24 * 60 * 60 * 1000));
+  HA_APPEND_INTERVAL_PART("h", (         60 * 60 * 1000));
+  HA_APPEND_INTERVAL_PART("m", (              60 * 1000));
+  HA_APPEND_INTERVAL_PART("s", (                   1000));
   HA_APPEND_INTERVAL_PART("ms", static_cast<int>(total_milliseconds));
 
   return oss.str();

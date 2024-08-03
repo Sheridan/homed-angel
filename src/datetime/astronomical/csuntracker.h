@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <mutex>
 #include "datetime/astronomical/ctracker.h"
+#include "log.h"
 
 namespace ha
 {
@@ -66,20 +68,24 @@ public:
   void update();
   void check();
 
-  void subscribe(const ESunTrackerEvent &event, const std::string &scriptName, const std::string &functionName);
+  void subscribe(const std::string &scriptName, const std::string &functionName, const ESunTrackerEvent &event);
+  void unsubscribe(const std::string &scriptName);
+
   CDateTime *getEventTime(const ha::datetime::ESunTrackerEvent &event);
   bool circumpolar();
 
 private:
   std::vector<SSunTrackerItem> m_events;
   std::map<ESunTrackerEvent, CDateTime *> m_eventsTime;
+  bool m_circumpolar;
+  std::mutex m_mutex;
 
   SSunTrackerTime calcTimes(const double &jd, const double &horizon);
   void check(const ESunTrackerEvent &event);
   void update(const ESunTrackerEvent &event);
   ln_zonedate calcEventTime(ESunTrackerEvent event);
 
-  #ifdef HA_DEBUG
+  #ifdef HA_ASTRO_DEBUG
   void printEvents();
   #endif
 

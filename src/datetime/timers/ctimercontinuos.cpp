@@ -1,4 +1,5 @@
 #include "datetime/timers/ctimercontinuos.h"
+#include "scripting/script/callers/ccaller.h"
 #include "st.h"
 
 namespace ha
@@ -18,7 +19,7 @@ CTimerContinuous::~CTimerContinuous()
 
 std::chrono::milliseconds CTimerContinuous::triggered()
 {
-  HA_ST->angel()->manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
+  HA_ST->angel()->manager()->script(scriptName())->simpleCaller()->append(functionName());
   HA_LOG_VERBOSE("Continuous timer [" << scriptName() << ":" << functionName() << "] triggered.");
   return m_interval;
 }

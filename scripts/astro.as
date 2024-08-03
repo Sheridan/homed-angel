@@ -1,6 +1,6 @@
-bool do_it = false;
+bool do_it = true;
 
-CTimerContinuous @timer_continuous;
+// CTimerContinuous @timer_continuous;
 
 void printEventTime(ESunTrackerEvent event, string name)
 {
@@ -9,41 +9,79 @@ void printEventTime(ESunTrackerEvent event, string name)
 
 void onTimer()
 {
-  printEventTime(steNadir                           , "Nadir");
-  printEventTime(steMorningBlueHourStart            , "MorningBlueHourStart");
+  printEventTime(steNadir                           , "Nadir"                           );
+  printEventTime(steMorningBlueHourStart            , "MorningBlueHourStart"            );
   printEventTime(steMorningAstronomicalTwilightStart, "MorningAstronomicalTwilightStart");
-  printEventTime(steMorningAstronomicalTwilightEnd  , "MorningAstronomicalTwilightEnd");
-  printEventTime(steMorningNauticalTwilightStart    , "MorningNauticalTwilightStart");
-  printEventTime(steMorningNauticalTwilightEnd      , "MorningNauticalTwilightEnd");
-  printEventTime(steMorningCivilTwilightStart       , "MorningCivilTwilightStart");
-  printEventTime(steMorningCivilTwilightEnd         , "MorningCivilTwilightEnd");
-  printEventTime(steMorningBlueHourEnd              , "MorningBlueHourEnd");
-  printEventTime(steMorningGoldenHourStart          , "MorningGoldenHourStart");
-  printEventTime(steMorningSunriseStart             , "MorningSunriseStart");
-  printEventTime(steMorningSunriseEnd               , "MorningSunriseEnd");
-  printEventTime(steMorningGoldenHourEnd            , "MorningGoldenHourEnd");
-  printEventTime(steZenith                          , "Zenith");
-  printEventTime(steEveningGoldenHourStart          , "EveningGoldenHourStart");
-  printEventTime(steEveningGoldenHourEnd            , "EveningGoldenHourEnd");
-  printEventTime(steEveningBlueHourStart            , "EveningBlueHourStart");
-  printEventTime(steEveningSunsetStart              , "EveningSunsetStart");
-  printEventTime(steEveningSunsetEnd                , "EveningSunsetEnd");
-  printEventTime(steEveningBlueHourEnd              , "EveningBlueHourEnd");
-  printEventTime(steEveningCivilTwilightStart       , "EveningCivilTwilightStart");
-  printEventTime(steEveningCivilTwilightEnd         , "EveningCivilTwilightEnd");
-  printEventTime(steEveningNauticalTwilightStart    , "EveningNauticalTwilightStart");
-  printEventTime(steEveningNauticalTwilightEnd      , "EveningNauticalTwilightEnd");
+  printEventTime(steMorningAstronomicalTwilightEnd  , "MorningAstronomicalTwilightEnd"  );
+  printEventTime(steMorningNauticalTwilightStart    , "MorningNauticalTwilightStart"    );
+  printEventTime(steMorningNauticalTwilightEnd      , "MorningNauticalTwilightEnd"      );
+  printEventTime(steMorningCivilTwilightStart       , "MorningCivilTwilightStart"       );
+  printEventTime(steMorningCivilTwilightEnd         , "MorningCivilTwilightEnd"         );
+  printEventTime(steMorningBlueHourEnd              , "MorningBlueHourEnd"              );
+  printEventTime(steMorningGoldenHourStart          , "MorningGoldenHourStart"          );
+  printEventTime(steMorningSunriseStart             , "MorningSunriseStart"             );
+  printEventTime(steMorningSunriseEnd               , "MorningSunriseEnd"               );
+  printEventTime(steMorningGoldenHourEnd            , "MorningGoldenHourEnd"            );
+  printEventTime(steZenith                          , "Zenith"                          );
+  printEventTime(steEveningGoldenHourStart          , "EveningGoldenHourStart"          );
+  printEventTime(steEveningGoldenHourEnd            , "EveningGoldenHourEnd"            );
+  printEventTime(steEveningBlueHourStart            , "EveningBlueHourStart"            );
+  printEventTime(steEveningSunsetStart              , "EveningSunsetStart"              );
+  printEventTime(steEveningSunsetEnd                , "EveningSunsetEnd"                );
+  printEventTime(steEveningBlueHourEnd              , "EveningBlueHourEnd"              );
+  printEventTime(steEveningCivilTwilightStart       , "EveningCivilTwilightStart"       );
+  printEventTime(steEveningCivilTwilightEnd         , "EveningCivilTwilightEnd"         );
+  printEventTime(steEveningNauticalTwilightStart    , "EveningNauticalTwilightStart"    );
+  printEventTime(steEveningNauticalTwilightEnd      , "EveningNauticalTwilightEnd"      );
   printEventTime(steEveningAstronomicalTwilightStart, "EveningAstronomicalTwilightStart");
-  printEventTime(steEveningAstronomicalTwilightEnd  , "EveningAstronomicalTwilightEnd");
+  printEventTime(steEveningAstronomicalTwilightEnd  , "EveningAstronomicalTwilightEnd"  );
+}
+
+void onEvent(ESunTrackerEvent event)
+{
+  logger.nfo("! Some astro event !" + event);
+}
+
+void subscribeEvent(ESunTrackerEvent event)
+{
+  astro.sun().subscribe(script_name, "onEvent", event);
 }
 
 void initialize()
 {
   if(do_it)
   {
-    @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);
+    // @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);
     logger.nfo(script_name + " init");
     onTimer();
-    timer_continuous.start();
+    // timer_continuous.start();
+
+
+    subscribeEvent(steNadir                           );
+    subscribeEvent(steMorningBlueHourStart            );
+    subscribeEvent(steMorningAstronomicalTwilightStart);
+    subscribeEvent(steMorningAstronomicalTwilightEnd  );
+    subscribeEvent(steMorningNauticalTwilightStart    );
+    subscribeEvent(steMorningNauticalTwilightEnd      );
+    subscribeEvent(steMorningCivilTwilightStart       );
+    subscribeEvent(steMorningCivilTwilightEnd         );
+    subscribeEvent(steMorningBlueHourEnd              );
+    subscribeEvent(steMorningGoldenHourStart          );
+    subscribeEvent(steMorningSunriseStart             );
+    subscribeEvent(steMorningSunriseEnd               );
+    subscribeEvent(steMorningGoldenHourEnd            );
+    subscribeEvent(steZenith                          );
+    subscribeEvent(steEveningGoldenHourStart          );
+    subscribeEvent(steEveningGoldenHourEnd            );
+    subscribeEvent(steEveningBlueHourStart            );
+    subscribeEvent(steEveningSunsetStart              );
+    subscribeEvent(steEveningSunsetEnd                );
+    subscribeEvent(steEveningBlueHourEnd              );
+    subscribeEvent(steEveningCivilTwilightStart       );
+    subscribeEvent(steEveningCivilTwilightEnd         );
+    subscribeEvent(steEveningNauticalTwilightStart    );
+    subscribeEvent(steEveningNauticalTwilightEnd      );
+    subscribeEvent(steEveningAstronomicalTwilightStart);
+    subscribeEvent(steEveningAstronomicalTwilightEnd  );
   }
 }

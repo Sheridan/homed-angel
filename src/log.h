@@ -64,3 +64,10 @@
 #else // HA_TIMER_DEBUG
   #define HA_LOG_DBG_TIMER(_what)
 #endif // HA_TIMER_DEBUG
+
+#define HA_ASTRO_DEBUG
+#ifdef HA_ASTRO_DEBUG
+  #define HA_LOG_DBG_ASTRO(_what) HA_LOG_DBG(_what)
+#else // HA_ASTRO_DEBUG
+  #define HA_LOG_DBG_ASTRO(_what)
+#endif // HA_ASTRO_DEBUG

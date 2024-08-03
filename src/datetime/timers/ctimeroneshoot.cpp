@@ -1,4 +1,5 @@
 #include "datetime/timers/ctimeroneshoot.h"
+#include "scripting/script/callers/ccaller.h"
 #include "st.h"
 
 namespace ha
@@ -17,7 +18,7 @@ CTimerOneshot::~CTimerOneshot()
 
 std::chrono::milliseconds CTimerOneshot::triggered()
 {
-  HA_ST->angel()->manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
+  HA_ST->angel()->manager()->script(scriptName())->simpleCaller()->append(functionName());
   HA_LOG_VERBOSE("Oneshot timer [" << scriptName() << ":" << functionName() << "] triggered");
   return std::chrono::milliseconds(0);
 }

@@ -83,6 +83,7 @@ set(HA_HEADERS
   src/utils/string.h
   src/datetime/timers/ctimercron.h
   external/croncpp/include/croncpp.h
+  src/scripting/script/callers/ccaller.h
   )
 
 set(HA_SOURCES
@@ -131,6 +132,7 @@ set(HA_SOURCES
   src/utils/datetime.cpp
   src/utils/string.cpp
   src/datetime/timers/ctimercron.cpp
+  src/scripting/script/callers/ccaller.cpp
   )
 
 include_directories(src

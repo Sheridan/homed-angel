@@ -1,4 +1,5 @@
 #include "datetime/astronomical/csuntracker.h"
+#include "scripting/script/callers/ccallersingle.h"
 #include <iostream>
 #include <libnova/solar.h>
 #include <libnova/julian_day.h>
@@ -7,7 +8,7 @@
 #include <chrono>
 #include <ctime>
 #include "st.h"
-#include "csuntracker.h"
+
 
 #define HA_SUN_ANGULAR_SIZE     0.5
 #define HA_HORIZON_ZERO         0.0
@@ -22,16 +23,20 @@ namespace datetime
 {
 
 CSunTracker::CSunTracker()
-  : CTracker()
+  : CTracker(),
+    m_circumpolar(false)
 {
+  HA_LOG_DBG_ASTRO("CSunTracker init");
+  HA_LOG_DBG_ASTRO("CSunTracker " << m_observer.lat << ":" << m_observer.lng);
   update();
-  #ifdef HA_DEBUG
-  // printEvents();
+  #ifdef HA_ASTRO_DEBUG
+  printEvents();
   #endif
 }
 
 CSunTracker::~CSunTracker()
 {
+  HA_LOG_DBG_ASTRO("CSunTracker destroy");
   for(auto &pair : m_eventsTime)
   {
     delete pair.second;
@@ -39,7 +44,7 @@ CSunTracker::~CSunTracker()
   m_eventsTime.clear();
 }
 
-#ifdef HA_DEBUG
+#ifdef HA_ASTRO_DEBUG
 #define HA_PRINT_DATE(_type) HA_LOG_NFO(getEventTime(ESunTrackerEvent::ste##_type)->asString("%Y.%m.%d %H:%M:%S") << " | " << #_type);
 void CSunTracker::printEvents()
 {
@@ -78,6 +83,7 @@ void CSunTracker::update()
 {
   if(!circumpolar())
   {
+    HA_LOG_DBG_ASTRO("CSunTracker update");
     update(ESunTrackerEvent::steNadir                           );
     update(ESunTrackerEvent::steMorningBlueHourStart            );
     update(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
@@ -111,6 +117,7 @@ void CSunTracker::check()
 {
   if(!circumpolar())
   {
+    HA_LOG_DBG_ASTRO("CSunTracker check");
     check(ESunTrackerEvent::steNadir                           );
     check(ESunTrackerEvent::steMorningBlueHourStart            );
     check(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
@@ -142,6 +149,7 @@ void CSunTracker::check()
 
 void CSunTracker::check(const ESunTrackerEvent &event)
 {
+  std::lock_guard<std::mutex> lock(m_mutex);
   if(m_eventsTime.contains(event))
   {
     if(thisTimeIsEvent(m_eventsTime[event]))
@@ -150,7 +158,7 @@ void CSunTracker::check(const ESunTrackerEvent &event)
       {
         if(item.event == event)
         {
-          HA_ST->angel()->manager()->script(item.scriptName)->queueSimpleFunctionCall(item.functionName);
+          HA_ST->angel()->manager()->script(item.scriptName)->sunTrackerCaller()->append(item.functionName, event);
         }
       }
     }
@@ -159,10 +167,9 @@ void CSunTracker::check(const ESunTrackerEvent &event)
 
 void CSunTracker::update(const ESunTrackerEvent &event)
 {
+  std::lock_guard<std::mutex> lock(m_mutex);
   if(m_eventsTime.contains(event))
-  {
-    delete m_eventsTime[event];
-  }
+  { delete m_eventsTime[event]; }
   m_eventsTime[event] = new CDateTime(zonedateToChrono(calcEventTime(event)));
 }
 
@@ -201,20 +208,35 @@ ln_zonedate CSunTracker::calcEventTime(ESunTrackerEvent event)
   return ln_zonedate();
 }
 
-void CSunTracker::subscribe(const ESunTrackerEvent &event, const std::string &scriptName, const std::string &functionName)
+void CSunTracker::subscribe(const std::string &scriptName, const std::string &functionName, const ESunTrackerEvent &event)
 {
+  std::lock_guard<std::mutex> lock(m_mutex);
+  HA_LOG_DBG_ASTRO("CSunTracker subscribe " << scriptName << ":" << functionName << " " << event);
   m_events.push_back(SSunTrackerItem(event, scriptName, functionName));
+}
+
+void CSunTracker::unsubscribe(const std::string &scriptName)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  HA_LOG_DBG_ASTRO("CSunTracker unsubscribe script: " << scriptName);
+  m_events.erase(std::remove_if (
+                                  m_events.begin(),
+                                  m_events.end(),
+                                  [&scriptName](const SSunTrackerItem& event)
+                                  {
+                                    return event.scriptName == scriptName;
+                                  }
+                                ),
+                  m_events.end());
 }
 
 SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
 {
-  // RE_LOG_LINE("Times");
-  // HA_LOG_DBG(m_observer.lat << ":" << m_observer.lng);
   SSunTrackerTime result;
   ln_rst_time rst;
   if (ln_get_solar_rst_horizon(jd, &m_observer, horizon, &rst) != 0)
   {
-    HA_LOG_DBG("Sun is circumpolar");
+    HA_LOG_DBG_ASTRO("Sun is circumpolar");
     result.circumpolar = true;
   }
   else
@@ -225,21 +247,20 @@ SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
     ln_get_local_date(rst.transit + 0.5, &result.nadir );
     result.circumpolar = false;
   }
+  m_circumpolar = result.circumpolar;
+  HA_LOG_DBG_ASTRO("Sun is circumpolar? " << m_circumpolar);
   return result;
 }
 
 CDateTime *CSunTracker::getEventTime(const ha::datetime::ESunTrackerEvent &event)
 {
-  if(m_eventsTime.contains(event))
-  {
-    return m_eventsTime[event];
-  }
+  if(m_eventsTime.contains(event)) { return m_eventsTime[event]; }
   return nullptr;
 }
 
 bool CSunTracker::circumpolar()
 {
-  return calcTimes(julian(), HA_HORIZON_ZERO).circumpolar;
+  return m_circumpolar;
 }
 
 }

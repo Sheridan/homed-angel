@@ -40,7 +40,7 @@ public:
   const CValue &at(const size_t &index) const;
   void addObserver(const std::string &scriptName, const std::string &methodName, const bool &changedOnly);
   void removeObserversForScript(const std::string &scriptName);
-  CProperty *property() { return m_parentProperty; }
+  CProperty *property() const { return m_parentProperty; }
 
 private:
   size_t m_historySize;

@@ -1,4 +1,5 @@
 // https://github.com/mariusbancila/croncpp
+#include "scripting/script/callers/ccaller.h"
 
 #include "datetime/timers/ctimercron.h"
 #include "croncpp.h"
@@ -21,7 +22,7 @@ CTimerCron::~CTimerCron()
 
 std::chrono::milliseconds CTimerCron::triggered()
 {
-  HA_ST->angel()->manager()->script(scriptName())->queueSimpleFunctionCall(functionName());
+  HA_ST->angel()->manager()->script(scriptName())->simpleCaller()->append(functionName());
   HA_LOG_VERBOSE("Cron timer [" << scriptName() << ":" << functionName() << "] triggered.");
   return nextInterval();
 }

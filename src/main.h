@@ -7,4 +7,9 @@
 std::atomic<bool> running{true};
 
 void handle_signal(int signal);
+void prepareOptions(int argc, char* argv[]);
+void initialize();
+void start();
+void stop();
+
 int main (int argc, char* argv[]);
