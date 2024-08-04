@@ -32,7 +32,7 @@ jobs:
             -w /workspace \
             gcc:12-bookworm \
             bash -c "
-              DEBIAN_FRONTEND=noninteractive && \
+              export DEBIAN_FRONTEND=noninteractive && \
               apt-get update && apt-get install -y \
                                 cmake \
                                 pkg-config \
