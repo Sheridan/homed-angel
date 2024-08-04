@@ -1,6 +1,6 @@
 
-CDateTime @dt = CDateTime();
-CTimeInterval @ti = CTimeInterval(3600);
+CDateTime dt();
+CTimeInterval ti(3600);
 
 void initialize()
 {

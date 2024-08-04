@@ -7,20 +7,34 @@ namespace ha
 namespace datetime
 {
 CTimeInterval::CTimeInterval(double seconds)
-  : ha::scripting::CScriptObject(),
-    m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
+  : m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
 {}
 
 CTimeInterval::CTimeInterval(const std::chrono::milliseconds &seconds)
-  : ha::scripting::CScriptObject(),
-    m_duration(seconds * 1000)
+  : m_duration(seconds * 1000)
 {}
 
-CTimeInterval::~CTimeInterval() {}
+CTimeInterval::CTimeInterval(const CTimeInterval& other)
+  : m_duration(other.m_duration)
+{}
+
+CTimeInterval::~CTimeInterval()
+{
+  // HA_LOG_DBG("CTimeInterval::~CTimeInterval");
+}
 
 double CTimeInterval::seconds() const
 {
   return m_duration.count();
+}
+
+CTimeInterval& CTimeInterval::operator=(const CTimeInterval& other)
+{
+  if (this != &other)
+  {
+    m_duration = other.m_duration;
+  }
+  return *this;
 }
 
 CTimeInterval CTimeInterval::operator+(const CTimeInterval &other) const { return CTimeInterval(m_duration.count() + other.m_duration.count()); }

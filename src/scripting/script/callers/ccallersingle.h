@@ -1,5 +1,6 @@
 #pragma once
 #include "scripting/script/callers/ccaller.h"
+#include "log.h"
 
 namespace ha
 {

@@ -63,6 +63,7 @@ void CScript::run()
     {
       m_simpleCaller->call();
       m_propertyCaller->call();
+      m_sunTrackerCaller->call();
       HA_ST->sleep(10);
     }
     callMethod("void deinitialize()");

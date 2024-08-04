@@ -71,12 +71,12 @@ public:
   void subscribe(const std::string &scriptName, const std::string &functionName, const ESunTrackerEvent &event);
   void unsubscribe(const std::string &scriptName);
 
-  CDateTime *getEventTime(const ha::datetime::ESunTrackerEvent &event);
+  const CDateTime &getEventTime(const ha::datetime::ESunTrackerEvent &event);
   bool circumpolar();
 
 private:
   std::vector<SSunTrackerItem> m_events;
-  std::map<ESunTrackerEvent, CDateTime *> m_eventsTime;
+  std::map<ESunTrackerEvent, CDateTime> m_eventsTime;
   bool m_circumpolar;
   std::mutex m_mutex;
 

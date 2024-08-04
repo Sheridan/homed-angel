@@ -15,11 +15,11 @@
 
 #ifdef HA_DEBUG
   #define HA_LOG_DBG(_what) HA_LOG_COUT(debug,"{Thread " << std::this_thread::get_id() << "} " << _what)
-  #define RE_LOG_LINE(_caption) HA_LOG_DBG(_caption " in file " << __FILE__ << " at line " << __LINE__ << " in method " <<__func__)
-  #define HA_MUTEX_STATUS(_mutex) if (_mutex.try_lock()) { HA_LOG_DBG("Mutex " #_mutex " is not locked"); _mutex.unlock(); } else { HA_LOG_DBG("Mutex " #_mutex " is already locked"); } RE_LOG_LINE("std::mutex status")
+  #define HA_LOG_LINE(_caption) HA_LOG_DBG(_caption " in file " << __FILE__ << " at line " << __LINE__ << " in method " <<__func__)
+  #define HA_MUTEX_STATUS(_mutex) if (_mutex.try_lock()) { HA_LOG_DBG("Mutex " #_mutex " is not locked"); _mutex.unlock(); } else { HA_LOG_DBG("Mutex " #_mutex " is already locked"); } HA_LOG_LINE("std::mutex status")
 #else  // HA_DEBUG
   #define HA_LOG_DBG(_what)
-  #define RE_LOG_LINE(_caption)
+  #define HA_LOG_LINE(_caption)
   #define HA_MUTEX_STATUS(_mutex)
 #endif // HA_DEBUG
 
@@ -65,7 +65,7 @@
   #define HA_LOG_DBG_TIMER(_what)
 #endif // HA_TIMER_DEBUG
 
-#define HA_ASTRO_DEBUG
+// #define HA_ASTRO_DEBUG
 #ifdef HA_ASTRO_DEBUG
   #define HA_LOG_DBG_ASTRO(_what) HA_LOG_DBG(_what)
 #else // HA_ASTRO_DEBUG

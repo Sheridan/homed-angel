@@ -7,21 +7,18 @@ namespace datetime
 {
 
 CDateTime::CDateTime()
-  : ha::scripting::CScriptObject()
 {
   auto now = std::chrono::system_clock::now();
   m_time = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
 }
 
 CDateTime::CDateTime(std::time_t timestamp)
-  : ha::scripting::CScriptObject()
 {
   m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(
   std::chrono::milliseconds(timestamp * 1000));
 }
 
 CDateTime::CDateTime(const std::chrono::steady_clock::time_point &steadyTimePoint)
-  : ha::scripting::CScriptObject()
 {
   auto duration = steadyTimePoint.time_since_epoch();
   auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration);
@@ -29,7 +26,6 @@ CDateTime::CDateTime(const std::chrono::steady_clock::time_point &steadyTimePoin
 }
 
 CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
-  : ha::scripting::CScriptObject()
 {
   std::tm tm = {};
   tm.tm_year = year - 1900;
@@ -40,6 +36,15 @@ CDateTime::CDateTime(int year, int month, int day, int hour, int minute, int sec
   tm.tm_sec = second;
   auto time_t = std::mktime(&tm);
   m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(std::chrono::milliseconds(time_t * 1000 + millisecond));
+}
+
+CDateTime::CDateTime(const CDateTime& other)
+  : m_time(other.m_time)
+{}
+
+CDateTime::~CDateTime()
+{
+  // HA_LOG_DBG("CDateTime::~CDateTime");
 }
 
 std::string CDateTime::asString(const std::string &format) const
@@ -56,6 +61,15 @@ std::string CDateTime::asString(const std::string &format) const
 std::time_t CDateTime::asUnixTimestamp() const
 {
   return std::chrono::duration_cast<std::chrono::seconds>(m_time.time_since_epoch()).count();
+}
+
+CDateTime& CDateTime::operator=(const CDateTime& other)
+{
+  if (this != &other)
+  {
+    m_time = other.m_time;
+  }
+  return *this;
 }
 
 CDateTime CDateTime::operator+(const CTimeInterval &interval) const { return CDateTime(std::chrono::duration_cast<std::chrono::seconds>(m_time.time_since_epoch()).count() + interval.seconds()); }

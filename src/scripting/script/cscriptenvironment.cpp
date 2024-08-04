@@ -174,13 +174,13 @@ void CScriptEnvironment::registerEnumerations()
 void CScriptEnvironment::registerModel()
 {
   // types
+  HA_AS_CLASS_VALUE(ha::datetime, CTimeInterval   );
+  HA_AS_CLASS_VALUE(ha::datetime, CDateTime       );
 
-  HA_AS_CLASS_STANDALONE(ha::homed   , CColor          );
-  HA_AS_CLASS_STANDALONE(ha::datetime, CTimeInterval   );
-  HA_AS_CLASS_STANDALONE(ha::datetime, CDateTime       );
-  HA_AS_CLASS_STANDALONE(ha::datetime, CTimerContinuous);
-  HA_AS_CLASS_STANDALONE(ha::datetime, CTimerOneshot   );
-  HA_AS_CLASS_STANDALONE(ha::datetime, CTimerCron      );
+  HA_AS_CLASS_SMART(ha::homed   , CColor          );
+  HA_AS_CLASS_SMART(ha::datetime, CTimerContinuous);
+  HA_AS_CLASS_SMART(ha::datetime, CTimerOneshot   );
+  HA_AS_CLASS_SMART(ha::datetime, CTimerCron      );
 
   HA_AS_CLASS_MANAGED(ha::homed   , CValue       );
   HA_AS_CLASS_MANAGED(ha::homed   , CStorage     );
@@ -195,11 +195,11 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_MANAGED(ha::datetime, CAstronomical);
 
   // CColor
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (                                           ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (unsigned char, unsigned char, unsigned char));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const int &                                ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const std::string &                        ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::homed, CColor, (const ha::homed::CColor &                  ));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (                                           ));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (unsigned char, unsigned char, unsigned char));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (const int &                                ));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (const std::string &                        ));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (const ha::homed::CColor &                  ));
   HA_AS_CLASS_METHOD(ha::homed, CColor, R          , unsigned char, (), const);
   HA_AS_CLASS_METHOD(ha::homed, CColor, G          , unsigned char, (), const);
   HA_AS_CLASS_METHOD(ha::homed, CColor, B          , unsigned char, (), const);
@@ -310,7 +310,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CHomed, property, ha::homed::CProperty *, (const ha::homed::EDeviceType &, const std::string &, const std::string &, const std::string &),      );
 
   // CTimerContinuous
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerContinuous, (const std::string &, const std::string &, const int64_t &));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::datetime, CTimerContinuous, (const std::string &, const std::string &, const int64_t &));
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, operator=, ha::datetime::CTimerContinuous &, (const ha::datetime::CTimerContinuous &),     );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, start, void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, stop , void, (),      );
@@ -319,7 +319,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimerContinuous, nextTrigger, const ha::datetime::CDateTime&, (), const);
 
   // CTimerOneshot
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerOneshot, (const std::string &, const std::string &, const int64_t &));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::datetime, CTimerOneshot, (const std::string &, const std::string &, const int64_t &));
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, operator=, ha::datetime::CTimerOneshot &, (const ha::datetime::CTimerOneshot &),     );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, start, void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, stop , void, (),      );
@@ -328,7 +328,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimerOneshot, nextTrigger, const ha::datetime::CDateTime&, (), const);
 
   // CTimerCron
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimerCron, (const std::string &, const std::string &, const std::string &));
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::datetime, CTimerCron, (const std::string &, const std::string &, const std::string &));
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, operator=, ha::datetime::CTimerCron &, (const ha::datetime::CTimerCron &),     );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, start, void, (),      );
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, stop , void, (),      );
@@ -336,41 +336,44 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, timeInterval, const ha::datetime::CTimeInterval&, (), const);
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, nextTrigger, const ha::datetime::CDateTime&, (), const);
 
-
   // CDateTime
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (int64_t                          ));
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CDateTime, (int, int, int, int, int, int, int));
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ), );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int64_t                          ), TS);
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int, int, int, int, int, int, int), Parts);
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (const ha::datetime::CDateTime&   ), Copy);
+  HA_AS_CLASS_VALUE_DESTRUCTOR(ha::datetime, CDateTime);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asString       , std::string, (const std::string &), const);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asUnixTimestamp, std::time_t, (                   ), const);
-
-  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator+ , ha::datetime::CDateTime, (const ha::datetime::CTimeInterval &), const);
-  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator- , ha::datetime::CDateTime, (const ha::datetime::CTimeInterval &), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator< , bool                   , (const ha::datetime::CDateTime &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator<=, bool                   , (const ha::datetime::CDateTime &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator> , bool                   , (const ha::datetime::CDateTime &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator>=, bool                   , (const ha::datetime::CDateTime &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator==, bool                   , (const ha::datetime::CDateTime &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator!=, bool                   , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator= , ha::datetime::CDateTime &, (const ha::datetime::CDateTime &    ),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator+ , ha::datetime::CDateTime  , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator- , ha::datetime::CDateTime  , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator< , bool                     , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator<=, bool                     , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator> , bool                     , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator>=, bool                     , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator==, bool                     , (const ha::datetime::CDateTime &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator!=, bool                     , (const ha::datetime::CDateTime &    ), const);
 
   // CTimeInterval
-  HA_AS_CLASS_FACTORY_CONSTRUCTOR(ha::datetime, CTimeInterval, (double));
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CTimeInterval, (double                               ), );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CTimeInterval, (const ha::datetime::CTimeInterval&   ), Copy);
+  HA_AS_CLASS_VALUE_DESTRUCTOR(ha::datetime, CTimeInterval);
   HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, asString, std::string, (), const);
   HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, seconds , double     , (), const);
-
-  // HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator+ , ha::datetime::CTimeInterval, (const ha::datetime::CTimeInterval &), const);
-  // HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator- , ha::datetime::CTimeInterval, (const ha::datetime::CTimeInterval &), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator< , bool                   , (const ha::datetime::CTimeInterval &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator<=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator> , bool                   , (const ha::datetime::CTimeInterval &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator>=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator==, bool                   , (const ha::datetime::CTimeInterval &    ), const);
-  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator!=, bool                   , (const ha::datetime::CTimeInterval &    ), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator= , ha::datetime::CTimeInterval &, (const ha::datetime::CTimeInterval &),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator+ , ha::datetime::CTimeInterval  , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator- , ha::datetime::CTimeInterval  , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator< , bool                         , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator<=, bool                         , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator> , bool                         , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator>=, bool                         , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator==, bool                         , (const ha::datetime::CTimeInterval &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CTimeInterval, operator!=, bool                         , (const ha::datetime::CTimeInterval &), const);
 
   // CSunTracker
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                     , (const std::string &, const std::string &, const ha::datetime::ESunTrackerEvent &),      );
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, getEventTime, ha::datetime::CDateTime *, (const ha::datetime::ESunTrackerEvent &                                          ),      );
-  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, circumpolar , bool                     , (                                                                                ),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, subscribe   , void                           , (const std::string &, const std::string &, const ha::datetime::ESunTrackerEvent &),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, getEventTime, const ha::datetime::CDateTime &, (const ha::datetime::ESunTrackerEvent &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::datetime, CSunTracker, circumpolar , bool                           , (                                                                                ),      );
 
   // CAstronomical
   HA_AS_CLASS_METHOD(ha::datetime, CAstronomical, sun, ha::datetime::CSunTracker *, (),      );

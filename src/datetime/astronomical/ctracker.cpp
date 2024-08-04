@@ -42,12 +42,12 @@ std::chrono::steady_clock::time_point CTracker::zonedateToChrono(const ln_zoneda
   return std::chrono::steady_clock::time_point(std::chrono::seconds(time));
 }
 
-bool CTracker::thisTimeIsEvent(CDateTime *dt)
+bool CTracker::thisTimeIsEvent(const CDateTime &dt)
 {
   int64_t duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                                                                             std::chrono::system_clock::now()
                                                                             -
-                                                                            std::chrono::system_clock::from_time_t(dt->asUnixTimestamp())
+                                                                            std::chrono::system_clock::from_time_t(dt.asUnixTimestamp())
                                                                           ).count();
   return duration >= -(HA_DEFAULT_SLEEP_MS/2) && duration <= (HA_DEFAULT_SLEEP_MS/2);
 }

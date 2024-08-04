@@ -37,15 +37,11 @@ CSunTracker::CSunTracker()
 CSunTracker::~CSunTracker()
 {
   HA_LOG_DBG_ASTRO("CSunTracker destroy");
-  for(auto &pair : m_eventsTime)
-  {
-    delete pair.second;
-  }
   m_eventsTime.clear();
 }
 
 #ifdef HA_ASTRO_DEBUG
-#define HA_PRINT_DATE(_type) HA_LOG_NFO(getEventTime(ESunTrackerEvent::ste##_type)->asString("%Y.%m.%d %H:%M:%S") << " | " << #_type);
+#define HA_PRINT_DATE(_type) HA_LOG_NFO(getEventTime(ESunTrackerEvent::ste##_type).asString("%Y.%m.%d %H:%M:%S") << " | " << #_type);
 void CSunTracker::printEvents()
 {
 
@@ -83,7 +79,7 @@ void CSunTracker::update()
 {
   if(!circumpolar())
   {
-    HA_LOG_DBG_ASTRO("CSunTracker update");
+    // HA_LOG_DBG_ASTRO("CSunTracker update");
     update(ESunTrackerEvent::steNadir                           );
     update(ESunTrackerEvent::steMorningBlueHourStart            );
     update(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
@@ -117,7 +113,7 @@ void CSunTracker::check()
 {
   if(!circumpolar())
   {
-    HA_LOG_DBG_ASTRO("CSunTracker check");
+    // HA_LOG_DBG_ASTRO("CSunTracker check");
     check(ESunTrackerEvent::steNadir                           );
     check(ESunTrackerEvent::steMorningBlueHourStart            );
     check(ESunTrackerEvent::steMorningAstronomicalTwilightStart);
@@ -168,9 +164,7 @@ void CSunTracker::check(const ESunTrackerEvent &event)
 void CSunTracker::update(const ESunTrackerEvent &event)
 {
   std::lock_guard<std::mutex> lock(m_mutex);
-  if(m_eventsTime.contains(event))
-  { delete m_eventsTime[event]; }
-  m_eventsTime[event] = new CDateTime(zonedateToChrono(calcEventTime(event)));
+  m_eventsTime[event] = CDateTime(zonedateToChrono(calcEventTime(event)));
 }
 
 ln_zonedate CSunTracker::calcEventTime(ESunTrackerEvent event)
@@ -252,10 +246,10 @@ SSunTrackerTime CSunTracker::calcTimes(const double &jd, const double &horizon)
   return result;
 }
 
-CDateTime *CSunTracker::getEventTime(const ha::datetime::ESunTrackerEvent &event)
+const CDateTime &CSunTracker::getEventTime(const ha::datetime::ESunTrackerEvent &event)
 {
-  if(m_eventsTime.contains(event)) { return m_eventsTime[event]; }
-  return nullptr;
+  std::lock_guard<std::mutex> lock(m_mutex);
+  return m_eventsTime[event];
 }
 
 bool CSunTracker::circumpolar()

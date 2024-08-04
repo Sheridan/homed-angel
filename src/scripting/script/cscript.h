@@ -47,9 +47,9 @@ public:
 
   void run();
 
-  CCaller *          simpleCaller  () { return m_simpleCaller  ; };
-  UPropertyCaller   *propertyCaller() { return m_propertyCaller; };
-  USunTrackerCaller *sunTrackerCaller() { return m_sunTrackerCaller; };
+  CCaller *          simpleCaller  ()   { return m_simpleCaller    ; }
+  UPropertyCaller   *propertyCaller()   { return m_propertyCaller  ; }
+  USunTrackerCaller *sunTrackerCaller() { return m_sunTrackerCaller; }
 
   void callMethod(const std::string &method);
 

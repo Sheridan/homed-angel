@@ -1,8 +1,4 @@
 #include "scripting/helpers/clogger.h"
-
-
-#include "clogger.h"
-#include "log.h"
 namespace ha
 {
 namespace scripting
