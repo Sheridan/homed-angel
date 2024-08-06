@@ -2,6 +2,7 @@
 // #include <iostream>
 #include <csignal>
 #include "main.h"
+#include "utils/thread.h"
 #include "st.h"
 
 void handle_signal(int signal)
@@ -29,12 +30,6 @@ void prepareOptions(int argc, char* argv[])
 
 void initialize()
 {
-  HA_ST->mqtt()->connect("tcp://" + HA_ST->config()->mqttServer() + ":" + std::to_string(HA_ST->config()->mqttPort()),
-                       "homed-angel",
-                       HA_ST->config()->mqttUser(),
-                       HA_ST->config()->mqttPassword());
-  HA_ST->mqtt()->subscribe();
-
   while (!HA_ST->homed()->ready() && running)
   {
     HA_ST->sleep();
@@ -68,6 +63,7 @@ void stop()
 int main(int argc, char* argv[])
 {
   std::signal(SIGINT, handle_signal);
+  ha::utils::setThreadName("main");
   prepareOptions(argc,argv);
   initialize();
   start();

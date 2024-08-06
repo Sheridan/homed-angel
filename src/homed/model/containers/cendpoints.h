@@ -1,7 +1,7 @@
 #pragma once
 #include <jsoncpp/json/json.h>
 #include "homed/base/ccontainer.h"
-#include "mqtt/ctopic.h"
+#include "mqtt/homed/ctopic.h"
 #include "homed/model/entities/cendpoint.h"
 
 namespace ha

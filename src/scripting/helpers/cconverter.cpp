@@ -34,7 +34,8 @@ CConverter::CConverter()
     { "operator>"           , "opGreater"      },
     { "operator=="          , "opEquals"       },
     { "operator!="          , "opNotEquals"    },
-    { "operator="           , "opAssign"       }
+    { "operator="           , "opAssign"       },
+    { "operator\\[\\]"      , "opIndex"        }
   };
 }
 

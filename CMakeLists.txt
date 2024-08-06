@@ -38,6 +38,7 @@ set(HA_HEADERS
   external/angelscript/sdk/add_on/scriptarray/scriptarray.h
   external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.h
   external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.h
+  external/croncpp/include/croncpp.h
   src/configuration/ccmdoptions.h
   src/configuration/cconfiguration.h
   src/datetime/astronomical/castronomical.h
@@ -47,6 +48,7 @@ set(HA_HEADERS
   src/datetime/entities/ctimeinterval.h
   src/datetime/timers/ctimer.h
   src/datetime/timers/ctimercontinuos.h
+  src/datetime/timers/ctimercron.h
   src/datetime/timers/ctimeroneshoot.h
   src/defines/class_helpers.h
   src/homed/base/cbase.h
@@ -64,15 +66,24 @@ set(HA_HEADERS
   src/homed/value/cvalue.h
   src/log.h
   src/main.h
-  src/mqtt/cdevicename.h
-  src/mqtt/cmqttcallback.h
-  src/mqtt/cmqttclient.h
-  src/mqtt/cpayload.h
-  src/mqtt/ctopic.h
+  src/mqtt/base/cmqttbase.h
+  src/mqtt/base/cmqttcallback.h
+  src/mqtt/base/cmqttclient.h
+  src/mqtt/base/cmqttpublisher.h
+  src/mqtt/cmqtt.h
+  src/mqtt/homed/cdevicename.h
+  src/mqtt/homed/cmqtthomedcallback.h
+  src/mqtt/homed/cmqtthomedclient.h
+  src/mqtt/homed/cpayload.h
+  src/mqtt/homed/ctopic.h
+  src/mqtt/scripting/cmqttscriptcallback.h
+  src/mqtt/scripting/cmqttscriptclient.h
   src/scripting/cangel.h
   src/scripting/fs/cfilewatcher.h
   src/scripting/helpers/cconverter.h
+  src/scripting/helpers/cjson.h
   src/scripting/helpers/clogger.h
+  src/scripting/script/callers/ccaller.h
   src/scripting/script/cscript.h
   src/scripting/script/cscriptenvironment.h
   src/scripting/script/cscriptobject.h
@@ -81,9 +92,7 @@ set(HA_HEADERS
   src/tools/singletone/csingletone.h
   src/utils/datetime.h
   src/utils/string.h
-  src/datetime/timers/ctimercron.h
-  external/croncpp/include/croncpp.h
-  src/scripting/script/callers/ccaller.h
+  src/utils/thread.h
   )
 
 set(HA_SOURCES
@@ -100,6 +109,7 @@ set(HA_SOURCES
   src/datetime/entities/ctimeinterval.cpp
   src/datetime/timers/ctimer.cpp
   src/datetime/timers/ctimercontinuos.cpp
+  src/datetime/timers/ctimercron.cpp
   src/datetime/timers/ctimeroneshoot.cpp
   src/homed/base/cbase.cpp
   src/homed/base/ccontainer.cpp
@@ -115,15 +125,24 @@ set(HA_SOURCES
   src/homed/value/cstorage.cpp
   src/homed/value/cvalue.cpp
   src/main.cpp
-  src/mqtt/cdevicename.cpp
-  src/mqtt/cmqttcallback.cpp
-  src/mqtt/cmqttclient.cpp
-  src/mqtt/cpayload.cpp
-  src/mqtt/ctopic.cpp
+  src/mqtt/base/cmqttbase.cpp
+  src/mqtt/base/cmqttcallback.cpp
+  src/mqtt/base/cmqttclient.cpp
+  src/mqtt/base/cmqttpublisher.cpp
+  src/mqtt/cmqtt.cpp
+  src/mqtt/homed/cdevicename.cpp
+  src/mqtt/homed/cmqtthomedcallback.cpp
+  src/mqtt/homed/cmqtthomedclient.cpp
+  src/mqtt/homed/cpayload.cpp
+  src/mqtt/homed/ctopic.cpp
+  src/mqtt/scripting/cmqttscriptcallback.cpp
+  src/mqtt/scripting/cmqttscriptclient.cpp
   src/scripting/cangel.cpp
   src/scripting/fs/cfilewatcher.cpp
   src/scripting/helpers/cconverter.cpp
+  src/scripting/helpers/cjson.cpp
   src/scripting/helpers/clogger.cpp
+  src/scripting/script/callers/ccaller.cpp
   src/scripting/script/cscript.cpp
   src/scripting/script/cscriptenvironment.cpp
   src/scripting/script/cscriptobject.cpp
@@ -131,8 +150,7 @@ set(HA_SOURCES
   src/tools/singletone/csingletone.cpp
   src/utils/datetime.cpp
   src/utils/string.cpp
-  src/datetime/timers/ctimercron.cpp
-  src/scripting/script/callers/ccaller.cpp
+  src/utils/thread.cpp
   )
 
 include_directories(src

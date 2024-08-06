@@ -2,7 +2,7 @@
 #include <jsoncpp/json/json.h>
 #include "homed/base/cbase.h"
 #include "homed/model/containers/cproperties.h"
-#include "mqtt/ctopic.h"
+#include "mqtt/homed/ctopic.h"
 #include "utils/string.h"
 
 

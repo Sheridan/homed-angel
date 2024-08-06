@@ -1,5 +1,7 @@
 #include "datetime/timers/ctimer.h"
+#include "utils/thread.h"
 #include "st.h"
+
 
 namespace ha
 {
@@ -75,6 +77,7 @@ void CTimer::reset()
 
 void CTimer::run()
 {
+  ha::utils::setThreadName("Timer " + m_scriptName + ":" + m_functionName);
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_startTime = std::chrono::steady_clock::now();

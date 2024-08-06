@@ -26,7 +26,7 @@ void CObserver::call()
 {
   if(!m_changedOnly || m_parentProperty->storage()->valueChanged())
   {
-    HA_LOG_VERBOSE("Calling observer for " << m_scriptName << "->" << m_methodName);
+    HA_LOG_DBG("Calling observer for " << m_scriptName << "->" << m_methodName);
     HA_ST->angel()->manager()->script(m_scriptName)->propertyCaller()->append(m_methodName, m_parentProperty);
   }
 }

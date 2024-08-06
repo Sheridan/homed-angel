@@ -47,7 +47,6 @@ struct SSunTrackerItem
   std::string scriptName;
   std::string functionName;
   ESunTrackerEvent event;
-  SSunTrackerItem(const ESunTrackerEvent &e, const std::string &sn, const std::string &fn) : event(e), scriptName(sn), functionName(fn) {}
 };
 
 struct SSunTrackerTime

@@ -1,6 +1,6 @@
 #pragma once
 #include <jsoncpp/json/json.h>
-#include "mqtt/ctopic.h"
+#include "mqtt/homed/ctopic.h"
 
 #include "homed/base/ccontainer.h"
 #include "homed/model/containers/cdevices.h"

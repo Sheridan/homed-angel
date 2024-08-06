@@ -1,4 +1,5 @@
 #include "datetime/astronomical/castronomical.h"
+#include "utils/thread.h"
 #include "st.h"
 
 namespace ha
@@ -39,6 +40,7 @@ void CAstronomical::stop()
 
 void CAstronomical::runUpdate()
 {
+  ha::utils::setThreadName("Astro update");
   while (m_running)
   {
     for (short i = 0; i < 60; i++)
@@ -52,6 +54,7 @@ void CAstronomical::runUpdate()
 
 void CAstronomical::runCheck()
 {
+  ha::utils::setThreadName("Astro check");
   while (m_running)
   {
     m_sunTracker->check();

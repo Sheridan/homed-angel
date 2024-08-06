@@ -22,7 +22,7 @@ void CCaller::call()
 {
   if(!m_queue.empty())
   {
-    script()->callMethod("void " + m_queue.front() + "()");
+    script()->callMethod(m_queue.front(), "()");
     m_queue.pop();
   }
 }

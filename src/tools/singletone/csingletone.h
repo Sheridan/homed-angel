@@ -2,7 +2,7 @@
 #include "log.h"
 #include "configuration/ccmdoptions.h"
 #include "configuration/cconfiguration.h"
-#include "mqtt/cmqttclient.h"
+#include "mqtt/cmqtt.h"
 #include "scripting/cangel.h"
 #include "datetime/astronomical/castronomical.h"
 #include "homed/chomed.h"
@@ -32,7 +32,7 @@ public:
   HA_SIMPLE_SINGLTON_DECLARATION(ha::configuration::CConfiguration  , config )
   HA_SIMPLE_SINGLTON_DECLARATION(ha::scripting::CAngel              , angel  )
   HA_SIMPLE_SINGLTON_DECLARATION(ha::homed::CHomed                  , homed  )
-  HA_SIMPLE_SINGLTON_DECLARATION(ha::mqtt::СMqttClient              , mqtt   )
+  HA_SIMPLE_SINGLTON_DECLARATION(ha::mqtt::CMqtt                    , mqtt   )
   HA_SIMPLE_SINGLTON_DECLARATION(ha::datetime::CAstronomical        , astro  )
 
   CSingleTone(const CSingleTone&) = delete;

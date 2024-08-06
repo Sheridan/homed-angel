@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <random>
 #include "utils/string.h"
-
+#include "st.h"
 namespace ha
 {
 namespace homed
@@ -269,6 +269,11 @@ void CColor::fromName(const std::string &name)
   else if (clrstr == "whitesmoke"          ) { components = {245, 245, 245}; }
   else if (clrstr == "yellow"              ) { components = {255, 255, 0  }; }
   else if (clrstr == "yellowgreen"         ) { components = {154, 205, 50 }; }
+  else
+  {
+    HA_LOG_WRN("There is no such color '" << name <<"', assigned black");
+    components = {0  , 0  , 0  };
+  }
 }
 
 

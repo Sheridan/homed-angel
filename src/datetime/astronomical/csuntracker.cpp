@@ -206,7 +206,7 @@ void CSunTracker::subscribe(const std::string &scriptName, const std::string &fu
 {
   std::lock_guard<std::mutex> lock(m_mutex);
   HA_LOG_DBG_ASTRO("CSunTracker subscribe " << scriptName << ":" << functionName << " " << event);
-  m_events.push_back(SSunTrackerItem(event, scriptName, functionName));
+  m_events.emplace_back(scriptName, functionName, event);
 }
 
 void CSunTracker::unsubscribe(const std::string &scriptName)

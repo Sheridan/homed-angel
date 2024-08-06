@@ -1,7 +1,7 @@
-#include "mqtt/cmqttcallback.h"
+#include "mqtt/homed/cmqtthomedcallback.h"
 #include "utils/string.h"
-#include "mqtt/cpayload.h"
-#include "mqtt/cdevicename.h"
+#include "mqtt/homed/cpayload.h"
+#include "mqtt/homed/cdevicename.h"
 #include "st.h"
 
 
@@ -10,21 +10,18 @@ namespace ha
 namespace mqtt
 {
 
-CMqttCallback:: CMqttCallback() {}
-CMqttCallback::~CMqttCallback() {}
+CMqttHomedCallback:: CMqttHomedCallback() {}
+CMqttHomedCallback::~CMqttHomedCallback() {}
 
-void CMqttCallback::message_arrived(::mqtt::const_message_ptr msg)
+void CMqttHomedCallback::incomingMessage(const std::string &i_topic, const std::string &i_payload)
 {
-  // HA_LOG_NFO(  "Message arrived:\n"
-  //           << "\ttopic: '" << msg->get_topic() << "'\n"
-  //           << "\tpayload: '" << msg->get_payload_str());
   CPayload *payload = new CPayload();
-  if(payload->parse(msg->get_payload_str()))
+  if(payload->parse(i_payload))
   {
     #ifdef HA_DEBUG
     payload->dump();
     #endif // HA_DEBUG
-    CTopic *topic = new CTopic(msg->get_topic());
+    CTopic *topic = new CTopic(i_topic);
     switch(topic->topicType())
     {
       case ETopic::tUnknown: break;
@@ -70,7 +67,8 @@ void CMqttCallback::message_arrived(::mqtt::const_message_ptr msg)
   delete payload;
 }
 
-void CMqttCallback::sendUpdate(CTopic *topic, const Json::Value &payload)
+
+void CMqttHomedCallback::sendUpdate(CTopic *topic, const Json::Value &payload)
 {
   if(topic->device().empty()) { return; }
   switch(topic->serviceType())

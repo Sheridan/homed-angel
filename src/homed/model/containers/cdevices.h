@@ -2,7 +2,7 @@
 #include <jsoncpp/json/json.h>
 #include "homed/model/entities/cdevice.h"
 #include "homed/base/ccontainer.h"
-#include "mqtt/ctopic.h"
+#include "mqtt/homed/ctopic.h"
 
 namespace ha
 {

@@ -7,11 +7,11 @@
 #include "sdk/tests/test_feature/source/stdvector.h"
 
 #include "datetime/astronomical/csuntracker.h"
+#include "mqtt/scripting/cmqttscriptcallback.h"
 #include "homed/chomed.h"
 #include "st.h"
 
 #include "scripting/script/cscriptenvironmenthelpers.cpp"
-#include "cscriptenvironment.h"
 namespace ha
 {
 namespace scripting
@@ -174,6 +174,10 @@ void CScriptEnvironment::registerEnumerations()
 void CScriptEnvironment::registerModel()
 {
   // types
+  HA_AS_STRUCT(ha::mqtt, SMqttMesssage);
+
+  HA_AS_CLASS_VALUE(ha::scripting::helpers, CJson);
+
   HA_AS_CLASS_VALUE(ha::datetime, CTimeInterval   );
   HA_AS_CLASS_VALUE(ha::datetime, CDateTime       );
 
@@ -193,6 +197,50 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_MANAGED(ha::homed   , CHomed       );
   HA_AS_CLASS_MANAGED(ha::datetime, CSunTracker  );
   HA_AS_CLASS_MANAGED(ha::datetime, CAstronomical);
+  HA_AS_CLASS_MANAGED(ha::mqtt    , CMqtt        );
+
+  // SMqttMesssage
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::mqtt, SMqttMesssage, (), );
+  HA_AS_CLASS_VALUE_DESTRUCTOR(ha::mqtt, SMqttMesssage);
+  HA_AS_STRUCT_FIELD(ha::mqtt, SMqttMesssage, std::string, topic);
+  HA_AS_STRUCT_FIELD(ha::mqtt, SMqttMesssage, std::string, payload);
+
+  // CJson
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::scripting::helpers, CJson, (                                     ),       );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::scripting::helpers, CJson, (const std::string &                  ), String);
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::scripting::helpers, CJson, (const ha::scripting::helpers::CJson &), Copy  );
+  HA_AS_CLASS_VALUE_DESTRUCTOR(ha::scripting::helpers, CJson);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator=     , ha::scripting::helpers::CJson &, (const ha::scripting::helpers::CJson &),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator=     , ha::scripting::helpers::CJson &, (const std::string &                  ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator=     , ha::scripting::helpers::CJson &, (const int &                          ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator=     , ha::scripting::helpers::CJson &, (const double &                       ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator=     , ha::scripting::helpers::CJson &, (const bool &                         ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator[]    , ha::scripting::helpers::CJson &, (int                                  ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator[]    , ha::scripting::helpers::CJson &, (const std::string &                  ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator<     , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator<=    , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator>     , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator>=    , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator==    , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, operator!=    , bool                           , (const ha::scripting::helpers::CJson &), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isMember      , bool                           , (const std::string &                  ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, getMemberNames, ha::utils::CStrings            , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, toStyledString, std::string                    , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, removeMember  , void                           , (const std::string &                  ),      );
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isNull        , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isBool        , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isInt         , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isDouble      , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isString      , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isArray       , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, isObject      , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, asString      , std::string                    , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, asInt         , int                            , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, asDouble      , double                         , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, asBool        , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, empty         , bool                           , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, size          , unsigned int                   , (                                     ), const);
+  HA_AS_CLASS_METHOD(ha::scripting::helpers, CJson, clear         , void                           , (                                     ),      );
 
   // CColor
   HA_AS_CLASS_SMART_CONSTRUCTOR(ha::homed, CColor, (                                           ));
@@ -377,14 +425,19 @@ void CScriptEnvironment::registerModel()
 
   // CAstronomical
   HA_AS_CLASS_METHOD(ha::datetime, CAstronomical, sun, ha::datetime::CSunTracker *, (),      );
+
+  // CMqtt
+  HA_AS_CLASS_METHOD(ha::mqtt, CMqtt, subscribe, void, (const std::string &, const std::string &, const std::string &),      );
+  HA_AS_CLASS_METHOD(ha::mqtt, CMqtt, publish  , void, (const std::string &, const std::string &                     ),      );
 }
 
 void CScriptEnvironment::registerVariables()
 {
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("string script_name"   , &m_name));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger       @logger", &m_logger));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed        homed" , HA_ST->homed()));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CAstronomical astro" , HA_ST->astro()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("string script_name"   , &m_name       ));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger       @logger", &m_logger     ));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed        homed"  , HA_ST->homed()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CAstronomical astro"  , HA_ST->astro()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CMqtt         mqtt"   , HA_ST->mqtt ()));
 }
 
 }

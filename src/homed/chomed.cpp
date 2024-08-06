@@ -1,6 +1,5 @@
 #include "homed/chomed.h"
 #include "st.h"
-#include "chomed.h"
 
 namespace ha
 {
@@ -8,7 +7,10 @@ namespace homed
 {
 
 CHomed::CHomed()
-{}
+{
+  HA_ST->mqtt()->clientHomed()->connect();
+  HA_ST->mqtt()->clientHomed()->subscribe();
+}
 
 CHomed::~CHomed()
 {
@@ -111,7 +113,7 @@ void CHomed::unsubscribeScript(const std::string &scriptName)
 
 void CHomed::publishValue(CDevice *device, CEndpoint *endpoint, CProperty *property, const CValue &value)
 {
-  HA_ST->mqtt()->publish(HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name() + (endpoint ? "/" + endpoint->name() : ""), value.asJson(property->name()).toStyledString());
+  HA_ST->mqtt()->publisher()->publish(HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name() + (endpoint ? "/" + endpoint->name() : ""), value.asJson(property->name()).toStyledString());
 }
 
 // #ifdef HA_DEBUG
