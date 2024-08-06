@@ -131,6 +131,17 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
           continue;
         }
       }
+      else if(payload["options"][itemName].isString())
+      {
+        if(itemName == "switch" && payload["options"][itemName].asString() == "outlet")
+        {
+          CProperty *property = properties()->ensure("status");
+          property->readonly(false);
+          property->valueType(EPropertyValueType::pvtEnum);
+          property->enumerate({"on", "off", "toggle"});
+          continue;
+        }
+      }
       else if(payload["options"][itemName].isArray())
       {
         if(itemName == "light")

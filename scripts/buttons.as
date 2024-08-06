@@ -29,6 +29,12 @@ void onButton2(CProperty @property)
   homed.property(dtZigbee, "LightRelay_Hall", "4", "status").set("off");
 }
 
+void onButton4(CProperty @property)
+{
+  logger.nfo(homed.property(dtZigbee, "PowerSocket_CCTVMonitor", "status").last().asString());
+  homed.property(dtZigbee, "PowerSocket_CCTVMonitor", "status").set("toggle");
+}
+
 void initialize()
 {
   if(do_it)
@@ -36,5 +42,6 @@ void initialize()
     logger.nfo(script_name + " init");
     homed.property(dtZigbee, "Button_20", "1", "action").subscribe(script_name, "onButton1", false);
     homed.property(dtZigbee, "Button_20", "2", "action").subscribe(script_name, "onButton2", false);
+    homed.property(dtZigbee, "Button_20", "4", "action").subscribe(script_name, "onButton4", false);
   }
 }
