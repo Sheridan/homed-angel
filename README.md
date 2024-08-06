@@ -23,197 +23,49 @@ homed.property(dtZigbee, "LightRelay", "2", "status").subscribe(script_name, "и
 ```
 , где последний `bool` параметр указывает на создавать событие при каждом прилёте значения или только по изменению значения.
 
-# Доступные сущности
-## CLogger
-### Методы
-```as
-void dbg(const string &msg)
-void nfo(const string &msg)
-void wrn(const string &msg)
-void err(const string &msg)
-void cry(const string &msg)
-```
-Класс предназначен для логгирования событий скрипта. Экземпляр класса доступен через глобальную переменную `logger`.
+# Пример скрипта
+К компьютеру подключены
+* Мониторы
+* Аудиосистема + отдельно сабвуфер.
+* Тыловая подстветка мониторов
 
-## EDeviceType
-```as
-  dtZigbee
-  dtCustom
-  dtUnknown
-```
-Перечисляемый тип, характеризующий тип усройств HOMEd
+Так-же в комнате есть люстра (ВНЕЗАПНО).
 
-## EPropertyValueType
-```as
-  pvtEnum
-  pvtString
-  pvtBool
-  pvtDouble
-  pvtInt
-  pvtColor
-  pvtUnknown
-```
-Перечисляемый тип, характеризующий тип содержимого `CValue`
+В HOMEd настроен виртуальный включатель, который должен включать вышеописанную периферию. При этом, при включении люстры, тыловая подсветка должна отключаться и наоборот, включаться, когда люстра гаснет. Так-же, сабвуфер включаться автосатически не должен, но выключаться должен.
 
-## CColor
-### Конструкторы
+Реализация может быть такой:
 ```as
-CColor()
-CColor(uint8 R, uint8 G, uint8 B)
-CColor(const int &color)
-CColor(const string &color)
-CColor(const CColor &other)
-```
-### Методы
-```as
-uint8 R() const
-uint8 G() const
-uint8 B() const
-string asHexString() const
-```
-Один из типов `CValue`
+void managePC(string status)
+{
+  homed.property(dtZigbee, "PowerSocket_PCBackLight", "status").set(status);
+  homed.property(dtZigbee, "PowerSocket_PCMonitors", "status").set(status);
+  homed.property(dtZigbee, "PowerSocket_PCSound", "status").set(status);
+  if(status == "off")
+  {
+    homed.property(dtZigbee, "PowerSocket_PCSubWoofer", "status").set("off");
+  }
+}
 
-## CValue
-### Методы
-```as
-const string asString() const
-const int asInt() const
-const double asDouble() const
-const bool asBool() const
-const CColor asColor() const
-bool isString() const
-bool isInt() const
-bool isDouble() const
-bool isBool() const
-bool isColor() const
-const uint &timestamp() const
+void onPCStatusChange(CProperty @property)
+{
+  string status = property.last().asString();
+  if (status != "toggle")
+  {
+    managePC(status);
+  }
+}
+
+void onLampStatusChange(CProperty @property)
+{
+  if(homed.property(dtZigbee, "PowerSocket_PCMonitors", "status").last().asString() == "on")
+  {
+    homed.property(dtZigbee, "PowerSocket_PCBackLight", "status").set(property.last().asString() == "on" ? "off" : "on");
+  }
+}
+
+void initialize()
+{
+  homed.property(dtCustom, "Virtual_PComputer", "status").subscribe(script_name, "onPCStatusChange", true);
+  homed.property(dtZigbee, "LightRelay_Hall", "1", "status").subscribe(script_name, "onLampStatusChange", true);
+}
 ```
-Значение хранилища `CStorage`, в котором хранится история значений `CProperty`
-
-## CStorage
-### Методы
-```as
-uint16 count() const
-bool empty() const
-void clear()
-CValues list() const
-const string type() const
-const CValue &last() const
-const CValue &at(uint) const
-CProperty @property()
-```
-Хранилище истории значений `CProperty`
-
-## CProperty
-### Методы
-```as
-const string &name() const
-const bool &readonly() const
-const EPropertyValueType &valueType() const
-const CStrings &enumerate() const
-const double &min() const
-const double &max() const
-const double &step() const
-CStorage @storage()
-const CValue &last() const
-const string type() const
-CDevice @device()
-CEndpoint @endpoint()
-void subscribe(script_name, const string &methodName, const bool &changedOnly)
-void set(const string &value)
-void set(const int &value)
-void set(const double &value)
-void set(const bool &value)
-void set(const CColor &value)
-void set(const CValue &value)
-```
-Класс для доступа к свойствам устройств, доступных в HOMEd
-
-## CProperties
-### Методы
-```as
-const bool empty() const
-CStrings list()
-bool exists(const string &name)
-CProperty@ get(const string &name)
-CProperty@ get(const uint16 &index)
-uint16 size()
-CDevice @device()
-CEndpoint @endpoint()
-```
-Список экземпляров `CProperty`
-
-## CEndpoint
-### Методы
-```as
-const string &name() const
-CProperties@ properties()
-CDevice @device()
-```
-Конечная точка устройсва, содержит списки свойств `CProperties`
-
-## CEndpoints
-### Методы
-```as
-const bool empty() const
-CStrings list()
-bool exists(const string &name)
-CEndpoint@ get(const string &name)
-CEndpoint@ get(const uint16 &index)
-uint16 size()
-CDevice @device()
-```
-Список экземпляров `CEndpoint`
-
-## CDevice
-### Методы
-```as
-const string &name() const
-const EDeviceType &type() const
-const string &firmware() const
-const string &manufacturerName() const
-const string &modelName() const
-const string &description() const
-const bool &interviewFinished() const
-const bool &supported() const
-const bool &active() const
-const bool &cloud() const
-const bool &discovery() const
-CProperties@ properties()
-CEndpoints@ endpoints()
-```
-Экземпляр устройства HOMEd, содержит как списки свойств `CProperties`, так и списки конечных точек `CEndpoints`
-
-## CDevices
-### Методы
-```as
-const bool empty() const
-const EDeviceType &type() const
-CStrings list()
-bool exists(const string &name)
-CDevice@ get(const string &name)
-CDevice@ get(const uint16 &index)
-uint16 size()
-```
-Список экземпляров `CDevice`
-
-## CHomed
-### Методы
-```as
-CDevices@ devices(const EDeviceType &type)
-CDevice@ device(const string &name)
-CDevice@ device(const EDeviceType &type, const string &name)
-CEndpoint@ endpoint(const EDeviceType &type, const string &deviceName, const string &endpointName)
-CProperty@ property(const EDeviceType &type, const string &deviceName, const string &propertyName)
-CProperty@ property(const EDeviceType &type, const string &deviceName, const string &endpointName, const string &propertyName)
-```
-Оправной класс для работы с устройствами HOMEd. Экземпляр класса изначально доступен через глобальную переменную `homed`
-
-# Сборка
-Пока сервис неопакечен, его можно собрать только из исходников.
-
-Нужно установить зависимости, склонировать репозиторий и запустить `make release`. Исполняемый файл `homed-angel` будет находиться в каталоге `.build`
-## Зависимости
-* PahoMqttCpp
-* AngelScript
-* jsoncpp
