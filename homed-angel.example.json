@@ -5,11 +5,22 @@
     "port": 1883,
     "user": "login",
     "password": "pw",
-    "homed_root_topic": "homed"
+    "homed_root_topic": "homed",
+    "publish_interval_ms": 10,
+    "publish_qos": 2
   },
   "scripting":
   {
     "location": "/var/lib/homed-angel/scripts",
     "values_history_count": 16
+  },
+  "astro":
+  {
+    "coordinates":
+    {
+      "latitude": 11.104711,
+      "longitude": 12.121212,
+      "altitude": 123
+    }
   }
 }

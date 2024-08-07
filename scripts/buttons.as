@@ -24,8 +24,11 @@ void onButton1(CProperty @property)
 void onButton2(CProperty @property)
 {
   homed.property(dtZigbee, "LightRelay_Hall", "1", "status").set("off");
+  sleep(1000);
   homed.property(dtZigbee, "LightRelay_Hall", "2", "status").set("off");
+  sleep(1000);
   homed.property(dtZigbee, "LightRelay_Hall", "3", "status").set("off");
+  sleep(1000);
   homed.property(dtZigbee, "LightRelay_Hall", "4", "status").set("off");
 }
 

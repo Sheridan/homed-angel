@@ -77,7 +77,7 @@ void CTimer::reset()
 
 void CTimer::run()
 {
-  ha::utils::setThreadName("Timer " + m_scriptName + ":" + m_functionName);
+  // ha::utils::set_thread_name("Timer " + m_scriptName + ":" + m_functionName);
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_startTime = std::chrono::steady_clock::now();

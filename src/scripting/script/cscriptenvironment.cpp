@@ -9,6 +9,8 @@
 #include "datetime/astronomical/csuntracker.h"
 #include "mqtt/scripting/cmqttscriptcallback.h"
 #include "homed/chomed.h"
+#include "utils/thread.h"
+#include "utils/string.h"
 #include "st.h"
 
 #include "scripting/script/cscriptenvironmenthelpers.cpp"
@@ -173,6 +175,15 @@ void CScriptEnvironment::registerEnumerations()
 }
 void CScriptEnvironment::registerModel()
 {
+  // functions
+  HA_AS_FUNCTION(ha::utils, sleep, (const unsigned int &), void);
+  HA_AS_FUNCTION(ha::utils, to_snake_case , (const std::string &), std::string);
+  HA_AS_FUNCTION(ha::utils, to_camel_case , (const std::string &), std::string);
+  HA_AS_FUNCTION(ha::utils, to_lower      , (const std::string &), std::string);
+  HA_AS_FUNCTION(ha::utils, to_upper      , (const std::string &), std::string);
+  HA_AS_FUNCTION(ha::utils, random        , (const size_t       ), std::string);
+  HA_AS_FUNCTION(ha::utils, calculate_hash, (const std::string &), size_t     );
+
   // types
   HA_AS_STRUCT(ha::mqtt, SMqttMesssage);
 
@@ -385,12 +396,14 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CTimerCron, nextTrigger, const ha::datetime::CDateTime&, (), const);
 
   // CDateTime
-  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ), );
-  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int64_t                          ), TS);
-  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int, int, int, int, int, int, int), Parts);
-  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (const ha::datetime::CDateTime&   ), Copy);
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (                                 ),       );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int64_t                          ), TS    );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (const std::string &              ), String);
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (int, int, int, int, int, int, int), Parts );
+  HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CDateTime, (const ha::datetime::CDateTime&   ), Copy  );
   HA_AS_CLASS_VALUE_DESTRUCTOR(ha::datetime, CDateTime);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asString       , std::string, (const std::string &), const);
+  HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asString       , std::string, (                   ), const);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, asUnixTimestamp, std::time_t, (                   ), const);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator= , ha::datetime::CDateTime &, (const ha::datetime::CDateTime &    ),      );
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator+ , ha::datetime::CDateTime  , (const ha::datetime::CTimeInterval &), const);

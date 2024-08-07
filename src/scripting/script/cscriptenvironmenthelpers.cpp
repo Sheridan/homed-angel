@@ -38,14 +38,19 @@ ha::datetime::CTimerCron* CreateCTimerCron(const std::string &scriptName, const 
 
 
 // CDateTime
-void CreateCDateTime     (void *memory)                                                                                  { new(memory) ha::datetime::CDateTime(                                                   ); }
-void CreateCDateTimeCopy (void *memory, const ha::datetime::CDateTime& other)                                            { new(memory) ha::datetime::CDateTime(other                                              ); }
-void CreateCDateTimeTS   (void *memory, int64_t timestamp)                                                               { new(memory) ha::datetime::CDateTime(timestamp                                          ); }
-void CreateCDateTimeParts(void *memory, int year, int month, int day, int hour, int minute, int second, int millisecond) { new(memory) ha::datetime::CDateTime(year, month, day, hour, minute, second, millisecond); }
+void CreateCDateTime      (void *memory)                                                                                  { new(memory) ha::datetime::CDateTime(                                                   ); }
+void CreateCDateTimeCopy  (void *memory, const ha::datetime::CDateTime& other)                                            { new(memory) ha::datetime::CDateTime(other                                              ); }
+void CreateCDateTimeTS    (void *memory, int64_t timestamp)                                                               { new(memory) ha::datetime::CDateTime(timestamp                                          ); }
+void CreateCDateTimeString(void *memory, const std::string& str)                                                          { new(memory) ha::datetime::CDateTime(str                                                ); }
+void CreateCDateTimeParts (void *memory, int year, int month, int day, int hour, int minute, int second, int millisecond) { new(memory) ha::datetime::CDateTime(year, month, day, hour, minute, second, millisecond); }
 
 // CTimeInterval
 void CreateCTimeInterval    (void *memory, double seconds)                           { new(memory) ha::datetime::CTimeInterval(seconds); }
 void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& other) { new(memory) ha::datetime::CTimeInterval(other); }
+
+// functions
+#define HA_AS_FUNCTION(_namespace,_functionname,_params,_return) \
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalFunction(m_converter(#_return " " #_functionname #_params).c_str(), asFUNCTIONPR(_namespace::_functionname, _params, _return), asCALL_CDECL));
 
 // enums
 #define HA_AS_ENUM(_enumname)                             HA_AS_ACCERT_CALL(m_engine->RegisterEnum(#_enumname));

@@ -32,7 +32,7 @@ void initialize()
 {
   while (!HA_ST->homed()->ready() && running)
   {
-    HA_ST->sleep();
+    ha::utils::sleep();
     HA_LOG_DBG("Waiting ready...");
   }
 
@@ -63,7 +63,7 @@ void stop()
 int main(int argc, char* argv[])
 {
   std::signal(SIGINT, handle_signal);
-  ha::utils::setThreadName("main");
+  ha::utils::set_thread_name("main");
   prepareOptions(argc,argv);
   initialize();
   start();

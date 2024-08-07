@@ -40,12 +40,12 @@ void CAstronomical::stop()
 
 void CAstronomical::runUpdate()
 {
-  ha::utils::setThreadName("Astro update");
+  ha::utils::set_thread_name("Astro update");
   while (m_running)
   {
     for (short i = 0; i < 60; i++)
     {
-      HA_ST->sleep(1000);
+      ha::utils::sleep(1000);
       if(!m_running) { return; }
     }
     m_sunTracker->update();
@@ -54,11 +54,11 @@ void CAstronomical::runUpdate()
 
 void CAstronomical::runCheck()
 {
-  ha::utils::setThreadName("Astro check");
+  ha::utils::set_thread_name("Astro check");
   while (m_running)
   {
     m_sunTracker->check();
-    HA_ST->sleep();
+    ha::utils::sleep();
   }
 }
 

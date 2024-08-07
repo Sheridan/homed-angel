@@ -7,7 +7,7 @@ namespace ha
 namespace datetime
 {
 CTimeInterval::CTimeInterval(double seconds)
-  : m_duration(std::chrono::milliseconds(static_cast<int>(seconds * 1000)))
+  : m_duration(std::chrono::milliseconds(static_cast<uint64_t>(seconds * 1000)))
 {}
 
 CTimeInterval::CTimeInterval(const std::chrono::milliseconds &seconds)
@@ -25,7 +25,7 @@ CTimeInterval::~CTimeInterval()
 
 double CTimeInterval::seconds() const
 {
-  return m_duration.count();
+  return m_duration.count() / 1000;
 }
 
 CTimeInterval& CTimeInterval::operator=(const CTimeInterval& other)

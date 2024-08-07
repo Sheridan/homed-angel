@@ -8,8 +8,6 @@
 #include "homed/chomed.h"
 
 
-
-#define HA_DEFAULT_SLEEP_MS 100
 #define HA_SIMPLE_SINGLTON_DECLARATION(_type,_name) static _type *_name() { return createInstance<_type>(); }
 namespace ha
 {
@@ -19,7 +17,6 @@ class CSingleTone
 public:
   static CSingleTone *instance();
   void destruct();
-  void sleep(const unsigned int &seconds = HA_DEFAULT_SLEEP_MS);
 
   template<typename T>
   static T* createInstance()

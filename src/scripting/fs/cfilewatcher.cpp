@@ -3,6 +3,7 @@
 #include <thread>
 #include <iostream>
 #include <fstream>
+#include "utils/thread.h"
 #include "st.h"
 
 namespace ha
@@ -116,7 +117,7 @@ void CFileWatcher::watch()
   m_running = true;
   while (m_running)
   {
-    HA_ST->sleep();
+    ha::utils::sleep();
 
     int length = read(m_inotify_fd, buffer, buf_len);
     if (length < 0 && errno != EAGAIN)

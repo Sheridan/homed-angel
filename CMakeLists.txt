@@ -26,7 +26,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 
-set(PACKAGE_VERSION "0.5.3")
+set(PACKAGE_VERSION "0.5.4")
 
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
@@ -90,7 +90,6 @@ set(HA_HEADERS
   src/scripting/script/cscriptsmanager.h
   src/st.h
   src/tools/singletone/csingletone.h
-  src/utils/datetime.h
   src/utils/string.h
   src/utils/thread.h
   )
@@ -148,7 +147,6 @@ set(HA_SOURCES
   src/scripting/script/cscriptobject.cpp
   src/scripting/script/cscriptsmanager.cpp
   src/tools/singletone/csingletone.cpp
-  src/utils/datetime.cpp
   src/utils/string.cpp
   src/utils/thread.cpp
   )

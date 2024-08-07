@@ -33,14 +33,14 @@ void СMqttPublisher::publish(const std::string &topic, const std::string &conte
 
 void СMqttPublisher::publishWorker()
 {
-  ha::utils::setThreadName("MQTT Publisher");
+  ha::utils::set_thread_name("MQTT Publisher");
   m_publishStop = false;
   while (!m_publishStop)
   {
     std::unique_lock<std::mutex> lock(m_publishMutex);
     bool qEmpty = m_publishMessages.empty();
     lock.unlock();
-    if(qEmpty) { HA_ST->sleep(HA_DEFAULT_SLEEP_MS/10); }
+    if(qEmpty) { ha::utils::sleep(HA_DEFAULT_SLEEP_MS/10); }
     else
     {
       std::unique_lock<std::mutex> lock(m_publishMutex);
@@ -51,14 +51,14 @@ void СMqttPublisher::publishWorker()
       {
         HA_LOG_DBG_MQTT("Publishing '" << content << "'" << " to topic " << topic);
         auto msg = ::mqtt::make_message(topic, content);
-        msg->set_qos(1);
+        msg->set_qos(HA_ST->config()->mqttPublishQOS());
         client()->publish(msg)->wait_for(m_publishInterval);
       }
       catch (const ::mqtt::exception& e)
       {
         HA_LOG_ERR("Error sending message: " << e.what());
       }
-      HA_ST->sleep(m_publishInterval);
+      ha::utils::sleep(m_publishInterval);
     }
   }
 }

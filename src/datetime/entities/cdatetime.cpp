@@ -1,5 +1,6 @@
 #include "datetime/entities/cdatetime.h"
 #include "st.h"
+#include "cdatetime.h"
 
 namespace ha
 {
@@ -16,6 +17,49 @@ CDateTime::CDateTime(std::time_t timestamp)
 {
   m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(
   std::chrono::milliseconds(timestamp * 1000));
+}
+
+CDateTime::CDateTime(const std::string &str)
+{
+  std::tm tm = {};
+  std::istringstream ss(str);
+
+  if (str.find(' ') != std::string::npos)
+  {
+    ss >> std::get_time(&tm, "%Y.%m.%d %H:%M:%S");
+  }
+  else if (str.find('.') != std::string::npos)
+  {
+    ss >> std::get_time(&tm, "%Y.%m.%d");
+  }
+  else
+  {
+    ss >> std::get_time(&tm, "%H:%M:%S");
+    auto now = std::chrono::system_clock::now();
+    auto now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::tm* now_tm = std::localtime(&now_time_t);
+    tm.tm_year = now_tm->tm_year;
+    tm.tm_mon  = now_tm->tm_mon ;
+    tm.tm_mday = now_tm->tm_mday;
+
+    if (tm.tm_hour <  now_tm->tm_hour ||
+       (tm.tm_hour == now_tm->tm_hour && tm.tm_min <  now_tm->tm_min) ||
+       (tm.tm_hour == now_tm->tm_hour && tm.tm_min == now_tm->tm_min && tm.tm_sec < now_tm->tm_sec))
+    {
+      tm.tm_mday += 1;
+    }
+  }
+
+  if (ss.fail())
+  {
+    HA_LOG_ERR("'" << str << "' is wrong datetime format");
+  }
+  else
+  {
+    auto time_t = std::mktime(&tm);
+    m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(std::chrono::milliseconds(time_t * 1000));
+    // m_time = std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(time_t) + std::chrono::milliseconds(tm.tm_sec * 1000));
+  }
 }
 
 CDateTime::CDateTime(const std::chrono::steady_clock::time_point &steadyTimePoint)
@@ -56,6 +100,11 @@ std::string CDateTime::asString(const std::string &format) const
   oss << std::put_time(&tm, format.c_str());
 
   return oss.str();
+}
+
+std::string CDateTime::asString() const
+{
+  return asString("%Y.%m.%d %H:%M:%S");
 }
 
 std::time_t CDateTime::asUnixTimestamp() const

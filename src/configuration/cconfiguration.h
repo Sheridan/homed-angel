@@ -47,6 +47,7 @@ public:
   HA_CONF_OPTION(mqttPassword       , std::string, std::initializer_list<std::string>({ "mqtt"     , "password"             }), asString, "exporter" );
   HA_CONF_OPTION(mqttHomedTopic     , std::string, std::initializer_list<std::string>({ "mqtt"     , "homed_root_topic"     }), asString, "homed"    );
   HA_CONF_OPTION(mqttPublishInterval, int        , std::initializer_list<std::string>({ "mqtt"     , "publish_interval_ms"  }), asInt   , 50         );
+  HA_CONF_OPTION(mqttPublishQOS     , int        , std::initializer_list<std::string>({ "mqtt"     , "publish_qos"          }), asInt   , 1          );
 
   HA_CONF_OPTION(historyCount   , int        , std::initializer_list<std::string>({ "scripting", "values_history_count" }), asInt   , 2          );
 

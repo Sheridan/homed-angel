@@ -60,7 +60,7 @@ CScript::~CScript()
   delete m_mqttCaller;
   if (m_thread.joinable())
   {
-    HA_LOG_NFO("Releasing thread " << m_thread.get_id() << " for " << file().string());
+    HA_LOG_VERBOSE("Releasing thread " << m_thread.get_id() << " for " << file().string());
     m_running = false;
     m_thread.join();
   }
@@ -68,8 +68,8 @@ CScript::~CScript()
 
 void CScript::run()
 {
-  HA_LOG_NFO("Strating thread " << m_thread.get_id() << " for " << file().string());
-  ha::utils::setThreadName("Script " + name());
+  HA_LOG_VERBOSE("Strating thread " << m_thread.get_id() << " for " << file().string());
+  ha::utils::set_thread_name(name());
   m_running = true;
   registerEntities();
   if(build())
@@ -81,7 +81,7 @@ void CScript::run()
       m_propertyCaller  ->call();
       m_sunTrackerCaller->call();
       m_mqttCaller      ->call();
-      HA_ST->sleep(10);
+      ha::utils::sleep(10);
     }
     callMethod("deinitialize", "()");
   }
