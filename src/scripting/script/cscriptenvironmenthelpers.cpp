@@ -49,7 +49,7 @@ void CreateCTimeInterval    (void *memory, double seconds)                      
 void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& other) { new(memory) ha::datetime::CTimeInterval(other); }
 
 // functions
-#define HA_AS_FUNCTION(_namespace,_functionname,_params,_return) \
+#define HA_AS_FUNCTION(_namespace,_functionname,_return,_params) \
   HA_AS_ACCERT_CALL(m_engine->RegisterGlobalFunction(m_converter(#_return " " #_functionname #_params).c_str(), asFUNCTIONPR(_namespace::_functionname, _params, _return), asCALL_CDECL));
 
 // enums

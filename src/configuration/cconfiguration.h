@@ -19,7 +19,7 @@ const _type & _name() \
   if(!m_##_name.loaded) \
   { \
     try { Json::Value value = extract(_keys); m_##_name.set(value._convert()); } \
-    catch(...) { m_##_name.set(_default); } \
+    catch (...) { HA_LOG_WRN("Set default value for option: " << _default); m_##_name.set(_default); } \
   } \
   return m_##_name.option; \
 }
@@ -29,7 +29,7 @@ struct SOption
 {
   T option;
   bool loaded;
-  SOption() : loaded(false) {}
+  SOption() : loaded(false) { }
   void set(const T &value) { loaded = true; option = value; }
 };
 

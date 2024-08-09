@@ -116,48 +116,5 @@ void CHomed::publishValue(CDevice *device, CEndpoint *endpoint, CProperty *prope
   HA_ST->mqtt()->publisher()->publish(HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name() + (endpoint ? "/" + endpoint->name() : ""), value.asJson(property->name()).toStyledString());
 }
 
-// #ifdef HA_DEBUG
-// void CHomed::dump()
-// {
-//   for(const std::string &deviceName : listDeviceZigbee())
-//   {
-//     HA_LOG_DBG(deviceName);
-//     CDeviceZigbee *device = getDeviceZigbee(deviceName);
-//     for(const std::string &propertyName : device->listProperty())
-//     {
-//       dumpProperty(device->getProperty(propertyName));
-//     }
-//     for(const std::string &endpointName : device->listEndpoint())
-//     {
-//       HA_LOG_DBG(" " << endpointName);
-//       CEndpoint *endpoint = device->getEndpoint(endpointName);
-//       for(const std::string &propertyName : endpoint->listProperty())
-//       {
-//         dumpProperty(endpoint->getProperty(propertyName));
-//       }
-//     }
-//   }
-// }
-
-// void CHomed::dumpProperty(CProperty *property)
-// {
-//   HA_LOG_DBG("  " <<  property->name() << ": "
-//                   << (property->readonly() ? "readonly, " : "")
-//                   << (property->unit().empty() ? "" : "unit: " + property->unit() + ", ")
-//                   << (property->min () != 0 ? "min: "  + std::to_string(property->min())  + ", " : "")
-//                   << (property->max () != 0 ? "max: "  + std::to_string(property->max())  + ", " : "")
-//                   << (property->step() != 0 ? "step: " + std::to_string(property->step()) + ", " : "")
-//                   << "vtype: " << property->valueType());
-//   if(!property->enumerate().empty())
-//   {
-//     HA_LOG_DBG("   enumerate:");
-//     for(const std::string &en : property->enumerate())
-//     {
-//       HA_LOG_DBG("    " << en);
-//     }
-//   }
-// }
-
-// #endif // DEBUG
 }
 }

@@ -26,6 +26,7 @@ void prepareOptions(int argc, char* argv[])
   if(HA_ST->cmdLine()->option<bool>("version")) { std::cout << "homed-angel version: " << version << std::endl; exit(0); }
 
   HA_ST->config()->load(HA_ST->cmdLine()->option<std::string>("config"));
+  // HA_LOG_DBG("port: " << HA_ST->config()->mqttPort());
 }
 
 void initialize()
@@ -35,10 +36,6 @@ void initialize()
     ha::utils::sleep();
     HA_LOG_DBG("Waiting ready...");
   }
-
-  // #ifdef HA_DEBUG
-  // HA_ST->homed()->dump();
-  // #endif // HA_DEBUG
 }
 
 void start()

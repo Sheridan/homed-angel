@@ -1,3 +1,4 @@
+#include "classes/daytime.as"
 bool do_it = true;
 
 // CTimerContinuous @timer_continuous;
@@ -49,6 +50,11 @@ void subscribeEvent(ESunTrackerEvent event)
 
 void initialize()
 {
+  CDayTime d_time;
+  if(d_time.isDay    ()) { logger.nfo("Day"    ); }
+  if(d_time.isNight  ()) { logger.nfo("Night"  ); }
+  if(d_time.isMorning()) { logger.nfo("Morning"); }
+  if(d_time.isEvening()) { logger.nfo("Evening"); }
   if(do_it)
   {
     // @timer_continuous = CTimerContinuous(script_name, "onTimer", 60 * 1000);

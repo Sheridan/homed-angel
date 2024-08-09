@@ -1,8 +1,7 @@
 #include "mqtt/base/cmqttbase.h"
 #include <iostream>
 #include "st.h"
-#include "utils/string.h"
-#include "cmqttbase.h"
+#include "utils/random.h"
 
 namespace ha
 {
@@ -60,7 +59,7 @@ void СMqttBase::disconnect()
 
 std::string СMqttBase::clientID()
 {
-  return "homed-angel|" + m_clientIdSuffix + "|" + ha::utils::random(8);
+  return "homed-angel|" + m_clientIdSuffix + "|" + ha::utils::random_string(8);
 }
 }
 }

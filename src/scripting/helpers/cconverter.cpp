@@ -13,6 +13,7 @@ CConverter::CConverter()
 {
   m_dictonary =
   {
+    { "std::vector<std::string>", "CStrings"       },
     { "ha::(\\w+?::)*"          , ""               },
     { "std::string"             , "string"         },
     { "\\*"                     , "@"              },

@@ -40,7 +40,7 @@ void СMqttPublisher::publishWorker()
     std::unique_lock<std::mutex> lock(m_publishMutex);
     bool qEmpty = m_publishMessages.empty();
     lock.unlock();
-    if(qEmpty) { ha::utils::sleep(HA_DEFAULT_SLEEP_MS/10); }
+    if(qEmpty) { ha::utils::sleep(10); }
     else
     {
       std::unique_lock<std::mutex> lock(m_publishMutex);

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <random>
 #include "utils/string.h"
+#include "utils/random.h"
 #include "st.h"
 namespace ha
 {
@@ -116,13 +117,9 @@ void CColor::fromHexString(const std::string &hexString)
 
 void CColor::fromRandom()
 {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(0, 255);
-
-  components[0] = dis(gen);
-  components[1] = dis(gen);
-  components[2] = dis(gen);
+  components[0] = ha::utils::random(0, 255);
+  components[1] = ha::utils::random(0, 255);
+  components[2] = ha::utils::random(0, 255);
 }
 
 void CColor::fromName(const std::string &name)

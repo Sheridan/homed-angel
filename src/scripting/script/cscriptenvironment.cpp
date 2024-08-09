@@ -11,6 +11,8 @@
 #include "homed/chomed.h"
 #include "utils/thread.h"
 #include "utils/string.h"
+#include "utils/numeric.h"
+#include "utils/random.h"
 #include "st.h"
 
 #include "scripting/script/cscriptenvironmenthelpers.cpp"
@@ -176,13 +178,31 @@ void CScriptEnvironment::registerEnumerations()
 void CScriptEnvironment::registerModel()
 {
   // functions
-  HA_AS_FUNCTION(ha::utils, sleep, (const unsigned int &), void);
-  HA_AS_FUNCTION(ha::utils, to_snake_case , (const std::string &), std::string);
-  HA_AS_FUNCTION(ha::utils, to_camel_case , (const std::string &), std::string);
-  HA_AS_FUNCTION(ha::utils, to_lower      , (const std::string &), std::string);
-  HA_AS_FUNCTION(ha::utils, to_upper      , (const std::string &), std::string);
-  HA_AS_FUNCTION(ha::utils, random        , (const size_t       ), std::string);
-  HA_AS_FUNCTION(ha::utils, calculate_hash, (const std::string &), size_t     );
+  HA_AS_FUNCTION(ha::utils, sleep          , void                    , (const unsigned int &             ));
+  HA_AS_FUNCTION(ha::utils, to_snake_case  , std::string             , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, to_camel_case  , std::string             , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, to_lower       , std::string             , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, to_upper       , std::string             , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const std::string &, const size_t));
+  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const size_t                     ));
+  HA_AS_FUNCTION(ha::utils, shuffle_strings, std::vector<std::string>, (std::vector<std::string>         ));
+  HA_AS_FUNCTION(ha::utils, sort_strings   , std::vector<std::string>, (std::vector<std::string>         ));
+  HA_AS_FUNCTION(ha::utils, unique_strings , std::vector<std::string>, (std::vector<std::string>         ));
+  HA_AS_FUNCTION(ha::utils, calculate_hash , size_t                  , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, random         , int                     , (int, int                         ));
+  HA_AS_FUNCTION(ha::utils, random         , double                  , (double, double                   ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (float                            ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (double                           ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int                              ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned int                     ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (short                            ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned short                   ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int64_t                          ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (uint64_t                         ));
+  HA_AS_FUNCTION(ha::utils, to_int         , int                     , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, to_double      , double                  , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, hex_to_int     , int                     , (const std::string &              ));
+  HA_AS_FUNCTION(ha::utils, int_to_hex     , std::string             , (int                              ));
 
   // types
   HA_AS_STRUCT(ha::mqtt, SMqttMesssage);
@@ -414,6 +434,12 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator>=, bool                     , (const ha::datetime::CDateTime &    ), const);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator==, bool                     , (const ha::datetime::CDateTime &    ), const);
   HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator!=, bool                     , (const ha::datetime::CDateTime &    ), const);
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator< , bool                     , (ha::datetime::CDateTime            ),      );
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator<=, bool                     , (ha::datetime::CDateTime            ),      );
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator> , bool                     , (ha::datetime::CDateTime            ),      );
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator>=, bool                     , (ha::datetime::CDateTime            ),      );
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator==, bool                     , (ha::datetime::CDateTime            ),      );
+  // HA_AS_CLASS_METHOD(ha::datetime, CDateTime, operator!=, bool                     , (ha::datetime::CDateTime            ),      );
 
   // CTimeInterval
   HA_AS_CLASS_VALUE_CONSTRUCTOR(ha::datetime, CTimeInterval, (double                               ), );

@@ -131,6 +131,5 @@ bool CDateTime::operator> (const CDateTime& other) const { return m_time >= othe
 bool CDateTime::operator==(const CDateTime& other) const { return m_time == other.m_time; }
 bool CDateTime::operator!=(const CDateTime& other) const { return m_time != other.m_time; }
 
-
 }
 }

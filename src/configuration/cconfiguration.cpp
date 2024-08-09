@@ -47,9 +47,10 @@ Json::Value CConfiguration::extract(const std::initializer_list<std::string> &ke
   for (const auto &key : keys)
   {
     if (value.isMember(key)) { value = value[key]; }
-    else { HA_LOG_WRN("Configuration key " << key << " not found"); throw; }
+    else { HA_LOG_WRN("Configuration key " << key << " not found"); throw 1; }
   }
   return value;
 }
+
 }
 }

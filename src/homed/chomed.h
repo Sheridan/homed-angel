@@ -20,10 +20,6 @@ public:
   ~CHomed();
   void update(const ha::mqtt::CTopic *topic, const Json::Value &payload);
   bool ready();
-  // #ifdef HA_DEBUG
-  // void dump();
-  // void dumpProperty(CProperty *property);
-  // #endif // DEBUG
   CDevices *devices(const EDeviceType &type);
   CDevices *devices(const ha::mqtt::EService &type);
 
