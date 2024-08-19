@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include "utils/string.h"
+#include "log.h"
 
 namespace ha
 {
@@ -47,7 +48,6 @@ public:
   {
     T *t = get(name);
     if(t) { return t; }
-    // t = new T(name);
     t = newElement(name);
     m_container.push_back(t);
     return t;
@@ -56,12 +56,14 @@ public:
   T *get(const std::string &name)
   {
     for(T *item: m_container) { if(item->name() == name) { return item; } }
+    HA_LOG_ERR("No item with name " << name);
     return nullptr;
   }
 
   T *get(const unsigned short &index)
   {
     if(index < size()) { return m_container[index]; }
+    HA_LOG_ERR("No item with index " << index);
     return nullptr;
   }
 

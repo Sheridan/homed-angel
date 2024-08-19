@@ -47,6 +47,7 @@ public:
   CStorage *storage();
 
   void subscribe(const std::string &scriptName, const std::string &methodName, const bool &changedOnly);
+  void unsubscribe(const std::string &scriptName, const std::string &methodName);
 
   CDevice   *device  () { return m_parentDevice  ; }
   CEndpoint *endpoint() { return m_parentEndpoint; }

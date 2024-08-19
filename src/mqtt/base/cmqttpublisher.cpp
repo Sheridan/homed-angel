@@ -49,7 +49,7 @@ void СMqttPublisher::publishWorker()
       lock.unlock();
       try
       {
-        HA_LOG_DBG_MQTT("Publishing '" << content << "'" << " to topic " << topic);
+        HA_LOG_DBG_MQTT("Publishing content to topic " << topic << std::endl << content);
         auto msg = ::mqtt::make_message(topic, content);
         msg->set_qos(HA_ST->config()->mqttPublishQOS());
         client()->publish(msg)->wait_for(m_publishInterval);
@@ -62,5 +62,6 @@ void СMqttPublisher::publishWorker()
     }
   }
 }
+
 }
 }

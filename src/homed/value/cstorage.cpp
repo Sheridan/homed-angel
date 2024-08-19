@@ -2,6 +2,7 @@
 #include "homed/model/entities/cproperty.h"
 #include  <stdexcept>
 #include "st.h"
+#include "cstorage.h"
 
 
 namespace ha
@@ -13,6 +14,20 @@ CStorage::CStorage(CProperty *pProperty)
   : m_historySize(HA_ST->config()->historyCount()),
     m_parentProperty(pProperty),
     m_emptyValue(new CValue(this))
+{}
+
+CStorage::CStorage(const CStorage &other)
+  : m_historySize(HA_ST->config()->historyCount()),
+    m_parentProperty(other.m_parentProperty),
+    m_emptyValue(new CValue(this)),
+    m_history(other.m_history)
+{}
+
+CStorage::CStorage(const CStorage *other)
+  : m_historySize(HA_ST->config()->historyCount()),
+    m_parentProperty(other->m_parentProperty),
+    m_emptyValue(new CValue(this)),
+    m_history(other->m_history)
 {}
 
 CStorage::~CStorage()
@@ -107,7 +122,17 @@ const CValue &CStorage::at(const size_t &index) const
 
 void CStorage::addObserver(const std::string &scriptName, const std::string &methodName, const bool &changedOnly)
 {
-  m_observers.push_back(CObserver(scriptName, methodName, changedOnly, m_parentProperty));
+  m_observers.emplace_back(scriptName, methodName, changedOnly, m_parentProperty);
+}
+
+void CStorage::removeObserver(const std::string &scriptName, const std::string &methodName)
+{
+    m_observers.erase(std::remove_if(
+                                    m_observers.begin(),
+                                    m_observers.end(),
+                                    [&scriptName,&methodName](const CObserver& observer) { return observer.scriptName() == scriptName && observer.methodName() == methodName; }
+                                  ),
+                    m_observers.end());
 }
 
 void CStorage::removeObserversForScript(const std::string &scriptName)

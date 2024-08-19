@@ -5,6 +5,17 @@ namespace ha
 {
 namespace homed
 {
+CValue::CValue()
+  : m_value    (std::monostate{}),
+    m_timestamp(),
+    m_parentStorage(nullptr),
+    m_vString  (nullptr),
+    m_vInt     (nullptr),
+    m_vDouble  (nullptr),
+    m_vBool    (nullptr),
+    m_vColor   (nullptr)
+{}
+
 CValue::CValue(CStorage *ps)
   : m_value    (std::monostate{}),
     m_timestamp(),
@@ -159,10 +170,9 @@ CValue &CValue::operator=(const CValue &other)
 {
   if (this != &other)
   {
-    // m_mutex = std::make_unique<std::mutex>();
-    // std::lock_guard<std::mutex> lock(*m_mutex);
     m_value = other.m_value;
     m_timestamp = other.m_timestamp;
+    m_parentStorage = new CStorage(other.m_parentStorage);
   }
   return *this;
 }

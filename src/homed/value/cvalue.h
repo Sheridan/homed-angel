@@ -34,6 +34,7 @@ class CStorage;
 class CValue
 {
 public:
+  explicit CValue();
   explicit CValue(CStorage *ps);
   explicit CValue(const TValue &value, CStorage *ps);
            CValue(const CValue &other);

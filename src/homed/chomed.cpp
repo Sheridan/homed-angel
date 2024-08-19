@@ -113,7 +113,12 @@ void CHomed::unsubscribeScript(const std::string &scriptName)
 
 void CHomed::publishValue(CDevice *device, CEndpoint *endpoint, CProperty *property, const CValue &value)
 {
-  HA_ST->mqtt()->publisher()->publish(HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name() + (endpoint ? "/" + endpoint->name() : ""), value.asJson(property->name()).toStyledString());
+  std::string topic = HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name();
+  if(endpoint != device)
+  {
+    topic += "/" + endpoint->name();
+  }
+  HA_ST->mqtt()->publisher()->publish(topic, value.asJson(property->name()).toStyledString());
 }
 
 }

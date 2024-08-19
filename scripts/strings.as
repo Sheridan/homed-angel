@@ -29,7 +29,7 @@ void initialize()
   logger.nfo("String to int");
   logger.nfo("       int: " + to_int("123"));
   logger.nfo("    double: " + to_double("123.345"));
-  logger.nfo("hex to int: " + hex_to_int("F1ad42"));
+  logger.nfo("hex to int: " + hex_to_int("402"));
   logger.nfo("int to hex: " + int_to_hex(123456789));
 
   logger.nfo("Random numeric");

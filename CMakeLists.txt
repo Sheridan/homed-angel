@@ -34,11 +34,24 @@ configure_file(
   @ONLY
 )
 
-set(HA_HEADERS
+set(CRONCPP_HEADERS
+  external/croncpp/include/croncpp.h
+)
+
+set(AS_SDK_HEADERS
   external/angelscript/sdk/add_on/scriptarray/scriptarray.h
   external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.h
   external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.h
-  external/croncpp/include/croncpp.h
+)
+
+set(AS_SDK_SOURCES
+  external/angelscript/sdk/add_on/scriptarray/scriptarray.cpp
+  external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.cpp
+  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
+  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
+)
+
+set(HA_HEADERS
   src/configuration/ccmdoptions.h
   src/configuration/cconfiguration.h
   src/datetime/astronomical/castronomical.h
@@ -97,10 +110,6 @@ set(HA_HEADERS
   )
 
 set(HA_SOURCES
-  external/angelscript/sdk/add_on/scriptarray/scriptarray.cpp
-  external/angelscript/sdk/add_on/scriptbuilder/scriptbuilder.cpp
-  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring_utils.cpp
-  external/angelscript/sdk/add_on/scriptstdstring/scriptstdstring.cpp
   src/configuration/ccmdoptions.cpp
   src/configuration/cconfiguration.cpp
   src/datetime/astronomical/castronomical.cpp
@@ -157,9 +166,13 @@ set(HA_SOURCES
 
 include_directories(src
                     external/angelscript
+                    external/angelscript-aatc/source
                     external/croncpp/include)
 
 add_executable(homed-angel
+    ${AS_SDK_HEADERS}
+    ${AS_SDK_SOURCES}
+    ${CRONCPP_HEADERS}
     ${HA_HEADERS}
     ${HA_SOURCES}
 )

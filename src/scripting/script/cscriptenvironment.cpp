@@ -6,6 +6,8 @@
 #include "sdk/add_on/scriptarray/scriptarray.h"
 #include "sdk/tests/test_feature/source/stdvector.h"
 
+// #include "aatc.hpp"
+
 #include "datetime/astronomical/csuntracker.h"
 #include "mqtt/scripting/cmqttscriptcallback.h"
 #include "homed/chomed.h"
@@ -13,6 +15,7 @@
 #include "utils/string.h"
 #include "utils/numeric.h"
 #include "utils/random.h"
+
 #include "st.h"
 
 #include "scripting/script/cscriptenvironmenthelpers.cpp"
@@ -90,6 +93,7 @@ void CScriptEnvironment::registerEntities()
   HA_AS_ACCERT_CALL(m_engine->SetMessageCallback(asMETHOD(CScriptEnvironment, messageCallback), this, asCALL_THISCALL));
   registerBase();
   registerLogger();
+  registerContainers();
   registerEnumerations();
   registerModel();
   registerVariables();
@@ -115,7 +119,7 @@ void CScriptEnvironment::registerBase()
   RegisterScriptArray(m_engine, true);
   RegisterStdString(m_engine);
   RegisterStdStringUtils(m_engine);
-  RegisterVector<std::string>("CStrings", "string", m_engine);
+  // aatc::RegisterAllContainers(m_engine);
 }
 
 void CScriptEnvironment::registerLogger()
@@ -126,6 +130,11 @@ void CScriptEnvironment::registerLogger()
   HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, wrn, void, (const std::string &in),      );
   HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, err, void, (const std::string &in),      );
   HA_AS_CLASS_METHOD(ha::scripting::helpers, CLogger, cry, void, (const std::string &in),      );
+}
+
+void CScriptEnvironment::registerContainers()
+{
+  RegisterVector<std::string>("CStrings", "string", m_engine);
 }
 
 void CScriptEnvironment::registerEnumerations()
@@ -148,32 +157,32 @@ void CScriptEnvironment::registerEnumerations()
 
   // ESunTrackerEvent
   HA_AS_ENUM(ESunTrackerEvent);
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steNadir                           );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningBlueHourStart            );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningAstronomicalTwilightStart);
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningAstronomicalTwilightEnd  );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningNauticalTwilightStart    );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningNauticalTwilightEnd      );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningCivilTwilightStart       );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningCivilTwilightEnd         );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningBlueHourEnd              );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningGoldenHourStart          );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningSunriseStart             );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningSunriseEnd               );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steMorningGoldenHourEnd            );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steZenith                          );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningGoldenHourStart          );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningGoldenHourEnd            );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningBlueHourStart            );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningSunsetStart              );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningSunsetEnd                );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningBlueHourEnd              );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningCivilTwilightStart       );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningCivilTwilightEnd         );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningNauticalTwilightStart    );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningNauticalTwilightEnd      );
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningAstronomicalTwilightStart);
-  HA_AS_ENUM_VALUE(ha::datetime,  ESunTrackerEvent, steEveningAstronomicalTwilightEnd  );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steNadir                           );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningBlueHourStart            );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningAstronomicalTwilightStart);
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningAstronomicalTwilightEnd  );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningNauticalTwilightStart    );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningNauticalTwilightEnd      );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningCivilTwilightStart       );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningCivilTwilightEnd         );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningBlueHourEnd              );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningGoldenHourStart          );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningSunriseStart             );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningSunriseEnd               );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steMorningGoldenHourEnd            );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steZenith                          );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningGoldenHourStart          );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningGoldenHourEnd            );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningBlueHourStart            );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningSunsetStart              );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningSunsetEnd                );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningBlueHourEnd              );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningCivilTwilightStart       );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningCivilTwilightEnd         );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningNauticalTwilightStart    );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningNauticalTwilightEnd      );
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningAstronomicalTwilightStart);
+  HA_AS_ENUM_VALUE(ha::datetime, ESunTrackerEvent, steEveningAstronomicalTwilightEnd  );
 }
 void CScriptEnvironment::registerModel()
 {
@@ -299,7 +308,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CValue, timestamp, const ha::datetime::CDateTime &, (), const);
   HA_AS_CLASS_METHOD(ha::homed, CValue, storage  , ha::homed::CStorage *          , (), const);
 
-  RegisterVector<std::string>("CValues", "CValue", m_engine);
+  RegisterVector<ha::homed::CValue>("CValues", "CValue", m_engine);
 
   // CStorage
   HA_AS_CLASS_METHOD(ha::homed, CStorage, count   , size_t                   , (              ), const);
@@ -312,24 +321,25 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty *   , (              ), const);
 
   // CProperty
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, name     , const std::string &                  , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly , const bool &                         , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType, const ha::homed::EPropertyValueType &, (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate, const ha::utils::CStrings &          , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, min      , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, max      , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, step     , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage  , ha::homed::CStorage *                , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, last     , const ha::homed::CValue &            , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, type     , const std::string                    , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, device   , ha::homed::CDevice *                 , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint , ha::homed::CEndpoint *               , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe, void                                 , (const std::string &, const std::string &, const bool &),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const std::string &                                   ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const int &                                           ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const double &                                        ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const bool &                                          ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                 , (const ha::homed::CColor &                             ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, name       , const std::string &                  , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly   , const bool &                         , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType  , const ha::homed::EPropertyValueType &, (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate  , const ha::utils::CStrings &          , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, min        , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, max        , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, step       , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage    , ha::homed::CStorage *                , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, last       , const ha::homed::CValue &            , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, type       , const std::string                    , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, device     , ha::homed::CDevice *                 , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint   , ha::homed::CEndpoint *               , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe  , void                                 , (const std::string &, const std::string &, const bool &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, unsubscribe, void                                 , (const std::string &, const std::string &              ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const std::string &                                   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const int &                                           ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const double &                                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const bool &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const ha::homed::CColor &                             ),      );
   // HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const ha::homed::CValue &                             ),      );
 
   // CProperties

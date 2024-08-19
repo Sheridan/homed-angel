@@ -92,7 +92,12 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
           property->valueType(EPropertyValueType::pvtBool);
           continue;
         }
-        if(payload["options"][itemName].isMember("type") && payload["options"][itemName]["type"].asString() == "toggle")
+        if(payload["options"][itemName].isMember("type") &&
+            (
+              payload["options"][itemName]["type"].asString() == "toggle" ||
+              payload["options"][itemName]["type"].asString() == "button"
+            )
+          )
         {
           CProperty *property = properties()->ensure(itemName);
           property->readonly(false);

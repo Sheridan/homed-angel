@@ -20,6 +20,8 @@ class CStorage
 {
 public:
   explicit CStorage(CProperty *pProperty);
+           CStorage(const CStorage &other);
+           CStorage(const CStorage *other);
   virtual ~CStorage();
 
   void set(const std::string &value) { setValue(value); }
@@ -39,6 +41,7 @@ public:
   const CValue &last() const;
   const CValue &at(const size_t &index) const;
   void addObserver(const std::string &scriptName, const std::string &methodName, const bool &changedOnly);
+  void removeObserver(const std::string &scriptName, const std::string &methodName);
   void removeObserversForScript(const std::string &scriptName);
   CProperty *property() const { return m_parentProperty; }
 

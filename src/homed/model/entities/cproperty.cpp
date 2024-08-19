@@ -2,6 +2,7 @@
 #include "homed/model/entities/cdevice.h"
 #include "homed/model/entities/cendpoint.h"
 #include "st.h"
+#include "cproperty.h"
 
 
 namespace ha
@@ -28,6 +29,11 @@ CValues           CProperty::history()       { return m_storage->list(); }
 void CProperty::subscribe(const std::string &scriptName, const std::string &methodName, const bool &changedOnly)
 {
   storage()->addObserver(scriptName, methodName, changedOnly);
+}
+
+void CProperty::unsubscribe(const std::string &scriptName, const std::string &methodName)
+{
+  storage()->removeObserver(scriptName, methodName);
 }
 
 void CProperty::set(const std::string &value) { set(CValue(value, storage())); }

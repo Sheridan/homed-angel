@@ -46,7 +46,7 @@ void CreateCDateTimeParts (void *memory, int year, int month, int day, int hour,
 
 // CTimeInterval
 void CreateCTimeInterval    (void *memory, double seconds)                           { new(memory) ha::datetime::CTimeInterval(seconds); }
-void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& other) { new(memory) ha::datetime::CTimeInterval(other); }
+void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& other) { new(memory) ha::datetime::CTimeInterval(other  ); }
 
 // functions
 #define HA_AS_FUNCTION(_namespace,_functionname,_return,_params) \
@@ -94,6 +94,7 @@ void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& ot
 
 #define HA_AS_CLASS_SMART_CONSTRUCTOR(_namespace,_classname,_params) \
   HA_AS_ACCERT_CALL(m_engine->RegisterObjectBehaviour(#_classname, asBEHAVE_FACTORY, m_converter(#_classname "@ f" #_params).c_str(), asFUNCTIONPR(Create##_classname, _params, _namespace::_classname *), asCALL_CDECL));
+
 
 }
 }
