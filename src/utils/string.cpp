@@ -2,6 +2,7 @@
 #include <sstream>
 #include <algorithm>
 #include <functional>
+#include <regex>
 #include "log.h"
 namespace ha
 {
@@ -136,6 +137,79 @@ std::vector<std::string> unique_strings(std::vector<std::string> input)
   auto last = std::unique(input.begin(), input.end());
   input.erase(last, input.end());
   return input;
+}
+
+std::string trim(const std::string &input)
+{
+  auto start = input.begin();
+  while (start != input.end() && std::isspace(*start))
+  {
+    ++start;
+  }
+
+  if (start == input.end())
+  {
+    return "";
+  }
+
+  auto end = input.end();
+  do
+  {
+    --end;
+  } while (end != start && std::isspace(*end));
+
+  return std::string(start, end + 1);
+}
+
+bool contains(const std::string &input, const std::string &needle)
+{
+  return input.find(needle) != std::string::npos;
+}
+
+bool match(const std::string &input, const std::string &regex)
+{
+  return std::regex_match(input, std::regex(regex));
+}
+
+std::string extract(const std::string &input, const std::string &regex, int index)
+{
+  // HA_LOG_NFO("extract `" << regex << "` from `" << input << "`");
+  std::smatch matches;
+
+  if (std::regex_search(input, matches, std::regex(regex)))
+  {
+    return matches[index].str();
+  }
+
+  return "";
+}
+
+std::vector<std::string> split(const std::string &input, const char &delimiter)
+{
+  std::vector<std::string> result;
+  std::string token;
+  std::istringstream tokenStream(input);
+
+  while (std::getline(tokenStream, token, delimiter))
+  {
+    result.push_back(token);
+  }
+
+  return result;
+}
+
+std::string replace(const std::string &input, const std::string &needle, const std::string &replacement)
+{
+  std::string result = input;
+  size_t pos = 0;
+
+  while ((pos = result.find(needle, pos)) != std::string::npos)
+  {
+    result.replace(pos, needle.length(), replacement);
+    pos += replacement.length();
+  }
+
+  return result;
 }
 
 }

@@ -1,5 +1,5 @@
 #include "../includes/log_helpers.as"
-bool do_it = true;
+bool do_it = false;
 
 
 void initialize()

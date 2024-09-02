@@ -3,6 +3,9 @@
 #include "datetime/timers/ctimeroneshoot.h"
 #include "datetime/timers/ctimercron.h"
 #include "scripting/helpers/cjson.h"
+#include "serial/cserialcommunication.h"
+#include "serial/cserialwatcher.h"
+#include "serial/devices/gsm/cgsm.h"
 #include "st.h"
 
 namespace ha
@@ -36,6 +39,14 @@ ha::datetime::CTimerOneshot* CreateCTimerOneshot(const std::string &scriptName, 
 // CTimerCron
 ha::datetime::CTimerCron* CreateCTimerCron(const std::string &scriptName, const std::string &functionName, const std::string& schedule) { return new ha::datetime::CTimerCron(scriptName, functionName, schedule); }
 
+// CSerialCommunication
+ha::serial::CSerialCommunication* CreateCSerialCommunication(const std::string &port, ha::serial::EBaudRate baudRate, ha::serial::EParity parity, ha::serial::EStopBits stopBits, ha::serial::EFlowControl flowControl, ha::serial::EBitsPerByte bitsPerByte) { return new ha::serial::CSerialCommunication(port, baudRate, parity, stopBits, flowControl, bitsPerByte); }
+
+// CSerialWatcher
+ha::serial::CSerialWatcher* CreateCSerialWatcher(const std::string &port, ha::serial::EBaudRate baudRate, ha::serial::EParity parity, ha::serial::EStopBits stopBits, ha::serial::EFlowControl flowControl, ha::serial::EBitsPerByte bitsPerByte) { return new ha::serial::CSerialWatcher(port, baudRate, parity, stopBits, flowControl, bitsPerByte); }
+
+// CGsm
+ha::serial::device::CGsm* CreateCGsm(const std::string &port, ha::serial::EBaudRate baudRate) { return new ha::serial::device::CGsm(port, baudRate); }
 
 // CDateTime
 void CreateCDateTime      (void *memory)                                                                                  { new(memory) ha::datetime::CDateTime(                                                   ); }
@@ -54,7 +65,7 @@ void CreateCTimeIntervalCopy(void *memory, const ha::datetime::CTimeInterval& ot
 
 // enums
 #define HA_AS_ENUM(_enumname)                             HA_AS_ACCERT_CALL(m_engine->RegisterEnum(#_enumname));
-#define HA_AS_ENUM_VALUE(_namespace,_enumname,_enumvalue) HA_AS_ACCERT_CALL(m_engine->RegisterEnumValue(#_enumname, #_enumvalue, _namespace::_enumname::_enumvalue));
+#define HA_AS_ENUM_VALUE(_namespace,_enumname,_enumvalue) HA_AS_ACCERT_CALL(m_engine->RegisterEnumValue(#_enumname, #_enumvalue, static_cast<int>(_namespace::_enumname::_enumvalue)));
 
 // structs
 #define HA_AS_STRUCT(_namespace,_classname) \

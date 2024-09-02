@@ -50,6 +50,7 @@ private:
   void registerContainers();
   void registerEnumerations();
   void registerModel();
+  void registerSerial();
   void registerVariables();
 };
 

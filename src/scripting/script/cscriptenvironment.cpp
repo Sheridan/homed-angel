@@ -96,6 +96,7 @@ void CScriptEnvironment::registerEntities()
   registerContainers();
   registerEnumerations();
   registerModel();
+  registerSerial();
   registerVariables();
 }
 
@@ -187,31 +188,37 @@ void CScriptEnvironment::registerEnumerations()
 void CScriptEnvironment::registerModel()
 {
   // functions
-  HA_AS_FUNCTION(ha::utils, sleep          , void                    , (const unsigned int &             ));
-  HA_AS_FUNCTION(ha::utils, to_snake_case  , std::string             , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, to_camel_case  , std::string             , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, to_lower       , std::string             , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, to_upper       , std::string             , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const std::string &, const size_t));
-  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const size_t                     ));
-  HA_AS_FUNCTION(ha::utils, shuffle_strings, std::vector<std::string>, (std::vector<std::string>         ));
-  HA_AS_FUNCTION(ha::utils, sort_strings   , std::vector<std::string>, (std::vector<std::string>         ));
-  HA_AS_FUNCTION(ha::utils, unique_strings , std::vector<std::string>, (std::vector<std::string>         ));
-  HA_AS_FUNCTION(ha::utils, calculate_hash , size_t                  , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, random         , int                     , (int, int                         ));
-  HA_AS_FUNCTION(ha::utils, random         , double                  , (double, double                   ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (float                            ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (double                           ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int                              ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned int                     ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (short                            ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned short                   ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int64_t                          ));
-  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (uint64_t                         ));
-  HA_AS_FUNCTION(ha::utils, to_int         , int                     , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, to_double      , double                  , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, hex_to_int     , int                     , (const std::string &              ));
-  HA_AS_FUNCTION(ha::utils, int_to_hex     , std::string             , (int                              ));
+  HA_AS_FUNCTION(ha::utils, sleep          , void                    , (const unsigned int &                                         ));
+  HA_AS_FUNCTION(ha::utils, to_snake_case  , std::string             , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, to_camel_case  , std::string             , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, to_lower       , std::string             , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, to_upper       , std::string             , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, trim           , std::string             , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, contains       , bool                    , (const std::string &, const std::string &                     ));
+  HA_AS_FUNCTION(ha::utils, match          , bool                    , (const std::string &, const std::string &                     ));
+  HA_AS_FUNCTION(ha::utils, extract        , std::string             , (const std::string &, const std::string &, int                ));
+  HA_AS_FUNCTION(ha::utils, split          , std::vector<std::string>, (const std::string &, const char &                            ));
+  HA_AS_FUNCTION(ha::utils, replace        , std::string             , (const std::string &, const std::string &, const std::string &));
+  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const std::string &, const size_t                            ));
+  HA_AS_FUNCTION(ha::utils, random_string  , std::string             , (const size_t                                                 ));
+  HA_AS_FUNCTION(ha::utils, shuffle_strings, std::vector<std::string>, (std::vector<std::string>                                     ));
+  HA_AS_FUNCTION(ha::utils, sort_strings   , std::vector<std::string>, (std::vector<std::string>                                     ));
+  HA_AS_FUNCTION(ha::utils, unique_strings , std::vector<std::string>, (std::vector<std::string>                                     ));
+  HA_AS_FUNCTION(ha::utils, calculate_hash , size_t                  , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, random         , int                     , (int, int                                                     ));
+  HA_AS_FUNCTION(ha::utils, random         , double                  , (double, double                                               ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (float                                                        ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (double                                                       ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int                                                          ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned int                                                 ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (short                                                        ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (unsigned short                                               ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (int64_t                                                      ));
+  HA_AS_FUNCTION(ha::utils, to_string      , std::string             , (uint64_t                                                     ));
+  HA_AS_FUNCTION(ha::utils, to_int         , int                     , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, to_double      , double                  , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, hex_to_int     , int                     , (const std::string &                                          ));
+  HA_AS_FUNCTION(ha::utils, int_to_hex     , std::string             , (int                                                          ));
 
   // types
   HA_AS_STRUCT(ha::mqtt, SMqttMesssage);
@@ -321,26 +328,30 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CStorage, property, ha::homed::CProperty *   , (              ), const);
 
   // CProperty
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, name       , const std::string &                  , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly   , const bool &                         , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType  , const ha::homed::EPropertyValueType &, (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate  , const ha::utils::CStrings &          , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, min        , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, max        , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, step       , const double &                       , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage    , ha::homed::CStorage *                , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, last       , const ha::homed::CValue &            , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, type       , const std::string                    , (                                                      ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, device     , ha::homed::CDevice *                 , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint   , ha::homed::CEndpoint *               , (                                                      ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe  , void                                 , (const std::string &, const std::string &, const bool &),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, unsubscribe, void                                 , (const std::string &, const std::string &              ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const std::string &                                   ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const int &                                           ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const double &                                        ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const bool &                                          ),      );
-  HA_AS_CLASS_METHOD(ha::homed, CProperty, set        , void                                 , (const ha::homed::CColor &                             ),      );
-  // HA_AS_CLASS_METHOD(ha::homed, CProperty, set      , void                                , (const ha::homed::CValue &                             ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, name         , const std::string &                  , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, readonly     , const bool &                         , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, valueType    , const ha::homed::EPropertyValueType &, (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, enumerate    , const ha::utils::CStrings &          , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, min          , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, max          , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, step         , const double &                       , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, storage      , ha::homed::CStorage *                , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, last         , const ha::homed::CValue &            , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, type         , const std::string                    , (                                                      ), const);
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, device       , ha::homed::CDevice *                 , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, endpoint     , ha::homed::CEndpoint *               , (                                                      ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, subscribe    , void                                 , (const std::string &, const std::string &, const bool &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, unsubscribe  , void                                 , (const std::string &, const std::string &              ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set          , void                                 , (const std::string &                                   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set          , void                                 , (const int &                                           ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set          , void                                 , (const double &                                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set          , void                                 , (const bool &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, set          , void                                 , (const ha::homed::CColor &                             ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, setIfNotEqual, void                                 , (const std::string &                                   ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, setIfNotEqual, void                                 , (const int &                                           ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, setIfNotEqual, void                                 , (const double &                                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, setIfNotEqual, void                                 , (const bool &                                          ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CProperty, setIfNotEqual, void                                 , (const ha::homed::CColor &                             ),      );
 
   // CProperties
   HA_AS_CLASS_METHOD(ha::homed, CProperties, empty   , const bool            , (                      ), const);
@@ -478,6 +489,109 @@ void CScriptEnvironment::registerModel()
   // CMqtt
   HA_AS_CLASS_METHOD(ha::mqtt, CMqtt, subscribe, void, (const std::string &, const std::string &, const std::string &),      );
   HA_AS_CLASS_METHOD(ha::mqtt, CMqtt, publish  , void, (const std::string &, const std::string &                     ),      );
+}
+
+void CScriptEnvironment::registerSerial()
+{
+  // EBaudRate
+  HA_AS_ENUM(EBaudRate);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br0      );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br50     );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br75     );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br110    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br134    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br150    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br200    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br300    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br600    );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br1200   );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br1800   );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br2400   );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br4800   );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br9600   );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br19200  );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br38400  );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br57600  );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br115200 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br230400 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br460800 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br500000 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br576000 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br921600 );
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br1000000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br1152000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br1500000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br2000000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br2500000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br3000000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br3500000);
+  HA_AS_ENUM_VALUE(ha::serial, EBaudRate, br4000000);
+
+  // EParity
+  HA_AS_ENUM(EParity);
+  HA_AS_ENUM_VALUE(ha::serial, EParity, pNone);
+  HA_AS_ENUM_VALUE(ha::serial, EParity, pOdd );
+  HA_AS_ENUM_VALUE(ha::serial, EParity, pEven);
+
+  // EStopBits
+  HA_AS_ENUM(EStopBits);
+  HA_AS_ENUM_VALUE(ha::serial, EStopBits, sbOne);
+  HA_AS_ENUM_VALUE(ha::serial, EStopBits, sbTwo);
+
+  // EFlowControl
+  HA_AS_ENUM(EFlowControl);
+  HA_AS_ENUM_VALUE(ha::serial, EFlowControl, fcNone);
+  HA_AS_ENUM_VALUE(ha::serial, EFlowControl, fcHard);
+  HA_AS_ENUM_VALUE(ha::serial, EFlowControl, fcSoft);
+
+  // EBitsPerByte
+  HA_AS_ENUM(EBitsPerByte);
+  HA_AS_ENUM_VALUE(ha::serial, EBitsPerByte, bpb5);
+  HA_AS_ENUM_VALUE(ha::serial, EBitsPerByte, bpb6);
+  HA_AS_ENUM_VALUE(ha::serial, EBitsPerByte, bpb7);
+  HA_AS_ENUM_VALUE(ha::serial, EBitsPerByte, bpb8);
+
+  HA_AS_ENUM(ECommandEndl);
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceCR  );
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceLF  );
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceCRLF);
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceSUB );
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceNULL);
+  HA_AS_ENUM_VALUE(ha::serial, ECommandEndl, ceETX );
+
+  // CSerialCommunication
+  HA_AS_CLASS_SMART(ha::serial, CSerialCommunication);
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::serial, CSerialCommunication, (const std::string &, ha::serial::EBaudRate, ha::serial::EParity, ha::serial::EStopBits, ha::serial::EFlowControl, ha::serial::EBitsPerByte));
+  HA_AS_CLASS_METHOD(ha::serial, CSerialCommunication, send   , std::string, (const std::string &, const ha::serial::ECommandEndl &, int                ),      );
+  HA_AS_CLASS_METHOD(ha::serial, CSerialCommunication, send   , std::string, (const std::string &, const ha::serial::ECommandEndl &, const std::string &),      );
+  HA_AS_CLASS_METHOD(ha::serial, CSerialCommunication, query  , std::string, (const std::string &, const std::string &                                  ),      );
+  HA_AS_CLASS_METHOD(ha::serial, CSerialCommunication, isOpen , bool       , (                                                                          ), const);
+  HA_AS_CLASS_METHOD(ha::serial, CSerialCommunication, isReady, bool       , (                                                                          ),      );
+
+  // CSerialWatcher
+  HA_AS_CLASS_SMART(ha::serial, CSerialWatcher);
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::serial, CSerialWatcher, (const std::string &, ha::serial::EBaudRate, ha::serial::EParity, ha::serial::EStopBits, ha::serial::EFlowControl, ha::serial::EBitsPerByte));
+  HA_AS_CLASS_METHOD(ha::serial, CSerialWatcher, start , void, (),      );
+  HA_AS_CLASS_METHOD(ha::serial, CSerialWatcher, stop  , void, (),      );
+  HA_AS_CLASS_METHOD(ha::serial, CSerialWatcher, isOpen, bool, (), const);
+
+  // CGsm
+  HA_AS_CLASS_SMART(ha::serial::device, CGsm);
+  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::serial::device, CGsm, (const std::string &, ha::serial::EBaudRate));
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, isOpen            , bool                    , (                                        ), const);
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, isReady           , bool                    , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, ready             , bool                    , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, signalLevel       , int                     , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, operatorName      , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, firmwareVersion   , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, adapterName       , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, imei              , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, imsi              , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, info              , std::string             , (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, ussd              , std::string             , (const std::string &                     ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, supportedEncodings, std::vector<std::string>, (                                        ),      );
+  HA_AS_CLASS_METHOD(ha::serial::device, CGsm, sendSms           , bool                    , (const std::string &, const std::string &),      );
+
 }
 
 void CScriptEnvironment::registerVariables()

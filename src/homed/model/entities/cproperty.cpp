@@ -52,6 +52,13 @@ void CProperty::set(const CValue      &value)
   HA_ST->homed()->publishValue(device(), endpoint(), this, value);
 }
 
+void CProperty::setIfNotEqual(const std::string &value) { setIfNotEqual(CValue(value, storage())); }
+void CProperty::setIfNotEqual(const int         &value) { setIfNotEqual(CValue(value, storage())); }
+void CProperty::setIfNotEqual(const double      &value) { setIfNotEqual(CValue(value, storage())); }
+void CProperty::setIfNotEqual(const bool        &value) { setIfNotEqual(CValue(value, storage())); }
+void CProperty::setIfNotEqual(const CColor      &value) { setIfNotEqual(CValue(value, storage())); }
+void CProperty::setIfNotEqual(const CValue      &value) { if(last().compareValue(value)) { set(value); } }
+
 
 }
 }

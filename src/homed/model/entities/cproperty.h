@@ -59,6 +59,13 @@ public:
   void set(const CColor      &value);
   void set(const CValue      &value);
 
+  void setIfNotEqual(const std::string &value);
+  void setIfNotEqual(const int         &value);
+  void setIfNotEqual(const double      &value);
+  void setIfNotEqual(const bool        &value);
+  void setIfNotEqual(const CColor      &value);
+  void setIfNotEqual(const CValue      &value);
+
 private:
   CStorage *m_storage;
   CDevice *m_parentDevice;

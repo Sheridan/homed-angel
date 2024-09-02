@@ -71,3 +71,10 @@
 #else // HA_ASTRO_DEBUG
   #define HA_LOG_DBG_ASTRO(_what)
 #endif // HA_ASTRO_DEBUG
+
+// #define HA_SERIAL_DEBUG
+#ifdef HA_SERIAL_DEBUG
+  #define HA_LOG_DBG_SERIAL(_what) HA_LOG_DBG(_what)
+#else // HA_SERIAL_DEBUG
+  #define HA_LOG_DBG_SERIAL(_what)
+#endif // HA_SERIAL_DEBUG

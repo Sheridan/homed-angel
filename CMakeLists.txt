@@ -11,6 +11,7 @@ find_package(PahoMqttCpp REQUIRED)
 find_package(AngelScript REQUIRED)
 find_package(PkgConfig REQUIRED)
 find_package(Nova REQUIRED)
+find_package(Iconv REQUIRED)
 pkg_check_modules(JSONCPP REQUIRED jsoncpp)
 
 option(CMAKE_BUILD_TYPE "Build type" Release)
@@ -26,7 +27,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 
-set(PACKAGE_VERSION "0.5.6")
+set(PACKAGE_VERSION "0.5.7")
 
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
@@ -101,7 +102,12 @@ set(HA_HEADERS
   src/scripting/script/cscriptenvironment.h
   src/scripting/script/cscriptobject.h
   src/scripting/script/cscriptsmanager.h
+  src/serial/cserial.h
+  src/serial/cserialcommunication.h
+  src/serial/cserialwatcher.h
+  src/serial/devices/gsm/cgsm.h
   src/st.h
+  src/tools/iconv/ciconv.h
   src/tools/singletone/csingletone.h
   src/utils/numeric.h
   src/utils/random.h
@@ -157,6 +163,11 @@ set(HA_SOURCES
   src/scripting/script/cscriptenvironment.cpp
   src/scripting/script/cscriptobject.cpp
   src/scripting/script/cscriptsmanager.cpp
+  src/serial/cserial.cpp
+  src/serial/cserialcommunication.cpp
+  src/serial/cserialwatcher.cpp
+  src/serial/devices/gsm/cgsm.cpp
+  src/tools/iconv/ciconv.cpp
   src/tools/singletone/csingletone.cpp
   src/utils/numeric.cpp
   src/utils/random.cpp
@@ -181,6 +192,7 @@ target_link_libraries(homed-angel
     jsoncpp
     ${ANGELSCRIPT_LIBRARY}
     ${NOVA_LIBRARIES}
+    ${Iconv_LIBRARIES}
     # ${Boost_LIBRARIES}
   )
 
@@ -205,7 +217,7 @@ set(CPACK_DEBIAN_PACKAGE_USER "homed")
 set(CPACK_DEBIAN_PACKAGE_GROUP "homed")
 set(CPACK_DEBIAN_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${CMAKE_SYSTEM_PROCESSOR}.deb")
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/deploy/debian/control.extra")
-set(CPACK_DEBIAN_PACKAGE_POST_INSTALL "${CMAKE_CURRENT_SOURCE_DIR}/deploy/debian//post_install.sh")
+set(CPACK_DEBIAN_PACKAGE_POST_INSTALL "${CMAKE_CURRENT_SOURCE_DIR}/deploy/debian/post_install.sh")
 
 
 include(CPack)

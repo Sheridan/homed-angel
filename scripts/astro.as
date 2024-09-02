@@ -1,5 +1,5 @@
 #include "classes/daytime.as"
-bool do_it = true;
+bool do_it = false;
 
 // CTimerContinuous @timer_continuous;
 

@@ -196,7 +196,7 @@ CValue &CValue::operator=(const CValue &other)
 //   return !(*this == json);
 // }
 
-bool CValue::valueChanged(const CValue &other) const
+bool CValue::compareValue(const CValue &other) const
 {
   return m_value != other.m_value;
 }

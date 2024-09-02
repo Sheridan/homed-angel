@@ -69,7 +69,7 @@ public:
   // bool    operator==(const Json::Value& json) const;
   // bool    operator!=(const Json::Value& json) const;
 
-  bool valueChanged(const CValue& other) const;
+  bool compareValue(const CValue& other) const;
 
   Json::Value asJson(const std::string &key) const;
 

@@ -41,6 +41,11 @@ void initialize()
 {
   if(do_it)
   {
+    for( int n = 0; n <= 4; n++ )
+    {
+      logger.nfo('First logs ' + n);
+    }
+
     logger.nfo(script_name + " init");
     homed.property(dtZigbee, "LightRelay_BathMirror"       , "status"     ).subscribe(script_name, "allEvents"  , false);
     homed.property(dtZigbee, "Temperature_WaterPumpOutDoor", "temperature").subscribe(script_name, "allEvents"  , false);
@@ -55,9 +60,5 @@ void initialize()
     // homed.property(dtZigbee, "HumanDetector_BathRoom"      , "lastSeen"   ).subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "DoorSensor_Hall"             , "contact"    ).subscribe(script_name, "changedOnly", true);
     homed.property(dtZigbee, "HumanDetector_Kitchen"       , "occupancy"  ).subscribe(script_name, "changedOnly", true);
-  }
-  for( int n = 0; n <= 4; n++ )
-  {
-    logger.nfo('First logs ' + n);
   }
 }

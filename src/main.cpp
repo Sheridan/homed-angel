@@ -56,6 +56,7 @@ void stop()
   }
 }
 
+#include "serial/devices/gsm/cgsm.h"
 
 int main(int argc, char* argv[])
 {

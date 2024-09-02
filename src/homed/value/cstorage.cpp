@@ -95,7 +95,7 @@ bool CStorage::valueChanged()
   if(count() == 1) { return true ; }
   if(changed())
   {
-    return last().value() != at(1).value();
+    return last().compareValue(at(1));
   }
   return false;
 }
