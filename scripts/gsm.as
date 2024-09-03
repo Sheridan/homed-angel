@@ -1,4 +1,4 @@
-bool do_it = true;
+bool do_it = false;
 CGsm @gsm;
 
 void initialize()

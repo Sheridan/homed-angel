@@ -34,9 +34,10 @@ void listEndpoints(CEndpoints @es)
   }
 }
 
-void listDevices(EDeviceType dt)
+void listDevices(CInstance @isc, EDeviceType dt)
 {
-  CDevices @ds = homed.devices(dt);
+  logger.nfo("Instance: " + (isc.name() == "" ? "N/A" : isc.name()));
+  CDevices @ds = isc.devices(dt);
   logger.nfo("Devices count: " + ds.size());
   for(uint16 i = 0; i < ds.size(); i++)
   {
@@ -48,14 +49,24 @@ void listDevices(EDeviceType dt)
   }
 }
 
+void listInstances()
+{
+  CInstances @iscs = homed.instances();
+  logger.nfo("Instances count: " + iscs.size());
+  for(uint16 i = 0; i < iscs.size(); i++)
+  {
+    logger.nfo("-------- Zigbee devices --------");
+    listDevices(iscs.get(i), dtZigbee);
+    logger.nfo("-------- Custom devices --------");
+    listDevices(iscs.get(i), dtCustom);
+  }
+}
+
 void initialize()
 {
   if(do_it)
   {
     logger.nfo(script_name + " init");
-    logger.nfo("-------- Zigbee devices --------");
-    listDevices(dtZigbee);
-    logger.nfo("-------- Custom devices --------");
-    listDevices(dtCustom);
+    listInstances();
   }
 }

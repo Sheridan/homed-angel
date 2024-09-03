@@ -1,20 +1,18 @@
 #include "homed/model/containers/cdevices.h"
-#include "cdevices.h"
 
 namespace ha
 {
 namespace homed
 {
 
-CDevices::CDevices(const EDeviceType &type)
+CDevices::CDevices(const EDeviceType &type, CInstance *pInstance)
   : CContainer<CDevice>(),
-    m_type(type)
-{
-}
+    m_type(type),
+    m_parentInstance(pInstance)
+{}
 
 CDevices::~CDevices()
-{
-}
+{}
 
 void CDevices::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
@@ -30,7 +28,7 @@ void CDevices::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 
 CDevice *CDevices::newElement(const std::string &name)
 {
-  return new CDevice(name, m_type);
+  return new CDevice(name, m_type, m_parentInstance);
 }
 
 }

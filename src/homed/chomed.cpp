@@ -10,53 +10,42 @@ CHomed::CHomed()
 {
   HA_ST->mqtt()->clientHomed()->connect();
   HA_ST->mqtt()->clientHomed()->subscribe();
+  m_instances = new CInstances();
 }
 
 CHomed::~CHomed()
 {
-  for(auto &pair : m_devices)
-  {
-    delete pair.second;
-  }
-  m_devices.clear();
+  delete m_instances;
 }
 
 void CHomed::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
-  // if(!ready() && topic->topicType() != ha::mqtt::ETopic::tStatus) { return; }
-  devices(topic->serviceType())->update(topic, payload);
-  m_updated[serviceType2DeviceType(topic->serviceType())] = true;
+  m_instances->update(topic, payload);
 }
 
 bool CHomed::ready()
 {
-  return m_updated[dtZigbee] && m_updated[dtCustom];
+  return m_instances->ready();
 }
 
-CDevices *CHomed::devices(const EDeviceType &type)
+CInstances *CHomed::instances()
 {
-  if(!m_devices.contains(type))
-  {
-    m_devices[type] = new CDevices(type);
-  }
-  return m_devices[type];
+  return m_instances;
 }
 
-CDevices *CHomed::devices(const ha::mqtt::EService &type)
+CInstance *CHomed::instance(const std::string &name)
 {
-  return devices(serviceType2DeviceType(type));
+  return m_instances->get(name);
 }
 
 CDevice *CHomed::device(const EDeviceType &type, const std::string &deviceName)
 {
-  return devices(type)->get(deviceName);
+  return m_instances->device(type, deviceName);
 }
 
 CDevice *CHomed::device(const std::string &deviceName)
 {
-  CDevice *d = device(EDeviceType::dtZigbee, deviceName);
-  if (d) { return d; }
-  return device(EDeviceType::dtCustom, deviceName);
+  return m_instances->device(deviceName);
 }
 
 CEndpoint *CHomed::endpoint(const EDeviceType &type, const std::string &deviceName, const std::string &endpointName)
@@ -80,45 +69,18 @@ CProperty *CHomed::property(const EDeviceType &type, const std::string &deviceNa
   return nullptr;
 }
 
-EDeviceType CHomed::serviceType2DeviceType(const ha::mqtt::EService &m_serviceType)
-{
-  switch(m_serviceType)
-  {
-    case ha::mqtt::EService::sZigbee: return EDeviceType::dtZigbee;
-    case ha::mqtt::EService::sCustom: return EDeviceType::dtCustom;
-  }
-  return EDeviceType::dtUnknown;
-}
-
 void CHomed::unsubscribeScript(const std::string &scriptName)
 {
-  for(auto &pair : m_devices)
+  for(CInstance *i : m_instances->items())
   {
-    for(CDevice *d : pair.second->items())
-    {
-      for(CEndpoint *e : d->endpoints()->items())
-      {
-        for(CProperty *p : e->properties()->items())
-        {
-          p->storage()->removeObserversForScript(scriptName);
-        }
-      }
-      for(CProperty *p : d->properties()->items())
-      {
-        p->storage()->removeObserversForScript(scriptName);
-      }
-    }
+    i->unsubscribeScript(scriptName);
   }
 }
 
 void CHomed::publishValue(CDevice *device, CEndpoint *endpoint, CProperty *property, const CValue &value)
 {
-  std::string topic = HA_ST->config()->mqttHomedTopic() + "/td/" + device->typeAsService() + "/" + device->name();
-  if(endpoint != device)
-  {
-    topic += "/" + endpoint->name();
-  }
-  HA_ST->mqtt()->publisher()->publish(topic, value.asJson(property->name()).toStyledString());
+  std::string path = endpoint == device ? device->topicPath(ha::mqtt::ETopic::tTd) : endpoint->topicPath(ha::mqtt::ETopic::tTd);
+  HA_ST->mqtt()->publisher()->publish(path, value.asJson(property->name()).toStyledString());
 }
 
 }

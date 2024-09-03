@@ -2,7 +2,6 @@
 #include "homed/model/entities/cdevice.h"
 #include "homed/model/entities/cendpoint.h"
 #include "st.h"
-#include "cproperty.h"
 
 
 namespace ha

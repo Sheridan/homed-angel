@@ -27,7 +27,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 
-set(PACKAGE_VERSION "0.5.7")
+set(PACKAGE_VERSION "0.5.8")
 
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
@@ -70,9 +70,11 @@ set(HA_HEADERS
   src/homed/chomed.h
   src/homed/model/containers/cdevices.h
   src/homed/model/containers/cendpoints.h
+  src/homed/model/containers/cinstances.h
   src/homed/model/containers/cproperties.h
   src/homed/model/entities/cdevice.h
   src/homed/model/entities/cendpoint.h
+  src/homed/model/entities/cinstance.h
   src/homed/model/entities/cproperty.h
   src/homed/value/ccolor.h
   src/homed/value/cobserver.h
@@ -132,9 +134,11 @@ set(HA_SOURCES
   src/homed/chomed.cpp
   src/homed/model/containers/cdevices.cpp
   src/homed/model/containers/cendpoints.cpp
+  src/homed/model/containers/cinstances.cpp
   src/homed/model/containers/cproperties.cpp
   src/homed/model/entities/cdevice.cpp
   src/homed/model/entities/cendpoint.cpp
+  src/homed/model/entities/cinstance.cpp
   src/homed/model/entities/cproperty.cpp
   src/homed/value/ccolor.cpp
   src/homed/value/cobserver.cpp

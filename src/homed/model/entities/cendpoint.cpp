@@ -47,7 +47,7 @@ void CEndpoint::updateStatus(const ha::mqtt::CTopic *topic, const Json::Value &p
   property->valueType(EPropertyValueType::pvtEnum);
   property->enumerate({"online", "offline"});
 
-  CDevice *device = HA_ST->homed()->devices(topic->serviceType())->ensure(topic->device());
+  CDevice *device = HA_ST->homed()->instance(topic->instance())->devices(topic->serviceType())->ensure(topic->device());
   HA_SET_OBJECT_PROPERTY(firmware         , asString);
   HA_SET_OBJECT_PROPERTY(manufacturerName , asString);
   HA_SET_OBJECT_PROPERTY(modelName        , asString);
@@ -271,6 +271,20 @@ ha::utils::CStrings CEndpoint::findChangedProperties(const Json::Value &payload)
     }
   }
   return updatedNames.empty() ? allNames : updatedNames;
+}
+
+std::string CEndpoint::topicPath(const ha::mqtt::ETopic &topic)
+{
+  std::string path = m_parentDevice->topicPath(topic);
+  switch(topic)
+  {
+    case ha::mqtt::ETopic::tFd:
+    case ha::mqtt::ETopic::tTd:
+    {
+      path += "/" + name();
+    } break;
+  }
+  return path;
 }
 
 }

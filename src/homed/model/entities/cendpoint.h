@@ -24,6 +24,8 @@ public:
 
   void setParentDevice(CDevice *pDevice) { m_parentDevice = pDevice; };
   CDevice *device() { return m_parentDevice; };
+
+  virtual std::string topicPath(const ha::mqtt::ETopic &topic);
 private:
   CProperties *m_properties;
   CDevice *m_parentDevice;

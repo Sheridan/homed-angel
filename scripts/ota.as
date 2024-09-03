@@ -14,9 +14,18 @@ void onDeviceActive(CProperty @property)
   property.unsubscribe(script_name, "onDeviceActive");
 }
 
-void listDevices()
+void listInstances()
 {
-  CDevices @ds = homed.devices(dtZigbee);
+  CInstances @iscs = homed.instances();
+  for(uint16 i = 0; i < iscs.size(); i++)
+  {
+    listDevices(iscs.get(i));
+  }
+}
+
+void listDevices(CInstance @isc)
+{
+  CDevices @ds = isc.devices(dtZigbee);
   for(uint16 i = 0; i < ds.size(); i++)
   {
     CDevice @d = ds.get(i);
@@ -30,7 +39,7 @@ void initialize()
 {
   if(do_it)
   {
-    listDevices();
+    listInstances();
   }
 }
 
