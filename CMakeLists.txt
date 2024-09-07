@@ -27,7 +27,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
   add_definitions(-DHA_DEBUG)
 endif (CMAKE_BUILD_TYPE STREQUAL Debug)
 
-set(PACKAGE_VERSION "0.5.8")
+set(PACKAGE_VERSION "0.5.9")
 
 configure_file(
   "${CMAKE_CURRENT_SOURCE_DIR}/src/version.h.in"
