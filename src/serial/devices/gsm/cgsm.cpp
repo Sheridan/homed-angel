@@ -23,6 +23,14 @@ CGsm::~CGsm()
 
 bool CGsm::sendSms(const std::string &phone, const std::string &text)
 {
+  std::lock_guard<std::mutex> lock(m_mutex);
+
+  auto now = std::chrono::steady_clock::now();
+  if (now - m_lastSMSSendTime < std::chrono::milliseconds(HA_ST->config()->gsmSMSSendInterval()))
+  {
+    auto remainingTime = std::chrono::milliseconds(HA_ST->config()->gsmSMSSendInterval()) - (now - m_lastSMSSendTime);
+    std::this_thread::sleep_for(remainingTime);
+  }
 
   std::string encodedText = "", encodedPhone = "";
   try
@@ -41,22 +49,30 @@ bool CGsm::sendSms(const std::string &phone, const std::string &text)
   if(!ha::utils::contains(send("AT+CSCS=\"UCS2\""                 , ha::serial::ECommandEndl::ceCR , "OK"), "OK")) { HA_LOG_ERR("Can not set encoding"); return false; }
                           send("AT+CMGS=\"" + encodedPhone +  "\"", ha::serial::ECommandEndl::ceCR, 0); ha::utils::sleep(50);
   if(!ha::utils::contains(send(encodedText                        , ha::serial::ECommandEndl::ceSUB, "OK"), "OK")) { HA_LOG_ERR("Can not send sms"); return false; }
+  m_lastSMSSendTime = std::chrono::steady_clock::now();
   return true;
 }
 
-std::string CGsm::operatorName   () { return query("AT+COPS?", ",\"(.+?)\""); }
-std::string CGsm::firmwareVersion() { return query("AT+GMR"  , "(.*)"      ); }
-std::string CGsm::adapterName    () { return query("AT+GMM"  , "(.*)"      ); }
-std::string CGsm::imei           () { return query("AT+GSN"  , "(\\d+)"    ); }
-std::string CGsm::imsi           () { return query("AT+CIMI" , "(\\d+)"    ); }
-std::string CGsm::info           () { return query("ATI"     , "(.*)"      ); }
+std::string CGsm::operatorName   () {std::lock_guard<std::mutex> lock(m_mutex); return query("AT+COPS?", ",\"(.+?)\""); }
+std::string CGsm::firmwareVersion() {std::lock_guard<std::mutex> lock(m_mutex); return query("AT+GMR"  , "(.*)"      ); }
+std::string CGsm::adapterName    () {std::lock_guard<std::mutex> lock(m_mutex); return query("AT+GMM"  , "(.*)"      ); }
+std::string CGsm::imei           () {std::lock_guard<std::mutex> lock(m_mutex); return query("AT+GSN"  , "(\\d+)"    ); }
+std::string CGsm::imsi           () {std::lock_guard<std::mutex> lock(m_mutex); return query("AT+CIMI" , "(\\d+)"    ); }
+std::string CGsm::info           () {std::lock_guard<std::mutex> lock(m_mutex); return query("ATI"     , "(.*)"      ); }
 
-bool                     CGsm::ready             () { return isOpen() && isReady() && query("AT+CPAS" , "\\+CPAS:\\s*(\\d+)") == "0"                         ; }
-int                      CGsm::signalLevel       () { return ha::utils::to_int(                   query("AT+CSQ", "(\\d+),\\d+")                            ); }
-std::vector<std::string> CGsm::supportedEncodings() { return ha::utils::split (ha::utils::replace(query("AT+CSCS=?", "+CSCS:\\s*\\((.*)\\)"), "\"", ""), ','); }
+bool                     CGsm::ready             () {std::lock_guard<std::mutex> lock(m_mutex); return isOpen() && isReady() && query("AT+CPAS" , "\\+CPAS:\\s*(\\d+)") == "0"                         ; }
+int                      CGsm::signalLevel       () {std::lock_guard<std::mutex> lock(m_mutex); return ha::utils::to_int(                   query("AT+CSQ", "(\\d+),\\d+")                            ); }
+std::vector<std::string> CGsm::supportedEncodings() {std::lock_guard<std::mutex> lock(m_mutex); return ha::utils::split (ha::utils::replace(query("AT+CSCS=?", "+CSCS:\\s*\\((.*)\\)"), "\"", ""), ','); }
+
+bool CGsm::busy()
+{
+  std::unique_lock<std::mutex> lock(m_mutex, std::try_to_lock);
+  return !lock.owns_lock();
+}
 
 std::string CGsm::ussd(const std::string &msg)
 {
+  std::lock_guard<std::mutex> lock(m_mutex);
   if(!ha::utils::contains(send("AT+CSCS=\"GSM\""          , ha::serial::ECommandEndl::ceCR , 1), "OK")) { HA_LOG_ERR("Can not set encoding"); return ""; }
   if(!ha::utils::contains(send("AT+CUSD=1,\"" + msg + "\"", ha::serial::ECommandEndl::ceCR , 1), "OK")) { HA_LOG_ERR("Can not send ussd query"); return ""; }
   return ha::tools::CIconv::fromGsmUcs2(extract(waitFor("+CUSD"), "\"(.+?)\""));

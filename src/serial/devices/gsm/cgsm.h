@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <mutex>
+#include <chrono>
 #include "serial/cserialcommunication.h"
 
 namespace ha
@@ -8,6 +10,12 @@ namespace serial
 {
 namespace device
 {
+
+struct SSms
+{
+  std::string phone;
+  std::string text;
+};
 
 class CGsm : public ha::serial::CSerialCommunication
 {
@@ -24,13 +32,17 @@ public:
   std::string imei();
   std::string imsi();
   std::string info();
+  std::string ussd(const std::string &msg);
   std::vector<std::string> supportedEncodings();
   bool ready();
-  std::string ussd(const std::string &msg);
+  bool busy();
+
+
+private:
+  std::mutex m_mutex;
+  std::chrono::steady_clock::time_point m_lastSMSSendTime;
 
 };
-
-
 
 }
 }

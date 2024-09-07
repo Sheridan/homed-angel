@@ -1,4 +1,4 @@
-bool do_it = false;
+bool do_it = true;
 bool rgb_running = false;
 
 void onButton1(CProperty @property)

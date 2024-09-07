@@ -256,6 +256,45 @@ const std::string& CSerial::endlToString(const ECommandEndl &endl) const
   return ha::utils::str_CR;
 }
 
+EBaudRate CSerial::intToBaudRate(int speed)
+{
+  switch (speed)
+  {
+    case 0:         return br0;
+    case 50:        return br50;
+    case 75:        return br75;
+    case 110:       return br110;
+    case 134:       return br134;
+    case 150:       return br150;
+    case 200:       return br200;
+    case 300:       return br300;
+    case 600:       return br600;
+    case 1200:      return br1200;
+    case 1800:      return br1800;
+    case 2400:      return br2400;
+    case 4800:      return br4800;
+    case 9600:      return br9600;
+    case 19200:     return br19200;
+    case 38400:     return br38400;
+    case 57600:     return br57600;
+    case 115200:    return br115200;
+    case 230400:    return br230400;
+    case 460800:    return br460800;
+    case 500000:    return br500000;
+    case 576000:    return br576000;
+    case 921600:    return br921600;
+    case 1000000:   return br1000000;
+    case 1152000:   return br1152000;
+    case 1500000:   return br1500000;
+    case 2000000:   return br2000000;
+    case 2500000:   return br2500000;
+    case 3000000:   return br3000000;
+    case 3500000:   return br3500000;
+    case 4000000:   return br4000000;
+  }
+  return brUnknown;
+}
+
 #ifdef HA_SERIAL_DEBUG
 void CSerial::printSettings()
 {

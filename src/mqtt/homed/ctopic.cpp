@@ -46,7 +46,7 @@ void CTopic::parseTopic(const std::string &topic)
   std::getline(stream, m_service       , '/');
   if(m_service == "zigbee")
   {
-    std::getline(stream, m_instance      , '/');
+    std::getline(stream, m_instance    , '/');
   }
   std::getline(stream, m_device        , '/');
   std::getline(stream, m_deviceEndpoint, '/');

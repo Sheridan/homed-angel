@@ -40,7 +40,8 @@ enum EBaudRate
   br2500000 = B2500000,
   br3000000 = B3000000,
   br3500000 = B3500000,
-  br4000000 = B4000000
+  br4000000 = B4000000,
+  brUnknown
 };
 
 enum EParity
@@ -87,7 +88,7 @@ public:
   explicit CSerial(const std::string &port, EBaudRate baudRate, EParity parity, EStopBits stopBits, EFlowControl flowControl, EBitsPerByte bitsPerByte);
   virtual ~CSerial();
   bool isOpen() const;
-
+  static EBaudRate intToBaudRate(int speed);
 
 protected:
   void open();

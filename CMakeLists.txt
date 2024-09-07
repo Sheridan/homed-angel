@@ -55,6 +55,7 @@ set(AS_SDK_SOURCES
 set(HA_HEADERS
   src/configuration/ccmdoptions.h
   src/configuration/cconfiguration.h
+  src/configuration/cconfigurationoption.h
   src/datetime/astronomical/castronomical.h
   src/datetime/astronomical/csuntracker.h
   src/datetime/astronomical/ctracker.h
@@ -100,6 +101,7 @@ set(HA_HEADERS
   src/scripting/helpers/cjson.h
   src/scripting/helpers/clogger.h
   src/scripting/script/callers/ccaller.h
+  src/scripting/script/callers/ccallerdouble.h
   src/scripting/script/cscript.h
   src/scripting/script/cscriptenvironment.h
   src/scripting/script/cscriptobject.h
@@ -107,10 +109,12 @@ set(HA_HEADERS
   src/serial/cserial.h
   src/serial/cserialcommunication.h
   src/serial/cserialwatcher.h
+  src/serial/devices/cserialdevices.h
   src/serial/devices/gsm/cgsm.h
   src/st.h
   src/tools/iconv/ciconv.h
   src/tools/singletone/csingletone.h
+  src/utils/fs.h
   src/utils/numeric.h
   src/utils/random.h
   src/utils/string.h
@@ -120,6 +124,7 @@ set(HA_HEADERS
 set(HA_SOURCES
   src/configuration/ccmdoptions.cpp
   src/configuration/cconfiguration.cpp
+  src/configuration/cconfigurationoption.cpp
   src/datetime/astronomical/castronomical.cpp
   src/datetime/astronomical/csuntracker.cpp
   src/datetime/astronomical/ctracker.cpp
@@ -163,6 +168,7 @@ set(HA_SOURCES
   src/scripting/helpers/cjson.cpp
   src/scripting/helpers/clogger.cpp
   src/scripting/script/callers/ccaller.cpp
+  src/scripting/script/callers/ccallerdouble.cpp
   src/scripting/script/cscript.cpp
   src/scripting/script/cscriptenvironment.cpp
   src/scripting/script/cscriptobject.cpp
@@ -170,9 +176,11 @@ set(HA_SOURCES
   src/serial/cserial.cpp
   src/serial/cserialcommunication.cpp
   src/serial/cserialwatcher.cpp
+  src/serial/devices/cserialdevices.cpp
   src/serial/devices/gsm/cgsm.cpp
   src/tools/iconv/ciconv.cpp
   src/tools/singletone/csingletone.cpp
+  src/utils/fs.cpp
   src/utils/numeric.cpp
   src/utils/random.cpp
   src/utils/string.cpp

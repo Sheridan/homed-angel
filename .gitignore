@@ -17,3 +17,4 @@ external/angelscript/**
 !external/angelscript/sdk/tests/test_feature/source/stdvector.h
 
 src/version.h
+scripts/includes/personal.as

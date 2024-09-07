@@ -9,8 +9,11 @@ namespace ha
 namespace scripting
 {
 
-#define HA_CALLER_METHOD(_type) \
+#define HA_CALLER_SINGLE_METHOD(_type) \
   void CScript::callMethod(const std::string &method, const std::string &params, _type param)
+
+#define HA_CALLER_DOUBLE_METHOD(_type_first,_type_second) \
+  void CScript::callMethod(const std::string &method, const std::string &params, _type_first first, _type_second second)
 
 #define HA_CALLER_METHOD_BODY(_argset) \
   { \
@@ -33,10 +36,10 @@ namespace scripting
   }
 
 void CScript::callMethod(const std::string &method, const std::string &params)
-                                                    HA_CALLER_METHOD_BODY(                                                        );
-HA_CALLER_METHOD(ha::homed::CProperty          *)   HA_CALLER_METHOD_BODY(m_context->SetArgObject(0,                       param) );
-HA_CALLER_METHOD(ha::mqtt::SMqttMesssage       &)   HA_CALLER_METHOD_BODY(m_context->SetArgObject(0,                      &param) );
-HA_CALLER_METHOD(ha::datetime::ESunTrackerEvent )   HA_CALLER_METHOD_BODY(m_context->SetArgDWord (0,  static_cast<asDWORD>(param)));
+                                                           HA_CALLER_METHOD_BODY(                                                        );
+HA_CALLER_SINGLE_METHOD(ha::homed::CProperty          *)   HA_CALLER_METHOD_BODY(m_context->SetArgObject(0,                       param) );
+HA_CALLER_SINGLE_METHOD(ha::mqtt::SMqttMesssage       &)   HA_CALLER_METHOD_BODY(m_context->SetArgObject(0,                      &param) );
+HA_CALLER_SINGLE_METHOD(ha::datetime::ESunTrackerEvent )   HA_CALLER_METHOD_BODY(m_context->SetArgDWord (0,  static_cast<asDWORD>(param)));
 
 CScript::CScript(const std::filesystem::path &file)
   : CScriptEnvironment(file),

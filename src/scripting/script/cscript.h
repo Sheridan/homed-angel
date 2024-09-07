@@ -12,9 +12,11 @@ namespace ha
 namespace scripting
 {
 
-#define HA_CALLER_METHOD_DEFINITION(_type) \
+#define HA_CALLER_SINGLE_METHOD_DEFINITION(_type) \
   void callMethod(const std::string &method, const std::string &params, _type value);
 
+#define HA_CALLER_DOUBLE_METHOD_DEFINITION(_type_first,_type_second) \
+  void callMethod(const std::string &method, const std::string &params, _type_first first, _type_second second);
 
 class CCaller;
 template<typename T> class CCallerSingle;
@@ -38,9 +40,9 @@ public:
   UMqttCaller       *mqttCaller      () { return m_mqttCaller      ; }
 
   void callMethod(const std::string &method, const std::string &params);
-  HA_CALLER_METHOD_DEFINITION(ha::homed::CProperty          *);
-  HA_CALLER_METHOD_DEFINITION(ha::datetime::ESunTrackerEvent );
-  HA_CALLER_METHOD_DEFINITION(ha::mqtt::SMqttMesssage       &);
+  HA_CALLER_SINGLE_METHOD_DEFINITION(ha::homed::CProperty          *);
+  HA_CALLER_SINGLE_METHOD_DEFINITION(ha::datetime::ESunTrackerEvent );
+  HA_CALLER_SINGLE_METHOD_DEFINITION(ha::mqtt::SMqttMesssage       &);
 
 
 private:

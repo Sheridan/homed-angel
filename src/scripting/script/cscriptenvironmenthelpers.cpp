@@ -5,7 +5,6 @@
 #include "scripting/helpers/cjson.h"
 #include "serial/cserialcommunication.h"
 #include "serial/cserialwatcher.h"
-#include "serial/devices/gsm/cgsm.h"
 #include "st.h"
 
 namespace ha
@@ -44,9 +43,6 @@ ha::serial::CSerialCommunication* CreateCSerialCommunication(const std::string &
 
 // CSerialWatcher
 ha::serial::CSerialWatcher* CreateCSerialWatcher(const std::string &port, ha::serial::EBaudRate baudRate, ha::serial::EParity parity, ha::serial::EStopBits stopBits, ha::serial::EFlowControl flowControl, ha::serial::EBitsPerByte bitsPerByte) { return new ha::serial::CSerialWatcher(port, baudRate, parity, stopBits, flowControl, bitsPerByte); }
-
-// CGsm
-ha::serial::device::CGsm* CreateCGsm(const std::string &port, ha::serial::EBaudRate baudRate) { return new ha::serial::device::CGsm(port, baudRate); }
 
 // CDateTime
 void CreateCDateTime      (void *memory)                                                                                  { new(memory) ha::datetime::CDateTime(                                                   ); }

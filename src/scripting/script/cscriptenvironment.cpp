@@ -12,6 +12,8 @@
 #include "mqtt/scripting/cmqttscriptcallback.h"
 #include "homed/chomed.h"
 #include "mqtt/homed/ctopic.h"
+#include "serial/devices/cserialdevices.h"
+#include "serial/devices/gsm/cgsm.h"
 #include "utils/thread.h"
 #include "utils/string.h"
 #include "utils/numeric.h"
@@ -610,8 +612,7 @@ void CScriptEnvironment::registerSerial()
   HA_AS_CLASS_METHOD(ha::serial, CSerialWatcher, isOpen, bool, (), const);
 
   // CGsm
-  HA_AS_CLASS_SMART(ha::serial::device, CGsm);
-  HA_AS_CLASS_SMART_CONSTRUCTOR(ha::serial::device, CGsm, (const std::string &, ha::serial::EBaudRate));
+  HA_AS_CLASS_MANAGED(ha::serial::device, CGsm);
   HA_AS_CLASS_METHOD(ha::serial::device, CGsm, isOpen            , bool                    , (                                        ), const);
   HA_AS_CLASS_METHOD(ha::serial::device, CGsm, isReady           , bool                    , (                                        ),      );
   HA_AS_CLASS_METHOD(ha::serial::device, CGsm, ready             , bool                    , (                                        ),      );
@@ -626,15 +627,21 @@ void CScriptEnvironment::registerSerial()
   HA_AS_CLASS_METHOD(ha::serial::device, CGsm, supportedEncodings, std::vector<std::string>, (                                        ),      );
   HA_AS_CLASS_METHOD(ha::serial::device, CGsm, sendSms           , bool                    , (const std::string &, const std::string &),      );
 
+  // CSerialDevices
+  HA_AS_CLASS_MANAGED(ha::serial::device, CSerialDevices);
+  // HA_AS_CLASS_METHOD(ha::serial::device, CSerialDevices, gsmAccessible, bool                      , (), const);
+  // HA_AS_CLASS_METHOD(ha::serial::device, CSerialDevices, gsmAvailable , bool                      , (), const);
+  HA_AS_CLASS_METHOD(ha::serial::device, CSerialDevices, gsm          , ha::serial::device::CGsm *, (),      );
 }
 
 void CScriptEnvironment::registerVariables()
 {
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("string script_name"   , &m_name       ));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger       @logger", &m_logger     ));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed        homed"  , HA_ST->homed()));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CAstronomical astro"  , HA_ST->astro()));
-  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CMqtt         mqtt"   , HA_ST->mqtt ()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("string        script_name", &m_name        ));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CLogger        @logger"   , &m_logger      ));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CHomed         homed"     , HA_ST->homed ()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CAstronomical  astro"     , HA_ST->astro ()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CMqtt          mqtt"      , HA_ST->mqtt  ()));
+  HA_AS_ACCERT_CALL(m_engine->RegisterGlobalProperty("CSerialDevices serial"    , HA_ST->serial()));
 }
 
 }

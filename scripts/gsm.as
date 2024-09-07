@@ -1,23 +1,21 @@
-bool do_it = false;
-CGsm @gsm;
+#include "includes/personal.as"
+bool do_it = true;
 
 void initialize()
 {
   if(do_it)
   {
-    @gsm = CGsm("/dev/ttyUSB0", br115200);
-    while(!gsm.ready())
+    logger.nfo("      OP: " + serial.gsm().operatorName());
+    logger.nfo("  Signal: " + serial.gsm().signalLevel());
+    logger.nfo(" Adapter: " + serial.gsm().adapterName());
+    logger.nfo("Firmvare: " + serial.gsm().firmwareVersion());
+    if(serial.gsm().sendSms(sheridan_phone_number, "⛩️ Тестовое сообщение из скрипта"))
     {
-      logger.wrn("[/dev/ttyUSB0] GSM is not ready");
-      sleep(1000);
+      logger.nfo("SMS sent to " + sheridan_phone_number);
     }
-    logger.nfo("      OP: " + gsm.operatorName());
-    logger.nfo("  Signal: " + gsm.signalLevel());
-    logger.nfo(" Adapter: " + gsm.adapterName());
-    logger.nfo("Firmvare: " + gsm.firmwareVersion());
-    if(gsm.sendSms("+71111111111", "⛩️ Тестовое сообщение из скрипта"))
+    if(serial.gsm().sendSms(wife_phone_number, "⛩️ Тестовое сообщение из скрипта"))
     {
-      logger.nfo("SMS sent");
+      logger.nfo("SMS sent to " + wife_phone_number);
     }
   }
 }

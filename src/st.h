@@ -1,10 +1,6 @@
 #pragma once
 #include "tools/singletone/csingletone.h"
 
-
-// #define HA_STR_HELPER(x) #x
-// #define HA_STR(x) HA_STR_HELPER(x)
-
 #define HA_ST ha::CSingleTone::instance()
 
 #include "log.h"

@@ -42,8 +42,9 @@ void start()
 {
   if(running)
   {
-    HA_ST->astro()->start();
-    HA_ST->angel()->start();
+    HA_ST->astro ()->start();
+    HA_ST->angel ()->start();
+    HA_ST->serial()->start();
   }
 }
 
@@ -51,8 +52,9 @@ void stop()
 {
   if(!running)
   {
-    HA_ST->angel()->stop();
-    HA_ST->astro()->stop();
+    HA_ST->angel ()->stop();
+    HA_ST->astro ()->stop();
+    HA_ST->serial()->stop();
   }
 }
 

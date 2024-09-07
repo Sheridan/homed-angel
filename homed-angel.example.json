@@ -22,5 +22,11 @@
       "longitude": 12.121212,
       "altitude": 123
     }
+  },
+  "gsm":
+  {
+    "device": "/dev/ttyUSB0",
+    "baudrate": 115200,
+    "sms_min_send_interval_ms": 10000
   }
 }
