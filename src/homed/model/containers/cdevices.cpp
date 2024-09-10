@@ -1,4 +1,6 @@
 #include "homed/model/containers/cdevices.h"
+#include "st.h"
+
 
 namespace ha
 {
@@ -16,18 +18,16 @@ CDevices::~CDevices()
 
 void CDevices::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
-  if(!topic->deviceEndpoint().empty())
-  {
-    ensure(topic->device())->endpoints()->ensure(topic->deviceEndpoint())->update(topic, payload);
-  }
-  else
-  {
-    ensure(topic->device())->update(topic, payload);
-  }
+  bool needUpdateProperties = !exists(topic->device());
+  CDevice *d = ensure(topic->device());
+  if(!topic->deviceEndpoint().empty()) { d->endpoints()->ensure(topic->deviceEndpoint())->update(topic, payload); }
+  else                                 { d                                              ->update(topic, payload); }
+  if(needUpdateProperties) { d->updateProperties(); }
 }
 
 CDevice *CDevices::newElement(const std::string &name)
 {
+  HA_LOG_VERBOSE("Adding new device: " << m_parentInstance->name() << ":" << name);
   return new CDevice(name, m_type, m_parentInstance);
 }
 

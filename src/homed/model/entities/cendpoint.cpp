@@ -32,20 +32,59 @@ void CEndpoint::update(const ha::mqtt::CTopic *topic, const Json::Value &payload
   }
 }
 
+CProperty* CEndpoint::addProperty(const std::string &name, const bool &readonly, const EPropertyValueType &type)
+{
+  CProperty *property = properties()->ensure(name);
+  property->readonly(readonly);
+  property->valueType(type);
+  return property;
+}
+
+CProperty* CEndpoint::addEnumerateToProperty(CProperty* property, const ha::utils::CStrings &enums = {})
+{
+  property->enumerate(enums);
+  return property;
+}
+
+CProperty* CEndpoint::addEnumerateToProperty(CProperty* property, const Json::Value &enums = {})
+{
+  ha::utils::CStrings enumList;
+  for(const Json::Value &enumItem : enums)
+  {
+    enumList.push_back(enumItem.asString());
+  }
+  return addEnumerateToProperty(property, enumList);
+}
+
+CProperty* CEndpoint::addBordersToProperty(CProperty* property, const double &min, const double &max, const double &step)
+{
+  property->min(min);
+  property->max(max);
+  property->step(step);
+  return property;
+}
+
+CProperty* CEndpoint::addBordersToProperty(CProperty* property, const Json::Value &borders)
+{
+  if(borders.isMember("min")) { property->min(borders["min"].asDouble()); }
+  if(borders.isMember("max")) { property->max(borders["max"].asDouble()); }
+  property->step(borders.isMember("step") ? borders["step"].asDouble() : 1);
+  return property;
+}
+
+CProperty* CEndpoint::addUnitToProperty(CProperty* property, const std::string &unit)
+{
+  property->unit(unit);
+  return property;
+}
+
 #define HA_SET_OBJECT_PROPERTY(_name, _as) if (payload.isMember(#_name)) { device->_name(payload[#_name]._as()); }
 void CEndpoint::updateStatus(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
   HA_LOG_DBG_INCOMING("Updating status: " << topic->device());
-  CProperty *property = properties()->ensure("linkQuality");
-  property->readonly(true);
-  property->valueType(EPropertyValueType::pvtInt);
-  property = properties()->ensure("lastSeen");
-  property->readonly(true);
-  property->valueType(EPropertyValueType::pvtInt);
-  property = properties()->ensure("online");
-  property->readonly(true);
-  property->valueType(EPropertyValueType::pvtEnum);
-  property->enumerate({"online", "offline"});
+                         addProperty("linkQuality", true, EPropertyValueType::pvtInt );
+                         addProperty("lastSeen"   , true, EPropertyValueType::pvtInt );
+  addEnumerateToProperty(addProperty("online"     , true, EPropertyValueType::pvtEnum), ha::utils::CStrings {"online", "offline"});
 
   CDevice *device = HA_ST->homed()->instance(topic->instance())->devices(topic->serviceType())->ensure(topic->device());
   HA_SET_OBJECT_PROPERTY(firmware         , asString);
@@ -74,22 +113,12 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
         if(payload["options"][itemName].isMember("type") && payload["options"][itemName]["type"].asString() == "select" &&
            payload["options"][itemName].isMember("enum"))
         {
-          CProperty *property = properties()->ensure(itemName);
-          property->readonly(false);
-          property->valueType(EPropertyValueType::pvtEnum);
-          ha::utils::CStrings enumList;
-          for(const Json::Value &enumItem : payload["options"][itemName]["enum"])
-          {
-            enumList.push_back(enumItem.asString());
-          }
-          property->enumerate(enumList);
+          addEnumerateToProperty(addProperty(itemName, false, EPropertyValueType::pvtEnum), payload["options"][itemName]["enum"]);
           continue;
         }
         if(payload["options"][itemName].isMember("type") && payload["options"][itemName]["type"].asString() == "binary")
         {
-          CProperty *property = properties()->ensure(itemName);
-          property->readonly(true);
-          property->valueType(EPropertyValueType::pvtBool);
+          addProperty(itemName, true, EPropertyValueType::pvtBool);
           continue;
         }
         if(payload["options"][itemName].isMember("type") &&
@@ -99,40 +128,26 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
             )
           )
         {
-          CProperty *property = properties()->ensure(itemName);
-          property->readonly(false);
-          property->valueType(EPropertyValueType::pvtBool);
+          addProperty(itemName, false, EPropertyValueType::pvtBool);
           continue;
         }
         if(payload["options"][itemName].isMember("type") && payload["options"][itemName]["type"].asString() == "sensor")
         {
-          CProperty *property = properties()->ensure(itemName);
-          property->readonly(true);
+          CProperty *property = nullptr;
           if(payload["options"][itemName].isMember("enum"))
           {
-            property->valueType(EPropertyValueType::pvtEnum);
-            ha::utils::CStrings enumList;
-            for(const Json::Value &enumItem : payload["options"][itemName]["enum"])
-            {
-              enumList.push_back(enumItem.asString());
-            }
-            property->enumerate(enumList);
+            property = addEnumerateToProperty(addProperty(itemName, true, EPropertyValueType::pvtEnum), payload["options"][itemName]["enum"]);
           }
           else
           {
-            property->valueType(EPropertyValueType::pvtDouble);
+            property = addProperty(itemName, true, EPropertyValueType::pvtDouble);
           }
-          if(payload["options"][itemName].isMember("unit")) { property->unit(payload["options"][itemName]["unit"].asString()); }
+          if(payload["options"][itemName].isMember("unit")) { addUnitToProperty(property, payload["options"][itemName]["unit"].asString()); }
           continue;
         }
         if(payload["options"][itemName].isMember("type") && payload["options"][itemName]["type"].asString() == "number")
         {
-          CProperty *property = properties()->ensure(itemName);
-          property->readonly(false);
-          property->valueType(EPropertyValueType::pvtDouble);
-          if(payload["options"][itemName].isMember("min")) { property->min(payload["options"][itemName]["min"].asDouble()); }
-          if(payload["options"][itemName].isMember("max")) { property->max(payload["options"][itemName]["max"].asDouble()); }
-          property->step(payload["options"][itemName].isMember("step") ? payload["options"][itemName]["step"].asDouble() : 1);
+          addBordersToProperty(addProperty(itemName, false, EPropertyValueType::pvtDouble), payload["options"][itemName]);
           continue;
         }
       }
@@ -140,10 +155,7 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
       {
         if(itemName == "switch" && payload["options"][itemName].asString() == "outlet")
         {
-          CProperty *property = properties()->ensure("status");
-          property->readonly(false);
-          property->valueType(EPropertyValueType::pvtEnum);
-          property->enumerate({"on", "off", "toggle"});
+          addEnumerateToProperty(addProperty("status", false, EPropertyValueType::pvtEnum), ha::utils::CStrings {"on", "off", "toggle"});
           continue;
         }
       }
@@ -151,25 +163,20 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
       {
         if(itemName == "light")
         {
-          CProperty *property = properties()->ensure("status");
-          property->readonly(false);
-          property->valueType(EPropertyValueType::pvtEnum);
-          property->enumerate({"on", "off", "toggle"});
+          addEnumerateToProperty(addProperty("status", false, EPropertyValueType::pvtEnum), ha::utils::CStrings {"on", "off", "toggle"});
         }
         for(const Json::Value &option : payload["options"][itemName])
         {
           if(option.isString())
           {
             const std::string opt = option.asString();
-            CProperty *property = properties()->ensure(opt);
-            property->readonly(false);
             if(opt == "color")
             {
-              property->valueType(EPropertyValueType::pvtColor);
+              addProperty(opt, false, EPropertyValueType::pvtColor);
             }
             else
             {
-              property->valueType(EPropertyValueType::pvtInt);
+              addProperty(opt, false, EPropertyValueType::pvtInt);
             }
           }
         }
@@ -183,20 +190,13 @@ void CEndpoint::updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &p
     {
       if(itemName == "switch")
       {
-        CProperty *property = properties()->ensure("status");
-        property->readonly(false);
-        property->valueType(EPropertyValueType::pvtEnum);
-        property->enumerate({"on", "off", "toggle"});
+        addEnumerateToProperty(addProperty("status", false, EPropertyValueType::pvtEnum), ha::utils::CStrings {"on", "off", "toggle"});
         continue;
       }
       if(itemName == "irCode")
       {
-        CProperty *property = properties()->ensure("learn");
-        property->readonly(false);
-        property->valueType(EPropertyValueType::pvtBool);
-        property = properties()->ensure("irCode");
-        property->readonly(false);
-        property->valueType(EPropertyValueType::pvtString);
+        addProperty("learn", false, EPropertyValueType::pvtBool);
+        addProperty("irCode", false, EPropertyValueType::pvtString);
         continue;
       }
     }

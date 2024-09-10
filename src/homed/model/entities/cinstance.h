@@ -22,11 +22,15 @@ public:
 
   void unsubscribeScript(const std::string &scriptName);
 
+  void setJoin(bool enabled);
+
 private:
   std::map<EDeviceType, CDevices *> m_devices;
-  std::map<EDeviceType, bool> m_updated;
+  std::map<ha::mqtt::EService, std::vector<ha::mqtt::ETopic>> m_updated;
 
   EDeviceType serviceType2DeviceType(const ha::mqtt::EService &m_serviceType);
+
+  bool ready(const ha::mqtt::EService &type);
 };
 
 }

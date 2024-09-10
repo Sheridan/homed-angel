@@ -35,6 +35,8 @@ void CProperty::unsubscribe(const std::string &scriptName, const std::string &me
   storage()->removeObserver(scriptName, methodName);
 }
 
+
+
 void CProperty::set(const std::string &value) { set(CValue(value, storage())); }
 void CProperty::set(const int         &value) { set(CValue(value, storage())); }
 void CProperty::set(const double      &value) { set(CValue(value, storage())); }

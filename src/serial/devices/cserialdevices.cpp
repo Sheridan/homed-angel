@@ -17,13 +17,16 @@ CSerialDevices::~CSerialDevices()
 
 bool CSerialDevices::gsmAccessible() const
 {
-  if(ha::utils::fileExists(HA_ST->config()->gsmDevice()))
+  if(!HA_ST->config()->gsmDevice().empty())
   {
-    if(ha::serial::CSerial::intToBaudRate(HA_ST->config()->gsmBaudrate()) != ha::serial::EBaudRate::brUnknown)
+    if(ha::utils::fileExists(HA_ST->config()->gsmDevice()))
     {
-      return true;
-    } else { HA_LOG_ERR("Wrong " << HA_ST->config()->gsmDevice() << " baudrate: " << HA_ST->config()->gsmBaudrate()); }
-  } else { HA_LOG_ERR("Device file " << HA_ST->config()->gsmDevice() << " does not exist"); }
+      if(ha::serial::CSerial::intToBaudRate(HA_ST->config()->gsmBaudrate()) != ha::serial::EBaudRate::brUnknown)
+      {
+        return true;
+      } else { HA_LOG_ERR("Wrong " << HA_ST->config()->gsmDevice() << " baudrate: " << HA_ST->config()->gsmBaudrate()); }
+    } else { HA_LOG_ERR("Device file " << HA_ST->config()->gsmDevice() << " does not exist"); }
+  } else { HA_LOG_ERR("Device file option is unset"); }
   return false;
 }
 

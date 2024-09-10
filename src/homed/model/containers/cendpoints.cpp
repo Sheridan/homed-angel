@@ -1,5 +1,7 @@
 #include "homed/model/containers/cendpoints.h"
 #include "homed/model/entities/cdevice.h"
+#include "st.h"
+
 
 namespace ha
 {
@@ -20,6 +22,7 @@ void CEndpoints::update(const ha::mqtt::CTopic *topic, const Json::Value &payloa
 
 CEndpoint *CEndpoints::newElement(const std::string &name)
 {
+  HA_LOG_VERBOSE("Adding new endpoint: " << m_parentDevice->instance()->name() << ":" << m_parentDevice->name() << ":" << name);
   return new CEndpoint(name, m_parentDevice);
 }
 

@@ -1,5 +1,5 @@
 #include "homed/model/containers/cinstances.h"
-#include "cinstances.h"
+#include "st.h"
 
 namespace ha
 {
@@ -20,6 +20,7 @@ void CInstances::update(const ha::mqtt::CTopic *topic, const Json::Value &payloa
 
 bool CInstances::ready()
 {
+  if(empty()) { return false; }
   for(CInstance *instance : items())
   {
     if(!instance->ready()) { return false; }
@@ -45,8 +46,17 @@ CDevice* CInstances::device(const EDeviceType &type, const std::string &deviceNa
   return d;
 }
 
+void CInstances::setJoin(bool enabled)
+{
+  for(CInstance *instance : items())
+  {
+    if(instance->ready()) { instance->setJoin(enabled); }
+  }
+}
+
 CInstance *CInstances::newElement(const std::string &name)
 {
+  HA_LOG_VERBOSE("Adding new instance: " << (name.empty() ? "-=dummy=-" : name));
   return new CInstance(name);
 }
 

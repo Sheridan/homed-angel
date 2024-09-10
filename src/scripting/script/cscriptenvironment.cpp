@@ -411,6 +411,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CDevice, properties       , ha::homed::CProperties *      , (                        ),      );
   HA_AS_CLASS_METHOD(ha::homed, CDevice, endpoints        , ha::homed::CEndpoints *       , (                        ),      );
   HA_AS_CLASS_METHOD(ha::homed, CDevice, topicPath        , std::string                   , (const ha::mqtt::ETopic &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, updateProperties , void                          , (                        ),      );
 
   // CDevices
   HA_AS_CLASS_METHOD(ha::homed, CDevices, empty   , const bool                    , (                      ), const);
@@ -423,7 +424,8 @@ void CScriptEnvironment::registerModel()
 
   // CInstance
   HA_AS_CLASS_METHOD(ha::homed, CInstance, name     , const std::string & , (                              ), const);
-  HA_AS_CLASS_METHOD(ha::homed, CInstance, devices  , ha::homed::CDevices *, (const ha::homed::EDeviceType &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CInstance, devices  , ha::homed::CDevices *,(const ha::homed::EDeviceType &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CInstance, setJoin  , void                 ,(bool                          ),      );
 
   // CInstances
   HA_AS_CLASS_METHOD(ha::homed, CInstances, empty   , const bool                    , (                                                   ), const);
@@ -434,6 +436,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CInstances, size    , unsigned short                , (                                                   ),      );
   HA_AS_CLASS_METHOD(ha::homed, CInstances, device  , ha::homed::CDevice *          , (const std::string &                                ),      );
   HA_AS_CLASS_METHOD(ha::homed, CInstances, device  , ha::homed::CDevice *          , (const ha::homed::EDeviceType &, const std::string &),      );
+  HA_AS_CLASS_METHOD(ha::homed, CInstances, setJoin , void                          , (bool                                               ),      );
 
   // CHomed
   // HA_AS_CLASS_METHOD(ha::homed, CHomed, devices , ha::homed::CDevices * , (const ha::homed::EDeviceType &                                                               ),      );

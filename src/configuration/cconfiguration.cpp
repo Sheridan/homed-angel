@@ -87,7 +87,7 @@ void CConfiguration::loadOptions()
   HA_CONF_OPTION_LOAD(latitude                , double     , ({ "astro", "coordinates", "latitude" }), 0                             );
   HA_CONF_OPTION_LOAD(longitude               , double     , ({ "astro", "coordinates", "longitude"}), 0                             );
   HA_CONF_OPTION_LOAD(altitude                , double     , ({ "astro", "coordinates", "altitude" }), 0                             );
-  HA_CONF_OPTION_LOAD(gsmDevice               , std::string, ({ "gsm", "device"                    }), "/dev/ttyUSB0"                );
+  HA_CONF_OPTION_LOAD(gsmDevice               , std::string, ({ "gsm", "device"                    }), ""                            );
   HA_CONF_OPTION_LOAD(gsmBaudrate             , int        , ({ "gsm", "baudrate"                  }), 115200                        );
   HA_CONF_OPTION_LOAD(gsmSMSSendInterval      , int        , ({ "gsm", "sms_min_send_interval_ms"  }), 5000                          );
   HA_CONF_OPTION_LOAD(scriptingLocationOption , std::string, ({"scripting", "location"             }), "/var/lib/homed-angel/scripts");

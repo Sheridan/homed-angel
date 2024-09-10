@@ -41,6 +41,7 @@ public:
   const EDeviceType &type() const { return m_type; }
   const std::string typeAsService();
   std::string topicPath(const ha::mqtt::ETopic &topic);
+  void updateProperties();
 
 private:
   CEndpoints *m_endpoints;

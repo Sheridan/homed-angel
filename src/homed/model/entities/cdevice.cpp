@@ -36,5 +36,16 @@ std::string CDevice::topicPath(const ha::mqtt::ETopic &topic)
   return path + name();
 }
 
+void CDevice::updateProperties()
+{
+  std::string topic = HA_ST->config()->mqttHomedTopic() + "/command/" + typeAsService();
+  if(instance()->real()) { topic += "/" + instance()->name(); }
+  Json::Value command;
+  command["action"] = "getProperties";
+  command["service"] = "angel";
+  command["device"] = name();
+  HA_ST->mqtt()->publish(topic, command.toStyledString());
+}
+
 }
 }

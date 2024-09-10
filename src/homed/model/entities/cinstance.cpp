@@ -1,4 +1,5 @@
 #include "homed/model/entities/cinstance.h"
+#include "st.h"
 
 namespace ha
 {
@@ -20,13 +21,33 @@ CInstance::~CInstance()
 
 void CInstance::update(const ha::mqtt::CTopic *topic, const Json::Value &payload)
 {
+  if(!ready())
+  {
+    switch(topic->topicType())
+    {
+      case ha::mqtt::ETopic::tExpose:
+      case ha::mqtt::ETopic::tStatus: break;
+      default: return;
+    }
+  }
   devices(topic->serviceType())->update(topic, payload);
-  m_updated[serviceType2DeviceType(topic->serviceType())] = true;
+  m_updated[topic->serviceType()].push_back(topic->topicType());
+}
+
+bool CInstance::ready(const ha::mqtt::EService &type)
+{
+  if(m_updated.contains(type) && !m_updated[type].empty())
+  {
+    auto v = m_updated[type];
+    return std::find(v.begin(), v.end(), ha::mqtt::ETopic::tStatus) != v.end() &&
+           std::find(v.begin(), v.end(), ha::mqtt::ETopic::tExpose) != v.end();
+  }
+  return false;
 }
 
 bool CInstance::ready()
 {
-  return m_updated[dtZigbee] && m_updated[dtCustom];
+  return ready(ha::mqtt::EService::sZigbee) || ready(ha::mqtt::EService::sCustom);
 }
 
 bool CInstance::real()
@@ -76,6 +97,18 @@ void CInstance::unsubscribeScript(const std::string &scriptName)
         p->storage()->removeObserversForScript(scriptName);
       }
     }
+  }
+}
+
+void CInstance::setJoin(bool enabled)
+{
+  if(ready(ha::mqtt::EService::sZigbee))
+  {
+    std::string topic = HA_ST->config()->mqttHomedTopic() + "/command/zigbee/" + name();
+    Json::Value command;
+    command["action" ] = "setPermitJoin";
+    command["enabled"] = enabled;
+    HA_ST->mqtt()->publish(topic, command.toStyledString());
   }
 }
 

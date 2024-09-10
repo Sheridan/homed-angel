@@ -34,10 +34,15 @@ private:
   void updateExpose(const ha::mqtt::CTopic *topic, const Json::Value &payload);
   void updateFd(const ha::mqtt::CTopic *topic, const Json::Value &payload);
   void updateDevice(const ha::mqtt::CTopic *topic, const Json::Value &payload);
-
   void updateProperty(const std::string &name, const Json::Value &item);
-
   ha::utils::CStrings findChangedProperties(const Json::Value &payload);
+
+  CProperty* addProperty(const std::string &name, const bool &readonly, const EPropertyValueType &type);
+  CProperty* addEnumerateToProperty(CProperty* property, const ha::utils::CStrings &enums);
+  CProperty* addEnumerateToProperty(CProperty* property, const Json::Value &enums);
+  CProperty* addBordersToProperty(CProperty* property, const double &min, const double &max, const double &step = 1.0);
+  CProperty* addBordersToProperty(CProperty* property, const Json::Value &borders);
+  CProperty* addUnitToProperty(CProperty* property, const std::string &unit);
 };
 
 

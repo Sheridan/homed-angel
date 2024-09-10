@@ -66,23 +66,22 @@ bool CCmdLine::parse(int argc, char* argv[])
     }
   }
 
-  // Check for missing parameters in options that require them
   for (const auto& [key, def] : m_options)
   {
-      if (std::holds_alternative<std::string>(def.defaultValue) &&
-          std::get<std::string>(def.value).empty() &&
+      if ( std::holds_alternative<std::string>(def.defaultValue) &&
+           std::get<std::string>(def.value       ).empty() &&
           !std::get<std::string>(def.defaultValue).empty())
       {
         m_options[key].value = def.defaultValue;
       }
       else if ( std::holds_alternative<int>(def.defaultValue) &&
-                std::get<int>(def.value) == 0 &&
+                std::get<int>(def.value       ) == 0 &&
                 std::get<int>(def.defaultValue) != 0)
       {
         m_options[key].value = def.defaultValue;
       }
       else if ( std::holds_alternative<bool>(def.defaultValue) &&
-                std::get<bool>(def.value) == false &&
+                std::get<bool>(def.value       ) == false &&
                 std::get<bool>(def.defaultValue) != false)
       {
         m_options[key].value = def.defaultValue;

@@ -23,7 +23,7 @@ public:
   CDevice* device(                         const std::string &deviceName);
   CDevice* device(const EDeviceType &type, const std::string &deviceName);
 
-
+  void setJoin(bool enabled);
 
 private:
 

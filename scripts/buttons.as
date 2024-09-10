@@ -87,6 +87,13 @@ void onButton7(CProperty @property)
   // }
 }
 
+bool joinStatus = false;
+void onButton8(CProperty @property)
+{
+  homed.instances().setJoin(joinStatus);
+  joinStatus = !joinStatus;
+}
+
 void initialize()
 {
   if(do_it)
@@ -97,6 +104,7 @@ void initialize()
     homed.property(dtZigbee, "Button_20", "5", "action").subscribe(script_name, "onButton5", false);
     homed.property(dtZigbee, "Button_20", "6", "action").subscribe(script_name, "onButton6", false);
     homed.property(dtZigbee, "Button_20", "7", "action").subscribe(script_name, "onButton7", false);
+    homed.property(dtZigbee, "Button_20", "8", "action").subscribe(script_name, "onButton8", false);
   }
 }
 

@@ -29,7 +29,7 @@ public:
   ha::utils::CStrings list()
   {
     ha::utils::CStrings result;
-    for(T *item: m_container) { result.push_back(item->name()); }
+    for(T *item: m_container) { if(!item->name().empty()) { result.push_back(item->name()); } }
     return result;
   }
 
@@ -56,14 +56,12 @@ public:
   T *get(const std::string &name)
   {
     for(T *item: m_container) { if(item->name() == name) { return item; } }
-    HA_LOG_DBG("No item with name " << name);
     return nullptr;
   }
 
   T *get(const unsigned short &index)
   {
     if(index < size()) { return m_container[index]; }
-    HA_LOG_DBG("No item with index " << index);
     return nullptr;
   }
 
