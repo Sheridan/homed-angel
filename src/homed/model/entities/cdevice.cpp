@@ -1,5 +1,4 @@
 #include "homed/model/entities/cdevice.h"
-#include "cdevice.h"
 #include "st.h"
 namespace ha
 {
@@ -17,6 +16,11 @@ CDevice::CDevice(const std::string &name, const EDeviceType &dType, CInstance *p
 CDevice::~CDevice()
 {
   delete m_endpoints;
+}
+
+CEndpoint *CDevice::endpoint(const std::string &name)
+{
+  return m_endpoints->get(name);
 }
 
 const std::string CDevice::typeAsService()

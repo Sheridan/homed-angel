@@ -20,6 +20,7 @@ public:
   const std::string &name() const override { return CBase::name(); }
 
   CProperties *properties() { return m_properties; }
+  CProperty *property(const std::string &name);
   void update(const ha::mqtt::CTopic *topic, const Json::Value &payload);
 
   void setParentDevice(CDevice *pDevice) { m_parentDevice = pDevice; };
@@ -43,6 +44,8 @@ private:
   CProperty* addBordersToProperty(CProperty* property, const double &min, const double &max, const double &step = 1.0);
   CProperty* addBordersToProperty(CProperty* property, const Json::Value &borders);
   CProperty* addUnitToProperty(CProperty* property, const std::string &unit);
+
+  bool isAlwaysUpdateProperty(const std::string &name);
 };
 
 

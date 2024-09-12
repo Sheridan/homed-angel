@@ -253,7 +253,7 @@ ha::utils::CStrings CEndpoint::findChangedProperties(const Json::Value &payload)
     // HA_LOG_DBG("Searching property " << name);
     // CValue val = property->last();
     // HA_LOG_DBG("property val " << val.asString());
-    if(property->storage()->empty())
+    if(property->storage()->empty() || isAlwaysUpdateProperty(property->name()))
     {
       updatedNames.push_back(name);
     }
@@ -271,6 +271,17 @@ ha::utils::CStrings CEndpoint::findChangedProperties(const Json::Value &payload)
     }
   }
   return updatedNames.empty() ? allNames : updatedNames;
+}
+
+bool CEndpoint::isAlwaysUpdateProperty(const std::string &name)
+{
+  if(name == "action") { return true; }
+  return false;
+}
+
+CProperty *CEndpoint::property(const std::string &name)
+{
+  return m_properties->get(name);
 }
 
 std::string CEndpoint::topicPath(const ha::mqtt::ETopic &topic)

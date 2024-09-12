@@ -38,6 +38,7 @@ public:
   CInstance *instance() { return m_parentInstance; };
 
   CEndpoints *endpoints() { return m_endpoints; }
+  CEndpoint *endpoint(const std::string &name);
   const EDeviceType &type() const { return m_type; }
   const std::string typeAsService();
   std::string topicPath(const ha::mqtt::ETopic &topic);

@@ -384,6 +384,7 @@ void CScriptEnvironment::registerModel()
   // CEndpoint
   HA_AS_CLASS_METHOD(ha::homed, CEndpoint, name      , const std::string &     , (                        ), const);
   HA_AS_CLASS_METHOD(ha::homed, CEndpoint, properties, ha::homed::CProperties *, (                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CEndpoint, property  , ha::homed::CProperty *  , (const std::string &     ),      );
   HA_AS_CLASS_METHOD(ha::homed, CEndpoint, device    , ha::homed::CDevice *    , (                        ),      );
   HA_AS_CLASS_METHOD(ha::homed, CEndpoint, topicPath , std::string             , (const ha::mqtt::ETopic &),      );
 
@@ -409,6 +410,7 @@ void CScriptEnvironment::registerModel()
   HA_AS_CLASS_METHOD(ha::homed, CDevice, cloud            , const bool &                  , (                        ), const);
   HA_AS_CLASS_METHOD(ha::homed, CDevice, discovery        , const bool &                  , (                        ), const);
   HA_AS_CLASS_METHOD(ha::homed, CDevice, properties       , ha::homed::CProperties *      , (                        ),      );
+  HA_AS_CLASS_METHOD(ha::homed, CDevice, property         , ha::homed::CProperty *        , (const std::string &     ),      );
   HA_AS_CLASS_METHOD(ha::homed, CDevice, endpoints        , ha::homed::CEndpoints *       , (                        ),      );
   HA_AS_CLASS_METHOD(ha::homed, CDevice, topicPath        , std::string                   , (const ha::mqtt::ETopic &),      );
   HA_AS_CLASS_METHOD(ha::homed, CDevice, updateProperties , void                          , (                        ),      );
